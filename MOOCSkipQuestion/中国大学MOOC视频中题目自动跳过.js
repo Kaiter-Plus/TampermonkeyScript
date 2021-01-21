@@ -8,8 +8,8 @@
 // @grant        none
 // ==/UserScript==
 
-(function() {
-  setInterval(function(){
+;(function () {
+  setInterval(function () {
     let question = document.querySelector('.u-btn.u-btn-default.cont.j-continue')
     if (question) {
       question.parentNode.remove()
@@ -19,4 +19,4 @@
       video.play()
     }
   }, 5000)
-})();
+})()
