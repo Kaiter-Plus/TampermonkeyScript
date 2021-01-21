@@ -12,8 +12,7 @@
 // @version      1.0
 // ==/UserScript==
 
-(function () {
-
+;(function () {
   // 获取所有 iframe
   const frames = $('iframe')
 
@@ -27,14 +26,13 @@
   // 设置主页背景
   $('body').css({
     overflow: 'auto',
-    background: 'linear-gradient(to right, #cedeeb, #c5e5f0)'
+    background: 'linear-gradient(to right, #cedeeb, #c5e5f0)',
   })
 
   // 获取 head
   const head = $('head')
   // 导入自定义样式
-  head.append($('<style type="text/css">').text(getCSS("mainCSS")))
-
+  head.append($('<style type="text/css">').text(getCSS('mainCSS')))
 
   ///////////↓ 用户登录界面 ↓///////////////
   // 给登录界面 div 添加 id 方便添加 css
@@ -42,7 +40,7 @@
   // 移除登录界面父级 td 默认样式，并添加圆角
   $(login).parent().removeAttr('style').css({
     backgroundColor: '#fafafa',
-    borderRadius: '6px'
+    borderRadius: '6px',
   })
   // 登录界面加载完成后操作
   login.onload = function () {
@@ -53,14 +51,14 @@
       loginDocument = login.contentWindow.document || login.contentDocument
     } catch (e) {
       // 强行修改主页的 domain ，达到操作 iframe 的目的， emm....
-      document.domain = "zhku.edu.cn"
+      document.domain = 'zhku.edu.cn'
       loginDocument = login.contentWindow.document || login.contentDocument
     }
     // 设置登录界面圆角和阴影
     $(login).css({
       borderRadius: '6px',
       border: 'none',
-      height: '294px'
+      height: '294px',
     })
     //获取登录界面 head
     const loginHead = loginDocument.head
@@ -69,7 +67,7 @@
       width: '16px',
       height: '22px',
       color: '#666',
-      border: 'none'
+      border: 'none',
     })
     // 获取 select 的父元素 div，添加 class
     select.parent().addClass('selectDiv').css({
@@ -77,33 +75,31 @@
       padding: '4px',
       width: '156px',
       height: '22px',
-      backgroundColor: '#FFF'
+      backgroundColor: '#FFF',
     })
     // 美化输入框
     let loginInput = $('.tx1', loginDocument)
     for (let inputItem of loginInput) {
-      if (inputItem.id === "txt_pewerwedsdfsdff") {
+      if (inputItem.id === 'txt_pewerwedsdfsdff') {
         $(inputItem).css('display', 'none')
         continue
       }
-      $(inputItem).removeAttr("style")
+      $(inputItem).removeAttr('style')
     }
     // 导入自定义样式
-    $(loginHead).append(
-      $('<style type="text/css">').text(getCSS("loginCSS"))
-    )
+    $(loginHead).append($('<style type="text/css">').text(getCSS('loginCSS')))
   }
 
   ///////////↓ 教学安排 ↓///////////////
   // 设置通知公告 div 的 id 方便添加 css
   let scheduleDiv = loginDiv.parentNode.children[1]
-  scheduleDiv.id = "scheduleDiv"
-  scheduleDiv.removeAttribute("style")
+  scheduleDiv.id = 'scheduleDiv'
+  scheduleDiv.removeAttribute('style')
 
   // 设置 table 高和宽都是 100%
   $(scheduleDiv.children[0]).css({
     height: '100%',
-    width: '100%'
+    width: '100%',
   })
 
   // 移除友情链接
@@ -116,14 +112,14 @@
   $(sTableTop).css({
     textAlign: 'left',
     background: 'url("images/home_new/d_jxap_bg.gif")',
-    borderRadius: '6px 6px 0 0'
+    borderRadius: '6px 6px 0 0',
   })
-  sTableRows[1].children[0].removeAttribute("style")
+  sTableRows[1].children[0].removeAttribute('style')
   let sTableBottom = sTableRows[1].children[0].children[0]
   $(sTableBottom).css({
     height: '100%',
     backgroundColor: '#fff',
-    borderRadius: '0 0 6px 6px'
+    borderRadius: '0 0 6px 6px',
   })
 
   //////////↓ 通知公告 ↓//////////
@@ -132,15 +128,14 @@
   // 设置通知公告模块圆角
   setRadius(noticeDiv)
 
-
   ///////////↓ 公共下载 ↓////////////
   // 设置通知公告 div 的 id 方便添加 css
-  let downloadDiv = $(noticeDiv.parentNode.children[1]).attr('id', 'downloadDiv')
+  let downloadDiv = $(noticeDiv.parentNode.children[1])
+    .attr('id', 'downloadDiv')
     .removeAttr('style')
     .css('background-color', '#fafafa')
   // 设置公共下载模块圆角
   setRadius(downloadDiv.get(0))
-
 
   //////////↓ 日历界面 ↓//////////
   // 移除原来的日历
@@ -150,28 +145,27 @@
     marginTop: '0',
     width: '100%',
     height: '290px',
-    paddingBottom: '5px'
+    paddingBottom: '5px',
   })
 
   // 创建 div ,导入自定义日历
   let calDiv = $('<div>').attr({
     id: 'calendar',
-    class: 'calendar'
+    class: 'calendar',
   })
 
   // 将创建的 div, css 加入覆盖原来的日历
   $(calParent).append(calDiv)
-
 
   ///////↓ 作息时间、查看校历、管理人员 ↓//////////
   // 设置作息时间、查看校历、管理人员 div 的 class 方便添加 css
   let otherParent = calParent.parentNode.children[1].children[0].children[0]
   let other = otherParent.children
   for (let i = 0; i < 3; i++) {
-    let x = document.createElement("div")
-    x.setAttribute("class", "otherDiv" + i)
+    let x = document.createElement('div')
+    x.setAttribute('class', 'otherDiv' + i)
     x.appendChild(other[0])
-    x.children[0].children[0].children[0].removeAttribute("onclick")
+    x.children[0].children[0].children[0].removeAttribute('onclick')
     otherParent.appendChild(x)
   }
   // 添加涟漪效果
@@ -185,7 +179,7 @@
       ripple = document.createElement('span')
       ripple.className = 'ripple'
       ripple.style.height = ripple.style.width = Math.max(rect.width, rect.height) + 'px'
-      div.appendChild(ripple);
+      div.appendChild(ripple)
     }
     ripple.classList.remove('show')
     let top = e.pageY - rect.top - ripple.offsetHeight / 2 - document.body.scrollTop
@@ -197,11 +191,11 @@
   }
   document.addEventListener('click', addRippleEffect, false)
   // 使用 iframe 展示 “作息时间、查看校历、管理人员”
-  const otherIframe = document.createElement("iframe")
-  otherIframe.setAttribute("class", "otherIframe")
-  otherIframe.style.position = "absolute"
-  otherIframe.style.top = (screen.height - 660) / 2 + "px"
-  otherIframe.style.left = (screen.width - 630) / 2 - 12 + "px"
+  const otherIframe = document.createElement('iframe')
+  otherIframe.setAttribute('class', 'otherIframe')
+  otherIframe.style.position = 'absolute'
+  otherIframe.style.top = (screen.height - 660) / 2 + 'px'
+  otherIframe.style.left = (screen.width - 630) / 2 - 12 + 'px'
   document.body.appendChild(otherIframe)
   let flag = false
   const displayOther = function (e) {
@@ -210,7 +204,7 @@
       // 实现点击其它任意位置关闭
       if (flag) {
         flag = !flag
-        otherIframe.style.display = "none"
+        otherIframe.style.display = 'none'
       }
       return false
     } else {
@@ -219,52 +213,48 @@
       }
       let div = target.parentNode.parentNode.parentNode.parentNode
       if (flag) {
-        if (div.className === "otherDiv0") {
-          otherIframe.src = "_data/index_zxsj.aspx"
+        if (div.className === 'otherDiv0') {
+          otherIframe.src = '_data/index_zxsj.aspx'
         }
-        if (div.className === "otherDiv1") {
-          otherIframe.src = "_data/index_lookxl.aspx"
+        if (div.className === 'otherDiv1') {
+          otherIframe.src = '_data/index_lookxl.aspx'
         }
-        if (div.className === "otherDiv2") {
-          otherIframe.src = "_data/index_GLRY.aspx"
+        if (div.className === 'otherDiv2') {
+          otherIframe.src = '_data/index_GLRY.aspx'
         }
-        otherIframe.style.display = "block"
+        otherIframe.style.display = 'block'
       } else {
-        otherIframe.style.display = "none"
+        otherIframe.style.display = 'none'
       }
     }
   }
   document.addEventListener('click', displayOther, false)
-
 
   ///////////↓ 管理规定 ↓///////////
   // 设置管理规定 div 的 id 方便添加 css
   let managerDiv = $(calParent.parentNode.parentNode.parentNode.children[1].children[0].children[0])
     .attr('id', 'managerDiv')
     .removeAttr('style')
-  managerDiv.parent().removeAttr("height")
+  managerDiv.parent().removeAttr('height')
   // 设置管理规定模块圆角
   setRadius(managerDiv.get(0))
-
 
   ////////////↓ 页脚 ↓///////////
   let footParent = loginDiv.parentNode.parentNode.parentNode
   let foot = $(footParent.children[2].children[0])
   foot.css({
     color: '#fff',
-    background: '#1f8dda'
+    background: '#1f8dda',
   })
 
-
   /******************* 分隔线 ********************/
-
 
   /* 下面是使用到的函数 */
 
   // 清除没用的单元格，设置圆角函数
   function setRadius(pDiv) {
     // 设置表格宽度为 100%
-    pDiv.children[0].width = "100%"
+    pDiv.children[0].width = '100%'
 
     // 移除没用的单元格
     let tableRows = pDiv.children[0].children[0].children
@@ -277,8 +267,8 @@
     if (pDiv.id !== 'otherDiv') {
       let tableTop = tableRows[0].children[0]
       let tableBottom = tableRows[1].children[0]
-      tableTop.width = "100%"
-      if (pDiv.id === "managerDiv") {
+      tableTop.width = '100%'
+      if (pDiv.id === 'managerDiv') {
         $(tableTop).css({
           backgroundColor: '#eee',
           borderRadius: '6px 6px 0 0',
@@ -287,27 +277,27 @@
           color: '#2c93db',
           paddingLeft: '15px',
           fontWeight: 'bold',
-          fontFamily: '微软雅黑'
+          fontFamily: '微软雅黑',
         })
         $(tableBottom).css({
           height: '204px',
           backgroundColor: '#fafafa',
-          borderRadius: '0 0 6px 6px'
+          borderRadius: '0 0 6px 6px',
         })
       } else {
         $(tableTop).css({
           backgroundColor: '#eee',
-          borderRadius: '6px 6px 0 0'
+          borderRadius: '6px 6px 0 0',
         })
         $(tableBottom).css({
           height: '246px',
           backgroundColor: '#fafafa',
-          borderRadius: '0 0 6px 6px'
+          borderRadius: '0 0 6px 6px',
         })
       }
       if (tableRows[1].children[0].children[0]) {
         let tableBottomDiv = tableRows[1].children[0].children[0]
-        tableBottomDiv.removeAttribute("style")
+        tableBottomDiv.removeAttribute('style')
       }
     }
   }
@@ -317,11 +307,10 @@
     $('#calendar').calendar({
       ifSwitch: true, // 是否切换月份
       hoverDate: true, // hover是否显示当天信息
-      backToday: true // 是否返回当天
+      backToday: true, // 是否返回当天
     })
   })
   ;(function ($) {
-
     // ========== 使用到的方法 ========== //
     const dateObj = (function () {
       let _date = new Date()
@@ -331,7 +320,7 @@
         },
         setDate: function (date) {
           _date = date
-        }
+        },
       }
     })()
     const Calendar = function (elem, options) {
@@ -339,30 +328,31 @@
       this.defaults = {
         ifSwitch: true,
         hoverDate: false,
-        backToday: false
-      };
+        backToday: false,
+      }
       this.opts = $.extend({}, this.defaults, options)
     }
     Calendar.prototype = {
-
       // hover 时显示当天信息
       showHoverInfo: function (obj) {
         const _dateStr = $(obj).attr('data')
         const offset_t = $(obj).offset().top + (this.$calendar_today.height() - $(obj).height()) / 2
         const offset_l = $(obj).offset().left + $(obj).width()
-        const changeStr = _dateStr.substr(0, 4) + '-'
-          + _dateStr.substr(4, 2) + '-' + _dateStr.substring(6)
+        const changeStr = _dateStr.substr(0, 4) + '-' + _dateStr.substr(4, 2) + '-' + _dateStr.substring(6)
         const _week = changingStr(changeStr).getDay()
         let _weekStr = ''
         this.$calendar_today.show()
-        this.$calendar_today.css({
-          left: offset_l + 30,
-          top: offset_t - 24
-        }).stop().animate({
-          left: offset_l + 16,
-          top: offset_t - 24,
-          opacity: 1
-        });
+        this.$calendar_today
+          .css({
+            left: offset_l + 30,
+            top: offset_t - 24,
+          })
+          .stop()
+          .animate({
+            left: offset_l + 16,
+            top: offset_t - 24,
+            opacity: 1,
+          })
         switch (_week) {
           case 0:
             _weekStr = '星期日'
@@ -405,8 +395,7 @@
           $(this).text(allDay.getDate()).attr('data', allDay_str)
           if (returnDateStr(new Date()) === allDay_str) {
             $(this).attr('class', 'item item-curDay')
-          } else if (returnDateStr(firstDay).substr(0, 6) === allDay_str.substr(0,
-            6)) {
+          } else if (returnDateStr(firstDay).substr(0, 6) === allDay_str.substr(0, 6)) {
             $(this).attr('class', 'item item-curMonth')
           } else {
             $(this).attr('class', 'item')
@@ -433,7 +422,7 @@
                             <li class="item">四</li>
                             <li class="item">五</li>
                             <li class="item">六</li>`
-        let _dateStr = '';
+        let _dateStr = ''
         const _dayStr = `<i class="leftTriangle"></i>
                            <p class="date"></p>
                            <p class="week"></p>`
@@ -450,8 +439,7 @@
         this.$calendar_week.html(_weekStr)
         this.$calendar_date.html(_dateStr)
         this.$calendar_today.html(_dayStr)
-        this.$calendar.append(this.$calendar_title, this.$calendar_week, this.$calendar_date,
-          this.$calendar_today)
+        this.$calendar.append(this.$calendar_title, this.$calendar_week, this.$calendar_date, this.$calendar_today)
         this.$calendar.show()
       },
 
@@ -470,38 +458,41 @@
         if (this.opts.ifSwitch) {
           this.$arrow_prev.bind('click', function () {
             const _date = dateObj.getDate()
-            dateObj.setDate(new Date(_date.getFullYear(), _date.getMonth() - 1,
-              1))
+            dateObj.setDate(new Date(_date.getFullYear(), _date.getMonth() - 1, 1))
             self.showCalendar()
-          });
+          })
           this.$arrow_next.bind('click', function () {
             const _date = dateObj.getDate()
-            dateObj.setDate(new Date(_date.getFullYear(), _date.getMonth() + 1,
-              1))
+            dateObj.setDate(new Date(_date.getFullYear(), _date.getMonth() + 1, 1))
             self.showCalendar()
           })
         }
         if (this.opts.backToday) {
           this.$backToday.bind('click', function () {
             if (!self.$calendarDate_item.hasClass('item-curDay')) {
-              dateObj.setDate(new Date());
+              dateObj.setDate(new Date())
               self.showCalendar()
             }
           })
         }
-        this.$calendarDate_item.hover(function () {
-          self.showHoverInfo($(this))
-        }, function () {
-          self.$calendar_today.css({
-            left: 0,
-            top: 0
-          }).hide()
-        })
+        this.$calendarDate_item.hover(
+          function () {
+            self.showHoverInfo($(this))
+          },
+          function () {
+            self.$calendar_today
+              .css({
+                left: 0,
+                top: 0,
+              })
+              .hide()
+          }
+        )
       },
-      constructor: Calendar
+      constructor: Calendar,
     }
     $.fn.calendar = function (options) {
-      const calendar = new Calendar(this, options);
+      const calendar = new Calendar(this, options)
       return calendar.inital()
     }
 
@@ -510,14 +501,14 @@
       const year = date.getFullYear()
       let month = date.getMonth() + 1
       let day = date.getDate()
-      month = month <= 9 ? ('0' + month) : ('' + month)
-      day = day <= 9 ? ('0' + day) : ('' + day)
+      month = month <= 9 ? '0' + month : '' + month
+      day = day <= 9 ? '0' + day : '' + day
       return year + month + day
     }
 
     // 字符串转日期
     function changingStr(fDate) {
-      const fullDate = fDate.split("-")
+      const fullDate = fDate.split('-')
       return new Date(fullDate[0], fullDate[1] - 1, fullDate[2])
     }
   })(jQuery, window, document)
@@ -525,315 +516,313 @@
   // 获取 css
   function getCSS(str) {
     let css
-    if (str === "mainCSS") {
+    if (str === 'mainCSS') {
       css = [
-        "/* 清空默认边距  */",
-        "body,h1,h2,h3,h4,h5,h6,pdl,dt,dd {",
-        "    margin:0px;",
-        "}",
-        "div,ul,ol,li,pre,code,form,fieldset,legend,input,texarea,blockquote,th,td {",
-        "    margin:0px;",
-        "    padding:0px;",
-        "}",
+        '/* 清空默认边距  */',
+        'body,h1,h2,h3,h4,h5,h6,pdl,dt,dd {',
+        '    margin:0px;',
+        '}',
+        'div,ul,ol,li,pre,code,form,fieldset,legend,input,texarea,blockquote,th,td {',
+        '    margin:0px;',
+        '    padding:0px;',
+        '}',
 
-        "/* 设置表格默认背景为透明 */",
-        "table {",
-        "    background-color: rgba(0,0,0,0)!important;",
-        "}",
+        '/* 设置表格默认背景为透明 */',
+        'table {',
+        '    background-color: rgba(0,0,0,0)!important;',
+        '}',
 
-        "/* 登录界面 */",
-        "#loginDiv {",
-        "    height: 294px;",
-        "    margin-right: 12px;",
-        "}",
+        '/* 登录界面 */',
+        '#loginDiv {',
+        '    height: 294px;',
+        '    margin-right: 12px;',
+        '}',
 
-        "/* 教学安排 */",
-        "#scheduleDiv {",
-        "    width: 262px;",
-        "    height: 550px;",
-        "    margin-top: 15px;",
-        "}",
+        '/* 教学安排 */',
+        '#scheduleDiv {',
+        '    width: 262px;',
+        '    height: 550px;',
+        '    margin-top: 15px;',
+        '}',
 
-        "/* 通知公告 */",
-        "#noticeDiv {",
-        "    width: 98%;",
-        "    height: 294px;",
-        "}",
+        '/* 通知公告 */',
+        '#noticeDiv {',
+        '    width: 98%;',
+        '    height: 294px;',
+        '}',
 
-        "/* 公共下载 */",
-        "#downloadDiv {",
-        "    width: 98%;",
-        "    height: 294px;",
-        "    margin-top: 15px;",
-        "}",
-        "#downloadDiv div {",
-        "    height: 250px;",
-        "    overflow: auto",
-        "}",
-        "/* 通知公告更多,公共下载更多 */",
-        "#spn_tzgz:hover,#spn_ggxz:hover {",
-        "    color: #1f8dda;",
-        "    cursor: pointer",
-        "}",
+        '/* 公共下载 */',
+        '#downloadDiv {',
+        '    width: 98%;',
+        '    height: 294px;',
+        '    margin-top: 15px;',
+        '}',
+        '#downloadDiv div {',
+        '    height: 250px;',
+        '    overflow: auto',
+        '}',
+        '/* 通知公告更多,公共下载更多 */',
+        '#spn_tzgz:hover,#spn_ggxz:hover {',
+        '    color: #1f8dda;',
+        '    cursor: pointer',
+        '}',
 
-        "/* 时间、校历、人员 */",
+        '/* 时间、校历、人员 */',
         "div[class*='otherDiv'] {",
-        "    height: 83px;",
-        "    margin-top: 15px;",
-        "    overflow: hidden;",
-        "    position: relative;",
-        "}",
+        '    height: 83px;',
+        '    margin-top: 15px;',
+        '    overflow: hidden;',
+        '    position: relative;',
+        '}',
         "div[class*='otherDiv'] img {",
-        "    width: 273px;",
-        "    position: absolute;",
-        "    top: -5px;",
-        "}",
+        '    width: 273px;',
+        '    position: absolute;',
+        '    top: -5px;',
+        '}',
         "div[class*='otherDiv'] img::nth-child(1) {",
-        "    height: 93px;",
-        "}",
+        '    height: 93px;',
+        '}',
         "div[class*='otherDiv'] img::nth-child(2) {",
-        "    height: 89px;",
-        "}",
+        '    height: 89px;',
+        '}',
         "div[class*='otherDiv'] img::nth-child(3) {",
-        "    height: 104px;",
-        "}",
-        "/* 添加点击涟漪效果 */",
-        ".ripple {",
-        "    position: absolute;",
-        "    background: rgba(0, 0, 0, .15);",
-        "    border-radius: 50%;",
-        "    transform: scale(0);",
-        "    ointer-events: none;",
-        "}",
-        ".show {",
-        "    animation: ripple .75s ease-out;",
-        "}",
-        "@keyframes ripple {",
-        "    to {",
-        "        transform: scale(2);",
-        "        pacity: 0;",
-        "    }",
-        "}",
-        ".otherIframe {",
-        "    width: 650px;",
-        "    height: 680px;",
-        "    display: none;",
-        "    border-radius: 6px;",
-        "    box-sizing: border-box;",
-        "    border: 6px solid #78b9d7;",
-        "    box-shadow: 0 0 6px 2px #888;",
-        "}",
+        '    height: 104px;',
+        '}',
+        '/* 添加点击涟漪效果 */',
+        '.ripple {',
+        '    position: absolute;',
+        '    background: rgba(0, 0, 0, .15);',
+        '    border-radius: 50%;',
+        '    transform: scale(0);',
+        '    ointer-events: none;',
+        '}',
+        '.show {',
+        '    animation: ripple .75s ease-out;',
+        '}',
+        '@keyframes ripple {',
+        '    to {',
+        '        transform: scale(2);',
+        '        pacity: 0;',
+        '    }',
+        '}',
+        '.otherIframe {',
+        '    width: 650px;',
+        '    height: 680px;',
+        '    display: none;',
+        '    border-radius: 6px;',
+        '    box-sizing: border-box;',
+        '    border: 6px solid #78b9d7;',
+        '    box-shadow: 0 0 6px 2px #888;',
+        '}',
 
-        "/* 管理规定 */",
-        "#managerDiv {",
-        "    height: 240px;",
-        "    margin: 15px 0;",
-        "}",
+        '/* 管理规定 */',
+        '#managerDiv {',
+        '    height: 240px;',
+        '    margin: 15px 0;',
+        '}',
 
-        "/* 添加圆角、阴影、过渡 */",
+        '/* 添加圆角、阴影、过渡 */',
         "#loginDiv,#scheduleDiv,#noticeDiv,#downloadDiv,div[class*='otherDiv'],#managerDiv {",
-        "    border-radius: 6px;",
-        "    transition: box-shadow 200ms;",
-        "    box-shadow: 0 0 6px 2px #888;",
-        "}",
-        "#loginDiv:hover,#scheduleDiv:hover,#noticeDiv:hover,#downloadDiv:hover,",
+        '    border-radius: 6px;',
+        '    transition: box-shadow 200ms;',
+        '    box-shadow: 0 0 6px 2px #888;',
+        '}',
+        '#loginDiv:hover,#scheduleDiv:hover,#noticeDiv:hover,#downloadDiv:hover,',
         "div[class*='otherDiv']:hover,#managerDiv:hover {",
-        "    box-shadow: 0 0 2px 0 #888;",
-        "}",
+        '    box-shadow: 0 0 2px 0 #888;',
+        '}',
 
-
-        "/* 下面的 css 是日历界面 */",
-        "a,a:hover {",
-        "    color:#888;",
-        "    text-decoration:none;",
-        "}",
-        "ul,li {",
-        "    list-style:none;",
-        "}",
-        ".calendar {",
-        "    box-shadow:0 0 6px 2px #888;",
+        '/* 下面的 css 是日历界面 */',
+        'a,a:hover {',
+        '    color:#888;',
+        '    text-decoration:none;',
+        '}',
+        'ul,li {',
+        '    list-style:none;',
+        '}',
+        '.calendar {',
+        '    box-shadow:0 0 6px 2px #888;',
         "    font-family:'微软雅黑';",
-        "    font-size:12px;",
-        "    color:#888;",
-        "    display:none;",
-        "    width:245px;",
-        "    padding:4px 13px;",
-        "    background-color:#fafafa;",
-        "    border-radius:6px;",
-        "    transition:all 200ms;",
-        "    -webkit-transition:all 200ms;",
-        "}",
-        ".calendar:hover {",
-        "    box-shadow:0 0 2px 0 #888;",
-        "    background-color:#fff;",
-        "}",
-        ".calendar-title {",
-        "    position:relative;",
-        "    height:20px;",
-        "    line-height:20px;",
-        "    padding:10px 0;",
-        "}",
-        ".calendar-title a.title {",
-        "    display:inline-block;",
-        "    font-size:16px;",
-        "    text-indent:10px;",
-        "}",
-        "#backToday {",
-        "    position:absolute;",
-        "    left:60%;",
-        "    top:8px;",
-        "    width:30px;",
-        "    height:30px;",
-        "    line-height:30px;",
-        "    text-align:center;",
-        "    border-radius:50%;",
-        "    color:#fff;",
-        "    background-color:#78b9d7;",
-        "    font-size:18px;",
-        "}",
-        ".calendar-title .arrow {",
-        "    position:absolute;",
-        "    top:8px;",
-        "    right:0;",
-        "    width:50px;",
-        "}",
-        ".calendar-title .arrow span {",
-        "    color:#ddd;",
-        "    font-size:26px;",
-        "    cursor:pointer;",
-        "    -webkit-user-select:none;",
-        "    -moz-user-select:none;",
-        "    -ms-user-select:none;",
-        "    -o-user-select:none;",
-        "    user-select:none;",
-        "}",
-        ".calendar-title .arrow span:hover {",
-        "    color:#888;",
-        "}",
-        ".calendar-title .arrow-prev {",
-        "    float:left;",
-        "}",
-        ".calendar-title .arrow-next {",
-        "    float:right;",
-        "}",
-        ".calendar-week,.calendar-date {",
-        "    overflow:hidden;",
-        "}",
-        ".calendar-week .item,.calendar-date .item {",
-        "    float:left;",
-        "    width:35px;",
-        "    height:35px;",
-        "    line-height:35px;",
-        "    text-align:center;",
-        "}",
-        ".calendar-week {",
-        "    border-bottom:1px solid #78b9d7;",
-        "    font-weight:bold;",
-        "    font-size:16px;",
-        "}",
-        ".calendar-date .item {",
-        "    border-radius:50%;",
-        "    color:#dfdfdf;",
-        "    cursor:pointer;",
-        "    font-size:14px;",
-        "}",
-        ".calendar-date .item:hover,.calendar-date .item-curMonth:hover {",
-        "    background-color:#dfdfdf;",
-        "}",
-        ".calendar-date .item-curMonth {",
-        "    color:#333;",
-        "}",
-        ".calendar-date .item-curDay,.calendar-date .item-curDay:hover {",
-        "    color:#fff;",
-        "    background-color:#78b9d7;",
-        "}",
-        ".calendar-today {",
-        "    display:none;",
-        "    opacity:0;",
-        "    position:absolute;",
-        "    right:20px;",
-        "    top:20px;",
-        "    width:90px;",
-        "    height:48px;",
-        "    padding:6px 10px;",
-        "    background-color:#78b9d7;",
-        "    border-radius:5px;",
-        "}",
-        ".LeftTriangle,.rightTriangle {",
-        "    position:absolute;",
-        "    top:50%;",
-        "    left:-16px;",
-        "    margin-top:-8px;",
-        "    border-width:8px;",
-        "    border-style:solid;",
-        "}",
-        ".LeftTriangle {",
-        "    border-color:transparent #78b9d7 transparent transparent;",
-        "}",
-        ".rightTriangle {",
-        "    border-color:transparent transparent transparent #78b9d7;",
-        "}",
-        ".calendar-today p {",
-        "    color:#fff;",
-        "    margin:6px 0;",
-        "    font-size:14px;",
-        "    line-height:14px;",
-        "}"
-      ].join("\n")
+        '    font-size:12px;',
+        '    color:#888;',
+        '    display:none;',
+        '    width:245px;',
+        '    padding:4px 13px;',
+        '    background-color:#fafafa;',
+        '    border-radius:6px;',
+        '    transition:all 200ms;',
+        '    -webkit-transition:all 200ms;',
+        '}',
+        '.calendar:hover {',
+        '    box-shadow:0 0 2px 0 #888;',
+        '    background-color:#fff;',
+        '}',
+        '.calendar-title {',
+        '    position:relative;',
+        '    height:20px;',
+        '    line-height:20px;',
+        '    padding:10px 0;',
+        '}',
+        '.calendar-title a.title {',
+        '    display:inline-block;',
+        '    font-size:16px;',
+        '    text-indent:10px;',
+        '}',
+        '#backToday {',
+        '    position:absolute;',
+        '    left:60%;',
+        '    top:8px;',
+        '    width:30px;',
+        '    height:30px;',
+        '    line-height:30px;',
+        '    text-align:center;',
+        '    border-radius:50%;',
+        '    color:#fff;',
+        '    background-color:#78b9d7;',
+        '    font-size:18px;',
+        '}',
+        '.calendar-title .arrow {',
+        '    position:absolute;',
+        '    top:8px;',
+        '    right:0;',
+        '    width:50px;',
+        '}',
+        '.calendar-title .arrow span {',
+        '    color:#ddd;',
+        '    font-size:26px;',
+        '    cursor:pointer;',
+        '    -webkit-user-select:none;',
+        '    -moz-user-select:none;',
+        '    -ms-user-select:none;',
+        '    -o-user-select:none;',
+        '    user-select:none;',
+        '}',
+        '.calendar-title .arrow span:hover {',
+        '    color:#888;',
+        '}',
+        '.calendar-title .arrow-prev {',
+        '    float:left;',
+        '}',
+        '.calendar-title .arrow-next {',
+        '    float:right;',
+        '}',
+        '.calendar-week,.calendar-date {',
+        '    overflow:hidden;',
+        '}',
+        '.calendar-week .item,.calendar-date .item {',
+        '    float:left;',
+        '    width:35px;',
+        '    height:35px;',
+        '    line-height:35px;',
+        '    text-align:center;',
+        '}',
+        '.calendar-week {',
+        '    border-bottom:1px solid #78b9d7;',
+        '    font-weight:bold;',
+        '    font-size:16px;',
+        '}',
+        '.calendar-date .item {',
+        '    border-radius:50%;',
+        '    color:#dfdfdf;',
+        '    cursor:pointer;',
+        '    font-size:14px;',
+        '}',
+        '.calendar-date .item:hover,.calendar-date .item-curMonth:hover {',
+        '    background-color:#dfdfdf;',
+        '}',
+        '.calendar-date .item-curMonth {',
+        '    color:#333;',
+        '}',
+        '.calendar-date .item-curDay,.calendar-date .item-curDay:hover {',
+        '    color:#fff;',
+        '    background-color:#78b9d7;',
+        '}',
+        '.calendar-today {',
+        '    display:none;',
+        '    opacity:0;',
+        '    position:absolute;',
+        '    right:20px;',
+        '    top:20px;',
+        '    width:90px;',
+        '    height:48px;',
+        '    padding:6px 10px;',
+        '    background-color:#78b9d7;',
+        '    border-radius:5px;',
+        '}',
+        '.LeftTriangle,.rightTriangle {',
+        '    position:absolute;',
+        '    top:50%;',
+        '    left:-16px;',
+        '    margin-top:-8px;',
+        '    border-width:8px;',
+        '    border-style:solid;',
+        '}',
+        '.LeftTriangle {',
+        '    border-color:transparent #78b9d7 transparent transparent;',
+        '}',
+        '.rightTriangle {',
+        '    border-color:transparent transparent transparent #78b9d7;',
+        '}',
+        '.calendar-today p {',
+        '    color:#fff;',
+        '    margin:6px 0;',
+        '    font-size:14px;',
+        '    line-height:14px;',
+        '}',
+      ].join('\n')
     } else {
       css = [
-        "/* 修改背景色 */",
-        ".mdui-loaded {",
-        "    background-color: #fafafa;",
-        "}",
-        "/* 清除聚焦时外边框 */",
-        ":focus {",
-        "    outline: 0px;",
-        "    outline-offset: 0px;",
-        "}",
+        '/* 修改背景色 */',
+        '.mdui-loaded {',
+        '    background-color: #fafafa;',
+        '}',
+        '/* 清除聚焦时外边框 */',
+        ':focus {',
+        '    outline: 0px;',
+        '    outline-offset: 0px;',
+        '}',
 
-        "/* 添加鼠标覆盖/聚焦的阴影效果 */",
-        ".selectDiv:hover,.tx1:focus,.tx1:hover,#imgCode:hover {",
-        "    box-shadow: 0 0 4px 2px #78b9d7;",
-        "}",
+        '/* 添加鼠标覆盖/聚焦的阴影效果 */',
+        '.selectDiv:hover,.tx1:focus,.tx1:hover,#imgCode:hover {',
+        '    box-shadow: 0 0 4px 2px #78b9d7;',
+        '}',
 
-        "/* 给登录界面的所有输入框定义样式 */",
-        ".tx1 {",
-        "    margin: 0!important;",
-        "    height: 30px;",
-        "    width: 164px;",
-        "    line-height: 30px;",
-        "    margin-bottom: 4px;",
-        "    vertical-align: bottom;",
-        "    color: rgb(204, 204, 204);",
-        "    border: 1px solid rgb(228, 228, 228);",
-        "    background-color: rgb(254, 255, 255);",
-        "}",
-        "#txt_pewerwedsdfsdff:focus {",
-        "    color: #000;",
-        "}",
+        '/* 给登录界面的所有输入框定义样式 */',
+        '.tx1 {',
+        '    margin: 0!important;',
+        '    height: 30px;',
+        '    width: 164px;',
+        '    line-height: 30px;',
+        '    margin-bottom: 4px;',
+        '    vertical-align: bottom;',
+        '    color: rgb(204, 204, 204);',
+        '    border: 1px solid rgb(228, 228, 228);',
+        '    background-color: rgb(254, 255, 255);',
+        '}',
+        '#txt_pewerwedsdfsdff:focus {',
+        '    color: #000;',
+        '}',
 
-        "/* 验证码输入框样式 */",
-        ".tx1#txt_sdertfgsadscxcadsads {",
-        "    width: 120px;",
-        "}",
+        '/* 验证码输入框样式 */',
+        '.tx1#txt_sdertfgsadscxcadsads {',
+        '    width: 120px;',
+        '}',
 
-        "/* 验证码高度调成和输入框一致 */",
-        "#imgCode {",
-        "    height: 32px!important;",
-        "    vertical-align: bottom;",
-        "}",
+        '/* 验证码高度调成和输入框一致 */',
+        '#imgCode {',
+        '    height: 32px!important;',
+        '    vertical-align: bottom;',
+        '}',
 
-        "/* 登录按钮添加按钮效果 */",
-        ".btnlogin:hover {",
-        "    opacity: 0.6;",
-        "}",
-        ".btnlogin:focus {",
-        "    opacity: 1.0;",
-        "}",
-      ].join("\n")
+        '/* 登录按钮添加按钮效果 */',
+        '.btnlogin:hover {',
+        '    opacity: 0.6;',
+        '}',
+        '.btnlogin:focus {',
+        '    opacity: 1.0;',
+        '}',
+      ].join('\n')
     }
     return css
   }
-
 })()
