@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标,直接调用 Google 的翻译接口对非中文网页进行翻译
-// @version      1.33
+// @version      1.34
 // @include      *://*
 // @exclude      /^[http|https].*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
 // @exclude      /.*duyaoss\.com/
@@ -55,6 +55,7 @@
 // @note         2020/11/28 更新了一下脚本描述
 // @note         2021/01/14 恢复图片请求，好看一点
 // @note         2021/01/18 解决 YY 直播界面导航栏向下顶的bug（直接排除了 YY）
+// @note         2021/01/27 修复在一些网页可能存在页面被导航栏遮挡的bug
 // ==/UserScript==
 
 ;(function () {
@@ -92,7 +93,6 @@
     GM_addStyle(`
       html,body{
         top: 0!important;
-        padding-top: 0!important;
       }
       #google_translate_element {
         position: fixed;
@@ -156,24 +156,26 @@
 
     // 初始化
     createElement(
-      `
-      function googleTranslateElementInit() {
-        let google_translate_element = document.getElementById('google_translate_element');
-        let timer = setInterval(function() {
-          google_translate_element = document.getElementById('google_translate_element');
+      `function googleTranslateElementInit() {
+        let google_translate_element = document.getElementById('google_translate_element')
+        let timer = setInterval(function () {
+          google_translate_element = document.getElementById('google_translate_element')
           if (google_translate_element) {
-             clearInterval(timer);
-             new google.translate.TranslateElement({
-               pageLanguage: 'auto',
-               //包括的语言，中文简体，中文繁体，英语，日语，俄语
-               includedLanguages: 'zh-CN,zh-TW,en,ja,ru',
-               /*0，原生select，并且谷歌logo显示在按钮下方。
+            clearInterval(timer)
+            new google.translate.TranslateElement(
+              {
+                pageLanguage: 'auto',
+                //包括的语言，中文简体，中文繁体，英语，日语，俄语
+                includedLanguages: 'zh-CN,zh-TW,en,ja,ru',
+                /*0，原生select，并且谷歌logo显示在按钮下方。
                  1，原生select，并且谷歌logo显示在右侧。
                  2，完全展开语言列表，适合pc。
                */
-               layout: /mobile/i.test(navigator.userAgent) ? 0 : 2,
-             }, 'google_translate_element');
-             // 清除图片的请求，加快访问速度
+                layout: /mobile/i.test(navigator.userAgent) ? 0 : 2,
+              },
+              'google_translate_element'
+            )
+            // 清除图片的请求，加快访问速度
             // img = [].slice.call(document.querySelectorAll('#goog-gt-tt img,#google_translate_element img'));
             // img.forEach(function(v, i) {
             //   v.src = '';
@@ -183,7 +185,7 @@
             recoverPage.innerText = '原'
             document.body.appendChild(recoverPage)
             // 点击恢复原网页
-            recoverPage.onclick = (() => {
+            recoverPage.onclick = () => {
               const phoneRecoverIframe = document.getElementById(':1.container') // 移动端
               const PCRecoverIframe = document.getElementById(':2.container') // PC端
               if (phoneRecoverIframe) {
@@ -193,9 +195,9 @@
                 const recoverDocument = PCRecoverIframe.contentWindow.document
                 recoverDocument.getElementById(':2.restore').click()
               }
-            })
+            }
           }
-        }, 300);
+        }, 300)
       }`,
       'script',
       '',
