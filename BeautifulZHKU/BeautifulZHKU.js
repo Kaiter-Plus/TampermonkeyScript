@@ -6,7 +6,6 @@
 // @description  给仲恺教务网每个功能模块添加圆角、过渡和阴影，去除一些没有用的标签！
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/BeautifulZHKU
 // @match        http://jw.zhku.edu.cn/*
-// @match        http://202.192.94.172/*
 // @require      http://cdn.bootcss.com/jquery/3.4.1/jquery.min.js
 // @run-at       document-end
 // @version      1.0
