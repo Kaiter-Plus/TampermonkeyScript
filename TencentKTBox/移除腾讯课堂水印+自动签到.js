@@ -2,7 +2,7 @@
 // @name         腾讯课堂自动签到 + 去除“xxx正在观看xx”水印
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/TencentKTBox
 // @version      1.45
-// @description  主要功能是腾讯课堂自动签到以及去除“xxx正在观看xx”水印，修改签到成功提示在自动签到开关的左边进行显示，感谢大家的反馈，如果还有什么建议和意见也可以反馈给我，再次感谢！
+// @description  主要功能是腾讯课堂自动签到以及去除“xxx正在观看xx”水印！
 // @author       Kaiter-Plus
 // @match        https://ke.qq.com/webcourse/*
 // @icon         https://8.url.cn/edu/edu_modules/edu-ui/img/nohash/favicon.ico
@@ -29,11 +29,11 @@
   $('head').append(
     $('<style type="text/css">').text(
       [
-        "a[class*='marquee animation'],txpdiv[class*='player-inject'],.testSwitch-checkbox {",
+        "a[class*='marquee animation'],txpdiv[class*='player-inject'],.switchButton-checkbox {",
         '    display: none!important;',
         '}',
         '/* 开关 */',
-        '.testSwitch {',
+        '.switchButton {',
         '    position: relative;',
         '    width: 90px;',
         '    margin: 15px 514.33px 15px auto;',
@@ -43,7 +43,7 @@
         '    -moz-user-select: none;',
         '    -ms-user-select: none;',
         '}',
-        '.testSwitch::before {',
+        '.switchButton::before {',
         '    display: block;',
         "    content: '自动签到开关';",
         '    color: #aaa;',
@@ -52,21 +52,21 @@
         '    position: absolute;',
         '    left: -115px;',
         '}',
-        '.testSwitch-label {',
+        '.switchButton-label {',
         '    display: block;',
         '    overflow: hidden;',
         '    cursor: pointer;',
         '    border: 2px solid #999999;',
         '    border-radius: 20px;',
         '}',
-        '.testSwitch-inner {',
+        '.switchButton-inner {',
         '    display: block;',
         '    width: 200%;',
         '    margin-left: -100%;',
         '    transition: margin 0.3s ease-in 0s;',
         '}',
-        '.testSwitch-inner::before,',
-        '.testSwitch-inner::after {',
+        '.switchButton-inner::before,',
+        '.switchButton-inner::after {',
         '    display: block;',
         '    float: right;',
         '    width: 50%;',
@@ -79,20 +79,20 @@
         '    font-weight: bold;',
         '    box-sizing: border-box;',
         '}',
-        '.testSwitch-inner::after {',
+        '.switchButton-inner::after {',
         '    content: attr(data-on);',
         '    padding-left: 10px;',
         '    background-color: #23b8ff;',
         '    color: #FFFFFF;',
         '}',
-        '.testSwitch-inner::before {',
+        '.switchButton-inner::before {',
         '    content: attr(data-off);',
         '    padding-right: 10px;',
         '    background-color: ##1d1d1d;',
         '    color: #FFFFFF;',
         '    text-align: right;',
         '}',
-        '.testSwitch-switch {',
+        '.switchButton-switch {',
         '    position: absolute;',
         '    display: block;',
         '    width: 26px;',
@@ -106,10 +106,10 @@
         '    border-radius: 20px;',
         '    transition: all 0.3s ease-in 0s;',
         '}',
-        '.testSwitch-checkbox:checked+.testSwitch-label .testSwitch-inner {',
+        '.switchButton-checkbox:checked+.switchButton-label .switchButton-inner {',
         '    margin-left: 0;',
         '}',
-        '.testSwitch-checkbox:checked+.testSwitch-label .testSwitch-switch {',
+        '.switchButton-checkbox:checked+.switchButton-label .switchButton-switch {',
         '    right: 0px;',
         '}',
         '.myTips {',
@@ -126,10 +126,10 @@
   )
 
   // 创建开关
-  const testSwitch = $('<div>')
-    .addClass('testSwitch')
+  const switchButton = $('<div>')
+    .addClass('switchButton')
     .append(
-      $('<input>').addClass('testSwitch-checkbox').attr({
+      $('<input>').addClass('switchButton-checkbox').attr({
         id: 'ON_OFF',
         type: 'checkbox',
         checked: true,
@@ -137,19 +137,19 @@
     )
     .appendTo($('body'))
   const label = $('<label>')
-    .addClass('testSwitch-label')
+    .addClass('switchButton-label')
     .prop('for', 'ON_OFF')
     .append(
-      $('<span>').addClass('testSwitch-inner').attr({
+      $('<span>').addClass('switchButton-inner').attr({
         'data-on': 'ON',
         'data-off': 'OFF',
       })
     )
-    .appendTo(testSwitch)
-  $('<span>').addClass('testSwitch-switch').appendTo(label)
+    .appendTo(switchButton)
+  $('<span>').addClass('switchButton-switch').appendTo(label)
 
   // 签到成功提示
-  const tips = $('<div>').addClass('myTips').appendTo(testSwitch)
+  const tips = $('<div>').addClass('myTips').appendTo(switchButton)
 
   // 点击确认按钮
   function autoConfirm() {
@@ -163,7 +163,6 @@
 
   // 点击签到按钮
   function autoSign() {
-    //var signButton = document.querySelector(".im-dialog-wrap>im-dialog>btn-group>span")
     const signButton = $('.s-btn.s-btn--primary.s-btn--m').get(0)
     try {
       if (/签.*到/g.test(signButton.innerHTML)) {
