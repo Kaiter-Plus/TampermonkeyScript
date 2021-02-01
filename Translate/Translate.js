@@ -92,6 +92,7 @@
     // 自定义样式，隐藏顶部栏
     GM_addStyle(`
       html,body{
+        position: static!important;
         top: 0!important;
       }
       #google_translate_element {
@@ -141,6 +142,14 @@
           margin: 0;
           padding-top: 2px;
           border: none;
+        }
+        #goog-gt-tt {
+          visibility: hidden!important;
+          display: none!important;
+        }
+        .goog-text-highlight {
+          background-color: inherit!important;
+          box-shadow: 0 0 0 0 transparent!important;
         }
         .recoverPage {
           width: 2em;
