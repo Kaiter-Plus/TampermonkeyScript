@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标,直接调用 Google 的翻译接口对非中文网页进行翻译
-// @version      1.34
+// @version      1.35
 // @include      *://*
 // @exclude      /^[http|https].*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
 // @exclude      /.*duyaoss\.com/
@@ -56,6 +56,7 @@
 // @note         2021/01/14 恢复图片请求，好看一点
 // @note         2021/01/18 解决 YY 直播界面导航栏向下顶的bug（直接排除了 YY）
 // @note         2021/01/27 修复在一些网页可能存在页面被导航栏遮挡的bug
+// @note         2021/02/01 修复手机端显示“提供更好的翻译建议”挡视野，妨碍复制的问题
 // ==/UserScript==
 
 ;(function () {
@@ -71,11 +72,11 @@
   const mainLang = document.characterSet.toLowerCase()
   // 获取按钮位置信息
   const currentPosition = GM_getValue('position')
-  // 按钮位置：true 为左，false 为右， 默认为左
+  // 按钮位置：true 为左，false 为右， 默认为右
   let buttonPosition = currentPosition ? true : false
 
   // 判断是不是中文，如果是则直接return，否则执行
-  if (lang.substr(0, 2) === 'zh' || mainLang === 'gbk') {
+  if (lang.substr(0, 2) === 'zh' || mainLang.substr(0, 2) === 'gb') {
     return
   } else {
     // 创建网页元素方法
