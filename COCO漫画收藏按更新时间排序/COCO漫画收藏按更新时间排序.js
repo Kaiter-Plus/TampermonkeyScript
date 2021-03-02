@@ -1,13 +1,15 @@
 // ==UserScript==
-// @name        COCO漫画收藏更新排序
-// @namespace   Violentmonkey Scripts
+// @name        COCO漫画收藏按更新时间排序
+// @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/COCO漫画收藏按更新时间排序
 // @match       *://*.cocomanhua.com/dynamic/user/subscription
 // @grant       none
 // @version     0.2
 // @author      Kaiter-Plus
 // @description COCO 漫画“我的收藏”界面根据“更新日”进行排序
+// @grant       GM_addStyle
 // @note        2021/03/01 COCO 漫画 我的收藏 界面根据 更新日进行排序
 // @note        2021/03/02 保留表格标题
+// @note        2021/03/03 最新的更新标为红色，更加显眼
 // ==/UserScript==
 ;(function () {
   'use strict'
@@ -21,8 +23,22 @@
       .map(item => item.outerHTML)
       .join('')
 
+  // 添加最新更新样式
+  GM_addStyle(`
+    .lastUpdate * {
+      color: red;
+    }
+    .lastUpdate a:hover {
+      color: #27ae60;
+    }
+  `)
+
   // 获取更新时间戳
   function getDateTime(DOM) {
-    return new Date(DOM.children[0].children[3].innerHTML).getTime()
+    const updateTime = new Date(DOM.children[0].children[3].innerHTML).getTime()
+    if (new Date(updateTime).toLocaleDateString() === new Date().toLocaleDateString()) {
+      DOM.classList.add('lastUpdate')
+    }
+    return updateTime
   }
 })()
