@@ -9,7 +9,8 @@
 // @grant       GM_addStyle
 // @note        2021/03/01 COCO 漫画 我的收藏 界面根据 更新日进行排序
 // @note        2021/03/02 保留表格标题
-// @note        2021/03/03 最新的更新标为红色，更加显眼
+// @note        2021/03/03 最新的更新标题标为红色，更加显眼
+// @note        2021/03/04 更新访问过的最新标题为黑色，不用自己记有没有访问过了
 // ==/UserScript==
 ;(function () {
   'use strict'
@@ -25,8 +26,11 @@
 
   // 添加最新更新样式
   GM_addStyle(`
-    .lastUpdate * {
+    .lastUpdate a {
       color: red;
+    }
+    .lastUpdate a:visited {
+      color: #000;
     }
     .lastUpdate a:hover {
       color: #27ae60;
