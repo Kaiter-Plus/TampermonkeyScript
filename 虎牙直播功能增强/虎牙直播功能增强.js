@@ -3,20 +3,24 @@
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/虎牙直播功能增强
 // @author      Kaiter-Plus
 // @description 给虎牙直播添加额外功能
-// @version     0.2
-// @match		    *://*.huya.com/\w*
+// @version     0.4
+// @match       *://*.huya.com/\w*
 // @icon        https://www.huya.com/favicon.ico
+// @noframes
 // @grant       none
+// @grant       GM_setValue
+// @grant       GM_getValue
+// @grant       GM_notification
+// @grant       GM_registerMenuCommand
 // @run-at      document-end
-// @note 2020/12/10 给虎牙直播添加同步时间功能
-// @note 2020/12/28 给虎牙直播添加画面镜像功能
-// @note 2021/01/29 代码重构
+// @note        2020/12/10 添加 “同步时间” 功能
+// @note        2020/12/28 添加 “画面镜像” 功能
+// @note        2021/01/29 代码重构
+// @note        2021/03/01 添加 “自动选择最高画质” 功能，并同时提供配置开关
+// @note        2021/03/02 添加 “自动选领取宝箱” 功能，并同时提供配置开关
 // ==/UserScript==
 ;(function () {
   'use strict'
-
-  // 定时器
-  let timer = null
 
   // 判断镜像状态
   let isReverse = false
@@ -26,6 +30,22 @@
 
   // 直播播放器
   let liveVideoNode = null
+
+  // 最高画质
+  let hightestImageQuality = null
+
+  // 所有宝箱
+  let chests = null
+
+  // 配置选项
+  const config = {
+    // 获取是否自动选择最高画质
+    isSelectedHightestImageQuality: GM_getValue('isSelectedHightestImageQuality'),
+    // 是否自动领取宝箱
+    isGetChest: GM_getValue('isGetChest')
+    // 获取是否自动网页全屏
+    // isFullScreen: GM_getValue('isFullScreen')
+  }
 
   // 创建功能图标
   function createTagIcon(option) {
@@ -43,10 +63,13 @@
 
   // 初始化
   function init() {
-    timer = setInterval(() => {
-      if (!!document.getElementById('player-ctrl-wrap')) {
+    let timer = setInterval(() => {
+      if (!container || chests.length <= 0) {
         container = document.getElementById('player-ctrl-wrap')
+        chests = document.querySelectorAll('#player-box .player-box-list li')
+      } else {
         liveVideoNode = document.getElementById('hy-video')
+        hightestImageQuality = document.querySelector('.player-videotype-list').children[0]
         initTools()
         clearInterval(timer)
       }
@@ -76,6 +99,8 @@
   // 初始化工具
   function initTools() {
     insertIcon()
+    config.isSelectedHightestImageQuality ? selectedHightestImageQuality() : null
+    config.isGetChest ? getChest() : null
   }
 
   // 插入图标
@@ -135,6 +160,68 @@
       isReverse = true
     }
   }
+
+  // 选择最高画质功能
+  function selectedHightestImageQuality() {
+    if (hightestImageQuality.className === 'on') return
+    hightestImageQuality.click()
+    let playTimer = setInterval(() => {
+      if (document.querySelector('.player-play-btn')) {
+        document.querySelector('.player-play-btn').click()
+        document.querySelector('#player-tip-pause').remove()
+        clearInterval(playTimer)
+      }
+    }, 500)
+  }
+
+  // 自动领取宝箱
+  function getChest() {
+    let timer = setInterval(() => {
+      const lastIndex = chests.length - 1
+      const lastFlag = chests[lastIndex].querySelector('.player-box-stat1')
+      const lastGet = chests[lastIndex].querySelector('.player-box-stat3')
+      if (lastFlag.style.visibility === 'hidden' && lastGet.style.visibility === 'hidden') {
+        clearInterval(timer)
+        return
+      } else {
+        for (const index in chests) {
+          let get = chests[index].querySelector('.player-box-stat3')
+          if (get.style.visibility === 'visible') {
+            get.click()
+          }
+        }
+      }
+    }, 5000)
+  }
+
+  // 功能切换
+  function switchSetting(settingConfig) {
+    location.reload()
+    settingConfig.flag ? GM_notification(settingConfig.closeString) : GM_notification(settingConfig.openString)
+    GM_setValue(settingConfig.key, !settingConfig.flag)
+  }
+
+  function switchSelectedHIQ() {
+    switchSetting({
+      flag: config.isSelectedHightestImageQuality,
+      openString: '已开启自动选择最高画质',
+      closeString: '已关闭自动选择最高画质',
+      key: 'isSelectedHightestImageQuality'
+    })
+  }
+
+  function switchGetChest() {
+    switchSetting({
+      flag: config.isGetChest,
+      openString: '已开启自动领取宝箱',
+      closeString: '已关闭自动领取宝箱',
+      key: 'isGetChest'
+    })
+  }
+
+  // 添加菜单配置项
+  GM_registerMenuCommand('自动选择最高画质开关', switchSelectedHIQ)
+  GM_registerMenuCommand('自动领取宝箱', switchGetChest)
 
   // 初始化图标样式
   initStyle()
