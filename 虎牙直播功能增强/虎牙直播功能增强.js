@@ -3,21 +3,22 @@
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/虎牙直播功能增强
 // @author      Kaiter-Plus
 // @description 给虎牙直播添加额外功能
-// @version     0.4
+// @version     0.5
 // @match       *://*.huya.com/\w*
 // @icon        https://www.huya.com/favicon.ico
 // @noframes
-// @grant       none
 // @grant       GM_setValue
 // @grant       GM_getValue
+// @grant       GM_addStyle
 // @grant       GM_notification
 // @grant       GM_registerMenuCommand
 // @run-at      document-end
 // @note        2020/12/10 添加 “同步时间” 功能
 // @note        2020/12/28 添加 “画面镜像” 功能
 // @note        2021/01/29 代码重构
-// @note        2021/03/01 添加 “自动选择最高画质” 功能，并同时提供配置开关
-// @note        2021/03/02 添加 “自动选领取宝箱” 功能，并同时提供配置开关
+// @note        2021/03/01 添加 “自动选择最高画质” 功能，并同时提供配置开关，默认关闭
+// @note        2021/03/02 添加 “自动选领取百宝箱奖励” 功能，并同时提供配置开关，默认关闭
+// @note        2021/03/03 修改 更改配置时为不用重载界面
 // ==/UserScript==
 ;(function () {
   'use strict'
@@ -25,11 +26,15 @@
   // 判断镜像状态
   let isReverse = false
 
+  // 定时器
+  const timer = {
+    initTimer: null,
+    playTimer: null,
+    chestTimer: null
+  }
+
   // 直播界面容器
   let container = null
-
-  // 直播播放器
-  let liveVideoNode = null
 
   // 最高画质
   let hightestImageQuality = null
@@ -63,23 +68,22 @@
 
   // 初始化
   function init() {
-    let timer = setInterval(() => {
+    timer.initTimer = setInterval(() => {
       if (!container || chests.length <= 0) {
         container = document.getElementById('player-ctrl-wrap')
         chests = document.querySelectorAll('#player-box .player-box-list li')
       } else {
-        liveVideoNode = document.getElementById('hy-video')
         hightestImageQuality = document.querySelector('.player-videotype-list').children[0]
+        initStyle()
         initTools()
-        clearInterval(timer)
+        clearInterval(timer.initTimer)
       }
     }, 1000)
   }
 
   // 初始化图标样式
   function initStyle() {
-    let style = document.createElement('style')
-    style.innerHTML = `
+    GM_addStyle(`
         .video-tools-icon {
           position: absolute;
           top: 11px;
@@ -92,8 +96,7 @@
           fill: currentColor;
           color: #fd9400;
         }
-      `
-    document.head.appendChild(style)
+      `)
   }
 
   // 初始化工具
@@ -141,22 +144,24 @@
 
   // 同步时间功能
   function setVideoSync() {
-    const buffered = liveVideoNode.buffered
+    let videoNode = document.getElementById('hy-video')
+    const buffered = videoNode.buffered
     if (buffered.length == 0) {
       // 暂停中
       return
     }
-    liveVideoNode.currentTime = buffered.end(0)
+    videoNode.currentTime = buffered.end(0)
   }
 
   // 镜像画面功能
   function setVideoRev() {
-    liveVideoNode.style.transformOrigin = 'center center'
+    let videoNode = document.getElementById('hy-video')
+    videoNode.style.transformOrigin = 'center'
     if (isReverse) {
-      liveVideoNode.style.transform = 'rotateY(0deg)'
+      videoNode.style.transform = 'rotateY(0deg)'
       isReverse = false
     } else {
-      liveVideoNode.style.transform = 'rotateY(180deg)'
+      videoNode.style.transform = 'rotateY(180deg)'
       isReverse = true
     }
   }
@@ -165,29 +170,33 @@
   function selectedHightestImageQuality() {
     if (hightestImageQuality.className === 'on') return
     hightestImageQuality.click()
-    let playTimer = setInterval(() => {
+    timer.playTimer = setInterval(() => {
       if (document.querySelector('.player-play-btn')) {
         document.querySelector('.player-play-btn').click()
         document.querySelector('#player-tip-pause').remove()
-        clearInterval(playTimer)
+        clearInterval(timer.playTimer)
       }
     }, 500)
   }
 
   // 自动领取宝箱
   function getChest() {
-    let timer = setInterval(() => {
+    timer.chestTimer = setInterval(() => {
+      // 全部领取结束定时
       const lastIndex = chests.length - 1
       const lastFlag = chests[lastIndex].querySelector('.player-box-stat1')
       const lastGet = chests[lastIndex].querySelector('.player-box-stat3')
       if (lastFlag.style.visibility === 'hidden' && lastGet.style.visibility === 'hidden') {
-        clearInterval(timer)
+        clearInterval(timer.chestTimer)
         return
       } else {
+        // 遍历领取
         for (const index in chests) {
           let get = chests[index].querySelector('.player-box-stat3')
           if (get.style.visibility === 'visible') {
             get.click()
+            let chestsContainer = document.querySelector('.player-chest-btn #player-box')
+            chestsContainer.style.display = 'none'
           }
         }
       }
@@ -196,35 +205,39 @@
 
   // 功能切换
   function switchSetting(settingConfig) {
-    location.reload()
-    settingConfig.flag ? GM_notification(settingConfig.closeString) : GM_notification(settingConfig.openString)
-    GM_setValue(settingConfig.key, !settingConfig.flag)
+    config[settingConfig.key] = !config[settingConfig.key]
+    config[settingConfig.key] ? GM_notification(settingConfig.openString) : GM_notification(settingConfig.closeString)
+    GM_setValue(settingConfig.key, config[settingConfig.key])
+    if (!config[settingConfig.key]) {
+      clearInterval(settingConfig.timer)
+    } else {
+      settingConfig.execute()
+    }
   }
 
   function switchSelectedHIQ() {
     switchSetting({
-      flag: config.isSelectedHightestImageQuality,
+      key: 'isSelectedHightestImageQuality',
       openString: '已开启自动选择最高画质',
       closeString: '已关闭自动选择最高画质',
-      key: 'isSelectedHightestImageQuality'
+      timer: timer.playTimer,
+      execute: selectedHightestImageQuality
     })
   }
 
   function switchGetChest() {
     switchSetting({
-      flag: config.isGetChest,
-      openString: '已开启自动领取宝箱',
-      closeString: '已关闭自动领取宝箱',
-      key: 'isGetChest'
+      key: 'isGetChest',
+      openString: '已开启自动领取百宝箱奖励',
+      closeString: '已关闭自动领取百宝箱奖励',
+      timer: timer.chestTimer,
+      execute: getChest
     })
   }
 
   // 添加菜单配置项
   GM_registerMenuCommand('自动选择最高画质开关', switchSelectedHIQ)
-  GM_registerMenuCommand('自动领取宝箱', switchGetChest)
-
-  // 初始化图标样式
-  initStyle()
+  GM_registerMenuCommand('自动领取百宝箱奖励开关', switchGetChest)
 
   // 初始化
   init()
