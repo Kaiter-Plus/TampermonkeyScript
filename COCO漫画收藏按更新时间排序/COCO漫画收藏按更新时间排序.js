@@ -3,7 +3,7 @@
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/COCO漫画收藏按更新时间排序
 // @match       *://*.cocomanhua.com/dynamic/user/subscription
 // @grant       none
-// @version     0.3
+// @version     0.4
 // @author      Kaiter-Plus
 // @description COCO 漫画“我的收藏”界面根据“更新日”进行排序
 // @grant       GM_addStyle
