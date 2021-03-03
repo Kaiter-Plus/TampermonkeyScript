@@ -2,9 +2,9 @@
 // @name        COCO漫画收藏按更新时间排序
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/COCO漫画收藏按更新时间排序
 // @match       *://*.cocomanhua.com/dynamic/user/subscription
-// @grant       none
 // @version     0.4
 // @author      Kaiter-Plus
+// @icon        https://www.cocomanhua.com/favicon.ico
 // @description COCO 漫画“我的收藏”界面根据“更新日”进行排序
 // @grant       GM_addStyle
 // @note        2021/03/01 COCO 漫画 我的收藏 界面根据 更新日进行排序
