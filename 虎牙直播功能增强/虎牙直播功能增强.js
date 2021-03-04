@@ -191,8 +191,8 @@
         return
       } else {
         // 遍历领取
-        for (const index in chests) {
-          let get = chests[index].querySelector('.player-box-stat3')
+        for (const item in chests) {
+          let get = item.querySelector('.player-box-stat3')
           if (get.style.visibility === 'visible') {
             get.click()
             let chestsContainer = document.querySelector('.player-chest-btn #player-box')
