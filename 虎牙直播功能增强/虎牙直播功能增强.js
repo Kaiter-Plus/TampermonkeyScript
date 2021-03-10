@@ -3,7 +3,7 @@
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/虎牙直播功能增强
 // @author      Kaiter-Plus
 // @description 给虎牙直播添加额外功能
-// @version     0.5
+// @version     0.9
 // @match       *://*.huya.com/\w*
 // @icon        https://www.huya.com/favicon.ico
 // @noframes
@@ -19,6 +19,9 @@
 // @note        2021/03/01 添加 “自动选择最高画质” 功能，并同时提供配置开关，默认关闭
 // @note        2021/03/02 添加 “自动选领取百宝箱奖励” 功能，并同时提供配置开关，默认关闭
 // @note        2021/03/03 修改 更改配置时为不用重载界面
+// @note        2021/03/04 修复了一个小 bug
+// @note        2021/03/08 修复了最后两个宝箱不会领取的 bug
+// @note        2021/03/10 紧急修复了宝箱不会领取的 bug
 // ==/UserScript==
 ;(function () {
   'use strict'
@@ -32,6 +35,9 @@
     playTimer: null,
     chestTimer: null
   }
+
+  // 控制栏容器
+  let controlContainer = null
 
   // 直播界面容器
   let container = null
@@ -70,6 +76,7 @@
   function init() {
     timer.initTimer = setInterval(() => {
       if (!container || chests.length <= 0) {
+        controlContainer = document.querySelector('.duya-header-control')
         container = document.getElementById('player-ctrl-wrap')
         chests = document.querySelectorAll('#player-box .player-box-list li')
       } else {
@@ -84,6 +91,9 @@
   // 初始化图标样式
   function initStyle() {
     GM_addStyle(`
+        #J_global_user_tips{
+          display: none;
+        }
         .video-tools-icon {
           position: absolute;
           top: 11px;
@@ -94,7 +104,18 @@
         }
         .video-tools-icon:hover .icon {
           fill: currentColor;
-          color: #fd9400;
+          color: #ff9600;
+        }
+        .hy-header-style-normal .hy-nav-title svg {
+          position: relative;
+          top: -5px;
+          left: 4px;
+          fill: currentColor;
+          color: #555;
+        }
+        .hy-header-style-normal .hy-nav-title:hover svg {
+          fill: currentColor;
+          color: #ff9600;
         }
       `)
   }
@@ -138,6 +159,43 @@
       eventListener: setVideoRev
     })
 
+    // 插入配置选项
+    const settings = createTagIcon({
+      tagName: 'div',
+      id: '',
+      className: 'hy-nav-right nav-subscribe',
+      title: '',
+      innerHTML: `
+      <a class="hy-nav-title clickstat" href="javascript:void(0)">
+        <i class="hy-nav-icon">
+          <svg t="1614912323565" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3409" width="28" height="28"><path d="M384 891.306667a95.36 95.36 0 0 1-42.666667-9.813334A93.44 93.44 0 0 1 287.573333 789.333333l2.986667-40.32a52.906667 52.906667 0 0 0-44.373333-55.68l-39.893334-5.973333a94.933333 94.933333 0 0 1-39.253333-172.373333l33.28-22.826667a52.266667 52.266667 0 0 0 15.786667-69.12l-20.053334-35.2a94.933333 94.933333 0 0 1 110.08-138.026667l38.613334 11.733334a52.48 52.48 0 0 0 64-30.72l14.933333-37.546667a94.933333 94.933333 0 0 1 176.64 0l14.933333 37.546667a52.266667 52.266667 0 0 0 64 30.72l38.613334-11.733334a94.933333 94.933333 0 0 1 110.08 138.026667l-20.053334 35.2a52.266667 52.266667 0 0 0 15.786667 69.12l33.28 22.826667a94.933333 94.933333 0 0 1-39.253333 172.373333l-39.893334 5.973333a52.906667 52.906667 0 0 0-44.373333 55.68l2.986667 40.32a94.933333 94.933333 0 0 1-159.146667 76.586667l-29.866667-27.52a52.48 52.48 0 0 0-70.826666 0l-29.866667 27.52A93.44 93.44 0 0 1 384 891.306667zM277.333333 288a52.48 52.48 0 0 0-44.8 78.506667l20.266667 34.986666a95.573333 95.573333 0 0 1-28.8 125.653334L192 549.973333a52.266667 52.266667 0 0 0 21.333333 94.933334l40.106667 6.186666a95.146667 95.146667 0 0 1 80.213333 100.693334l-2.773333 40.32a52.266667 52.266667 0 0 0 87.68 42.666666l29.44-27.733333a95.146667 95.146667 0 0 1 128 0l29.653333 27.306667a52.266667 52.266667 0 0 0 87.68-42.666667l-2.773333-40.32a95.146667 95.146667 0 0 1 80.213333-100.693333l39.893334-5.76a52.266667 52.266667 0 0 0 21.333333-94.933334l-33.28-22.826666a95.573333 95.573333 0 0 1-28.8-125.653334l20.266667-34.986666a52.48 52.48 0 0 0-60.8-76.16l-38.613334 11.946666A95.36 95.36 0 0 1 576 246.186667l-14.933333-37.546667a52.266667 52.266667 0 0 0-97.28 0L448 246.186667a95.36 95.36 0 0 1-116.053333 56.106666l-38.613334-11.946666a53.76 53.76 0 0 0-16-2.346667z" p-id="3410"></path><path d="M512 646.4a134.4 134.4 0 1 1 134.4-134.4 134.613333 134.613333 0 0 1-134.4 134.4z m0-226.133333a91.733333 91.733333 0 1 0 91.733333 91.733333 91.946667 91.946667 0 0 0-91.733333-91.733333z" p-id="3411"></path></svg>
+        </i>
+        <span class="title">脚本设置</span>
+      </a>
+      <div class="nav-expand-list nav-expand-follow">
+          <i class="arrow"></i>
+          <div id="J_hyHdFollowBox">
+            <div class="subscribe-hd">
+              <div class="subscribe-tit">脚本配置选项</div>
+            </div>
+            <div class="subscribe-bd">
+              <ul class="subscribe-list" style="height: 360px; overflow: hidden; padding: 0px; width: 256px;">
+                <div class="jspContainer" style="width: 256px; height: 360px;">
+                  <div class="jspPane" style="top: 0px; left: 0px; width: 256px;">
+                    <li style="padding: 5px 15px">13213213212</li>
+                  </div>
+                </div>
+              </ul>
+              <a class="nav-expand-list-more subscribe-all save-button" title="保存配置选项">保存</a>
+            </div>
+          </div>
+        </div>
+      `,
+      style: 'padding-left: 5px',
+      eventListener: null
+    })
+
+    controlContainer.appendChild(settings)
     container.insertBefore(sync, container.childNodes[3])
     container.insertBefore(rev, container.childNodes[4])
   }
@@ -184,19 +242,19 @@
     timer.chestTimer = setInterval(() => {
       // 全部领取结束定时
       const lastIndex = chests.length - 1
-      const lastFlag = chests[lastIndex].querySelector('.player-box-stat1')
-      const lastGet = chests[lastIndex].querySelector('.player-box-stat3')
-      if (lastFlag.style.visibility === 'hidden' && lastGet.style.visibility === 'hidden') {
+      const lastWait = chests[lastIndex].querySelector('.player-box-stat1').style.visibility
+      const lastTimer = chests[lastIndex].querySelector('.player-box-stat2').style.visibility
+      const lastGet = chests[lastIndex].querySelector('.player-box-stat3').style.visibility
+      if (lastWait === 'hidden' && lastTimer === 'hidden' && lastGet === 'hidden') {
         clearInterval(timer.chestTimer)
         return
       } else {
         // 遍历领取
-        for (const item in chests) {
+        for (const item of chests) {
           let get = item.querySelector('.player-box-stat3')
           if (get.style.visibility === 'visible') {
             get.click()
-            let chestsContainer = document.querySelector('.player-chest-btn #player-box')
-            chestsContainer.style.display = 'none'
+            document.querySelector('.player-chest-btn #player-box').style.display = 'none'
           }
         }
       }
