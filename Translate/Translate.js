@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标,直接调用 Google 的翻译接口对非中文网页进行翻译
-// @version      1.36
+// @version      1.37
 // @include      *://*
 // @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
 // @exclude      /.*duyaoss\.com/
@@ -60,6 +60,7 @@
 // @note         2021/01/27 修复在一些网页可能存在页面被导航栏遮挡的bug
 // @note         2021/02/01 修复手机端显示“提供更好的翻译建议”挡视野，妨碍复制的问题
 // @note         2021/03/10 排除了 acfun，防止搜索界面出现底部移动的 bug
+// @note         2021/03/10 修复了使用 Dark Reader 开启夜间模式之后图片显示问题，强迫症福音
 // ==/UserScript==
 
 ;(function () {
@@ -108,6 +109,13 @@
         box-shadow: 1px 1px 3px 0 #888;
         opacity: .5;
         transition: all .3s;
+      }
+      #google_translate_element .goog-te-gadget-simple {
+        border: 0;
+      }
+      #google_translate_element .goog-te-gadget-simple img {
+        margin: 0;
+        border-radius: 11px;
       }
       .recoverPage {
         width: 4em;
