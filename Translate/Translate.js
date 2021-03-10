@@ -102,7 +102,7 @@
       #google_translate_element {
         position: fixed;
         bottom: 30px;
-        height: 22px;
+        height: 21px;
         border-radius: 11px;
         z-index: 10000000;
         overflow: hidden;
@@ -114,7 +114,7 @@
         border: 0;
       }
       #google_translate_element .goog-te-gadget-simple img {
-        margin: 0;
+        margin-right: 0;
         border-radius: 11px;
       }
       .recoverPage {
