@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标,直接调用 Google 的翻译接口对非中文网页进行翻译
-// @version      1.37
+// @version      1.38
 // @include      *://*
 // @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
 // @exclude      /.*duyaoss\.com/
@@ -31,6 +31,7 @@
 // @grant        GM_addStyle
 // @grant        GM_setValue
 // @grant        GM_getValue
+// @grant        GM_notification
 // @grant        GM_registerMenuCommand
 // @note         2020/03/26 网页整页翻译功能
 // @note         2020/04/13 排除纯ip网址
@@ -78,11 +79,17 @@
   const currentPosition = GM_getValue('position')
   // 按钮位置：true 为左，false 为右， 默认为右
   let buttonPosition = currentPosition ? true : false
+  // 获取是否自动检测中文配置信息
+  const currentCheck = GM_getValue('isCheck')
+  // 检测设置：true 关闭，false 开启， 默认开启
+  let isCheck = currentCheck ? true : false
 
   // 判断是不是中文，如果是则直接return，否则执行
-  if (lang.substr(0, 2) === 'zh' || mainLang.substr(0, 2) === 'gb') {
+  if (lang.substr(0, 2) === 'zh' || (mainLang.substr(0, 2) === 'gb' && !isCheck)) {
+    addSwitchChecked()
     return
   } else {
+    addSwitchChecked()
     // 创建网页元素方法
     function createElement(html, nodeText, attr, parent) {
       const element = document.createElement(nodeText)
@@ -291,12 +298,19 @@
     }
   }
 
+  // 添加注册菜单项
+  function addSwitchChecked() {
+    GM_registerMenuCommand('切换自动检测中文', function () {
+      isCheck = !isCheck
+      GM_setValue('isCheck', isCheck)
+      isCheck ? GM_notification('已关闭自动检测中文') : GM_notification('已开启自动检测中文')
+      location.reload()
+    })
+  }
   function switchButtonPosition() {
-    location.reload()
     GM_setValue('position', !buttonPosition)
     setButtonPosition()
+    location.reload()
   }
-
-  // 注册菜单快捷键
-  GM_registerMenuCommand('点击切换按钮位置', switchButtonPosition)
+  GM_registerMenuCommand('切换按钮位置', switchButtonPosition)
 })()
