@@ -3,7 +3,7 @@
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/虎牙直播功能增强
 // @author      Kaiter-Plus
 // @description 给虎牙直播添加额外功能
-// @version     0.9
+// @version     1.0
 // @match       *://*.huya.com/\w*
 // @icon        https://www.huya.com/favicon.ico
 // @noframes
@@ -22,6 +22,7 @@
 // @note        2021/03/04 修复了一个小 bug
 // @note        2021/03/08 修复了最后两个宝箱不会领取的 bug
 // @note        2021/03/10 紧急修复了宝箱不会领取的 bug
+// @note        2021/03/12 添加了脚本的配置选项
 // ==/UserScript==
 ;(function () {
   'use strict'
@@ -32,7 +33,7 @@
   // 定时器
   const timer = {
     initTimer: null,
-    playTimer: null,
+    hightestTimer: null,
     chestTimer: null
   }
 
@@ -49,28 +50,14 @@
   let chests = null
 
   // 配置选项
-  const config = {
-    // 获取是否自动选择最高画质
-    isSelectedHightestImageQuality: GM_getValue('isSelectedHightestImageQuality'),
-    // 是否自动领取宝箱
-    isGetChest: GM_getValue('isGetChest')
+  const config = [
+    // 自动选择最高画质
+    GM_getValue('isSelectedHightestImageQuality'),
+    // 自动领取百宝箱奖励
+    GM_getValue('isGetChest')
     // 获取是否自动网页全屏
-    // isFullScreen: GM_getValue('isFullScreen')
-  }
-
-  // 创建功能图标
-  function createTagIcon(option) {
-    const tag = document.createElement(option.tagName)
-    tag.id = option.id
-    tag.className = option.className
-    tag.title = option.title
-    tag.innerHTML = option.innerHTML
-    tag.style = option.style
-    tag.addEventListener('click', () => {
-      option.eventListener()
-    })
-    return tag
-  }
+    // GM_getValue('isFullScreen')
+  ]
 
   // 初始化
   function init() {
@@ -117,14 +104,137 @@
           fill: currentColor;
           color: #ff9600;
         }
+        .myheight {
+          height: 63px!important;
+        }
+        .config-arrow {
+          position: absolute;
+          top: 28px;
+          right: -12px;
+          width: 9px;
+          height: 5px;
+          overflow: hidden;
+          transition: transform .5s;
+          background: url(https://a.msstatic.com/huya/main3/assets/img/header/sprite/arrow_93ea4.png)
+        }
+        .hy-header-style-normal .hy-nav-title:hover .config-arrow {
+          transform: rotate(180deg);
+          background: url(https://a.msstatic.com/huya/main3/assets/img/header/sprite/arrow_on_e7b62.png)
+        }
+        .config-item {
+          padding: 5px 15px;
+          display: flex;
+          justify-content: space-around;
+        }
+        @media handheld, only screen and (max-width: 1440px) {
+          .hy-nav-history {
+            display: none;
+          }
+        }
+        @media handheld, only screen and (max-width: 1721px) {
+          .hy-nav-kaibo {
+            visibility: hidden;
+          }
+        }
+        /* 自定义开关 */
+        .switchButton {
+          position: relative;
+          width: 46px;
+          z-index: 9999;
+          user-select: none;
+        }
+        .switchButton-checkbox {
+          display: none;
+        }
+        .switchButton-label {
+          display: block;
+          cursor: pointer;
+          border: 2px solid #999999;
+          border-radius: 20px;
+          overflow: hidden;
+        }
+        .switchButton-inner {
+          display: block;
+          width: 200%;
+          margin-left: -100%;
+          overflow: hidden;
+          transition: margin 0.3s ease-in 0s;
+        }
+        .switchButton-inner::before,
+        .switchButton-inner::after {
+          content: "";
+          display: block;
+          float: right;
+          width: 50%;
+          padding: 0;
+          height: 18px;
+          font-size: 14px;
+          color: white;
+          font-family: Trebuchet, Arial, sans-serif;
+          font-weight: bold;
+          box-sizing: border-box;
+        }
+        .switchButton-switch {
+          position: absolute;
+          display: block;
+          width: 14px;
+          height: 14px;
+          margin: 2px;
+          background: #bbbbbb;
+          top: 0;
+          bottom: 0;
+          right: 24px;
+          border: 2px solid #584c3d;
+          border-radius: 14px;
+          transition: all 0.3s ease-in 0s;
+        }
+        .switchButton-checkbox:checked+.switchButton-label .switchButton-inner {
+          margin-left: 0;
+        }
+        .switchButton-checkbox:checked+.switchButton-label .switchButton-switch {
+          right: 0px;
+          background: #ff9600;
+        }
       `)
   }
 
   // 初始化工具
   function initTools() {
     insertIcon()
-    config.isSelectedHightestImageQuality ? selectedHightestImageQuality() : null
-    config.isGetChest ? getChest() : null
+    config[0] ? selectedHightestImageQuality() : null
+    config[1] ? getChest() : null
+  }
+
+  // 创建功能图标
+  function createTagIcon(option) {
+    const tag = document.createElement(option.tagName)
+    tag.id = option.id
+    tag.className = option.className
+    tag.title = option.title
+    tag.innerHTML = option.innerHTML
+    tag.style = option.style
+    tag.addEventListener('click', option.eventListener)
+    return tag
+  }
+
+  // 创建配置选项
+  function createConfigItem(configItems) {
+    let str = ''
+    for (const index in configItems) {
+      str = str.concat(`
+      <li class="config-item">
+        <span style="flex: 1; font-size: 14px;">${configItems[index]}</span>
+        <div class="switchButton">
+          <input type="checkbox" class="switchButton-checkbox" id="ON_OFF${index}" ${config[index] ? 'checked' : ''} />
+          <label class="switchButton-label" for="ON_OFF${index}">
+            <span class="switchButton-inner"></span>
+            <span class="switchButton-switch"></span>
+          </label>
+        </div>
+      </li>
+      `)
+    }
+    return str
   }
 
   // 插入图标
@@ -171,6 +281,7 @@
           <svg t="1614912323565" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3409" width="28" height="28"><path d="M384 891.306667a95.36 95.36 0 0 1-42.666667-9.813334A93.44 93.44 0 0 1 287.573333 789.333333l2.986667-40.32a52.906667 52.906667 0 0 0-44.373333-55.68l-39.893334-5.973333a94.933333 94.933333 0 0 1-39.253333-172.373333l33.28-22.826667a52.266667 52.266667 0 0 0 15.786667-69.12l-20.053334-35.2a94.933333 94.933333 0 0 1 110.08-138.026667l38.613334 11.733334a52.48 52.48 0 0 0 64-30.72l14.933333-37.546667a94.933333 94.933333 0 0 1 176.64 0l14.933333 37.546667a52.266667 52.266667 0 0 0 64 30.72l38.613334-11.733334a94.933333 94.933333 0 0 1 110.08 138.026667l-20.053334 35.2a52.266667 52.266667 0 0 0 15.786667 69.12l33.28 22.826667a94.933333 94.933333 0 0 1-39.253333 172.373333l-39.893334 5.973333a52.906667 52.906667 0 0 0-44.373333 55.68l2.986667 40.32a94.933333 94.933333 0 0 1-159.146667 76.586667l-29.866667-27.52a52.48 52.48 0 0 0-70.826666 0l-29.866667 27.52A93.44 93.44 0 0 1 384 891.306667zM277.333333 288a52.48 52.48 0 0 0-44.8 78.506667l20.266667 34.986666a95.573333 95.573333 0 0 1-28.8 125.653334L192 549.973333a52.266667 52.266667 0 0 0 21.333333 94.933334l40.106667 6.186666a95.146667 95.146667 0 0 1 80.213333 100.693334l-2.773333 40.32a52.266667 52.266667 0 0 0 87.68 42.666666l29.44-27.733333a95.146667 95.146667 0 0 1 128 0l29.653333 27.306667a52.266667 52.266667 0 0 0 87.68-42.666667l-2.773333-40.32a95.146667 95.146667 0 0 1 80.213333-100.693333l39.893334-5.76a52.266667 52.266667 0 0 0 21.333333-94.933334l-33.28-22.826666a95.573333 95.573333 0 0 1-28.8-125.653334l20.266667-34.986666a52.48 52.48 0 0 0-60.8-76.16l-38.613334 11.946666A95.36 95.36 0 0 1 576 246.186667l-14.933333-37.546667a52.266667 52.266667 0 0 0-97.28 0L448 246.186667a95.36 95.36 0 0 1-116.053333 56.106666l-38.613334-11.946666a53.76 53.76 0 0 0-16-2.346667z" p-id="3410"></path><path d="M512 646.4a134.4 134.4 0 1 1 134.4-134.4 134.613333 134.613333 0 0 1-134.4 134.4z m0-226.133333a91.733333 91.733333 0 1 0 91.733333 91.733333 91.946667 91.946667 0 0 0-91.733333-91.733333z" p-id="3411"></path></svg>
         </i>
         <span class="title">脚本设置</span>
+        <i class="config-arrow"></i>
       </a>
       <div class="nav-expand-list nav-expand-follow">
           <i class="arrow"></i>
@@ -178,26 +289,29 @@
             <div class="subscribe-hd">
               <div class="subscribe-tit">脚本配置选项</div>
             </div>
+            <hr style="margin: 0 15px;" />
             <div class="subscribe-bd">
-              <ul class="subscribe-list" style="height: 360px; overflow: hidden; padding: 0px; width: 256px;">
-                <div class="jspContainer" style="width: 256px; height: 360px;">
+              <ul id="config-container" class="subscribe-list myheight" style="overflow: hidden; padding: 0px; width: 256px;">
+                <div class="jspContainer myheight" style="width: 256px; height: 150px;">
                   <div class="jspPane" style="top: 0px; left: 0px; width: 256px;">
-                    <li style="padding: 5px 15px">13213213212</li>
+                    ${createConfigItem(['自动选择最高画质', '自动领取百宝箱奖励'])}
                   </div>
                 </div>
               </ul>
-              <a class="nav-expand-list-more subscribe-all save-button" title="保存配置选项">保存</a>
             </div>
           </div>
         </div>
       `,
       style: 'padding-left: 5px',
-      eventListener: null
+      eventListener: configSettings
     })
 
     controlContainer.appendChild(settings)
-    container.insertBefore(sync, container.childNodes[3])
-    container.insertBefore(rev, container.childNodes[4])
+    // 创建用于添加自定义功能图标的 fragment，避免多次回流（重排）
+    const iconFragment = document.createDocumentFragment()
+    iconFragment.appendChild(sync)
+    iconFragment.appendChild(rev)
+    container.insertBefore(iconFragment, container.childNodes[3])
   }
 
   // 同步时间功能
@@ -228,11 +342,11 @@
   function selectedHightestImageQuality() {
     if (hightestImageQuality.className === 'on') return
     hightestImageQuality.click()
-    timer.playTimer = setInterval(() => {
+    timer.hightestTimer = setInterval(() => {
       if (document.querySelector('.player-play-btn')) {
-        document.querySelector('.player-play-btn').click()
+        document.querySelector('.player-play-btn')[0].click()
         document.querySelector('#player-tip-pause').remove()
-        clearInterval(timer.playTimer)
+        clearInterval(timer.hightestTimer)
       }
     }, 500)
   }
@@ -261,41 +375,31 @@
     }, 5000)
   }
 
-  // 功能切换
-  function switchSetting(settingConfig) {
-    config[settingConfig.key] = !config[settingConfig.key]
-    config[settingConfig.key] ? GM_notification(settingConfig.openString) : GM_notification(settingConfig.closeString)
-    GM_setValue(settingConfig.key, config[settingConfig.key])
-    if (!config[settingConfig.key]) {
-      clearInterval(settingConfig.timer)
-    } else {
-      settingConfig.execute()
+  // 配置选项监听事件
+  function configSettings(e) {
+    const target = e.target
+    if (target.tagName.toLowerCase() === 'input') {
+      // 选择最高画质
+      if (target.id === 'ON_OFF0') {
+        switchFunction('isSelectedHightestImageQuality', target, selectedHightestImageQuality, timer.hightestTimer)
+      }
+      // 领取百宝箱奖励
+      if (target.id === 'ON_OFF1') {
+        switchFunction('isGetChest', target, getChest, timer.chestTimer)
+      }
+      e.stopPropagation()
     }
   }
 
-  function switchSelectedHIQ() {
-    switchSetting({
-      key: 'isSelectedHightestImageQuality',
-      openString: '已开启自动选择最高画质',
-      closeString: '已关闭自动选择最高画质',
-      timer: timer.playTimer,
-      execute: selectedHightestImageQuality
-    })
+  // 配置选项功能
+  function switchFunction(key, target, fn, timer) {
+    GM_setValue(key, target.checked)
+    if (target.checked) {
+      fn()
+    } else {
+      clearInterval(timer)
+    }
   }
-
-  function switchGetChest() {
-    switchSetting({
-      key: 'isGetChest',
-      openString: '已开启自动领取百宝箱奖励',
-      closeString: '已关闭自动领取百宝箱奖励',
-      timer: timer.chestTimer,
-      execute: getChest
-    })
-  }
-
-  // 添加菜单配置项
-  GM_registerMenuCommand('自动选择最高画质开关', switchSelectedHIQ)
-  GM_registerMenuCommand('自动领取百宝箱奖励开关', switchGetChest)
 
   // 初始化
   init()
