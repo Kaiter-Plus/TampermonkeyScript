@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标,直接调用 Google 的翻译接口对非中文网页进行翻译
-// @version      1.38
+// @version      1.39
 // @include      *://*
 // @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
 // @exclude      /.*duyaoss\.com/
@@ -63,6 +63,7 @@
 // @note         2021/03/10 排除了 acfun，防止搜索界面出现底部移动的 bug
 // @note         2021/03/10 修复了使用 Dark Reader 开启夜间模式之后图片显示问题，强迫症福音
 // @note         2021/03/11 添加了新的配置选项“切换自动检测中文”，用于开关脚本的中文检测功能
+// @note         2021/03/13 清除图片请求，加快一点点速度，但是不影响图标的显示
 // ==/UserScript==
 
 ;(function () {
@@ -121,9 +122,12 @@
       #google_translate_element .goog-te-gadget-simple {
         border: 0;
       }
-      #google_translate_element .goog-te-gadget-simple img {
+      #google_translate_element .goog-te-gadget-simple span {
         margin-right: 0;
         border-radius: 11px;
+      }
+      #lb {
+        display: inline-block;
       }
       .recoverPage {
         width: 4em;
@@ -204,10 +208,18 @@
               'google_translate_element'
             )
             // 清除图片的请求，加快访问速度
-            // img = [].slice.call(document.querySelectorAll('#goog-gt-tt img,#google_translate_element img'));
-            // img.forEach(function(v, i) {
-            //   v.src = '';
-            // });
+            let img = [].slice.call(document.querySelectorAll('#goog-gt-tt img,#google_translate_element img'));
+            img.forEach(function(v) {
+              const a = v
+              a.src = ''
+              let b = a.outerHTML.replace(/<img(.*?)>/, () => {
+                return '<span id="lb"' + RegExp.$1 +'></span>'
+              })
+              const c = document.createElement('div')
+              c.innerHTML = b
+              a.parentNode.insertBefore(c.children[0], a.parentNode.children[0])
+              a.remove()
+            });
             const recoverPage = document.createElement('div')
             recoverPage.setAttribute('class', 'notranslate recoverPage')
             recoverPage.innerText = '原'
