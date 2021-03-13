@@ -3,8 +3,8 @@
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/虎牙直播功能增强
 // @author      Kaiter-Plus
 // @description 给虎牙直播添加额外功能
-// @version     1.0
-// @match       *://*.huya.com/\w*
+// @version     1.1
+// @match       *://*.huya.com/*
 // @icon        https://www.huya.com/favicon.ico
 // @noframes
 // @grant       GM_setValue
@@ -23,6 +23,7 @@
 // @note        2021/03/08 修复了最后两个宝箱不会领取的 bug
 // @note        2021/03/10 紧急修复了宝箱不会领取的 bug
 // @note        2021/03/12 添加了脚本的配置选项
+// @note        2021/03/13 优化自动领取百宝箱逻辑
 // ==/UserScript==
 ;(function () {
   'use strict'
@@ -65,7 +66,8 @@
       if (!container || chests.length <= 0) {
         controlContainer = document.querySelector('.duya-header-control')
         container = document.getElementById('player-ctrl-wrap')
-        chests = document.querySelectorAll('#player-box .player-box-list li')
+        // 使用数组保存
+        chests = Array.from(document.querySelectorAll('#player-box .player-box-list li'))
       } else {
         hightestImageQuality = document.querySelector('.player-videotype-list').children[0]
         initStyle()
@@ -104,8 +106,9 @@
           fill: currentColor;
           color: #ff9600;
         }
-        .myheight {
+        .reset-style {
           height: 63px!important;
+          width: 220px!important;
         }
         .config-arrow {
           position: absolute;
@@ -283,17 +286,17 @@
         <span class="title">脚本设置</span>
         <i class="config-arrow"></i>
       </a>
-      <div class="nav-expand-list nav-expand-follow">
+      <div class="nav-expand-list nav-expand-follow" style="width: 220px;">
           <i class="arrow"></i>
           <div id="J_hyHdFollowBox">
             <div class="subscribe-hd">
               <div class="subscribe-tit">脚本配置选项</div>
             </div>
             <hr style="margin: 0 15px;" />
-            <div class="subscribe-bd">
-              <ul id="config-container" class="subscribe-list myheight" style="overflow: hidden; padding: 0px; width: 256px;">
-                <div class="jspContainer myheight" style="width: 256px; height: 150px;">
-                  <div class="jspPane" style="top: 0px; left: 0px; width: 256px;">
+            <div class="subscribe-bd reset-style">
+              <ul id="config-container" class="subscribe-list reset-style" style="overflow: hidden; padding: 0px;">
+                <div class="jspContainer reset-style" style="width: 220px; height: 150px;">
+                  <div class="jspPane" style="top: 0px; left: 0px; width: 220px;">
                     ${createConfigItem(['自动选择最高画质', '自动领取百宝箱奖励'])}
                   </div>
                 </div>
@@ -354,23 +357,28 @@
   // 自动领取宝箱
   function getChest() {
     timer.chestTimer = setInterval(() => {
-      // 全部领取结束定时
-      const lastIndex = chests.length - 1
-      const lastWait = chests[lastIndex].querySelector('.player-box-stat1').style.visibility
-      const lastTimer = chests[lastIndex].querySelector('.player-box-stat2').style.visibility
-      const lastGet = chests[lastIndex].querySelector('.player-box-stat3').style.visibility
-      if (lastWait === 'hidden' && lastTimer === 'hidden' && lastGet === 'hidden') {
-        clearInterval(timer.chestTimer)
-        return
-      } else {
+      if (chests.length > 0) {
         // 遍历领取
         for (const item of chests) {
-          let get = item.querySelector('.player-box-stat3')
-          if (get.style.visibility === 'visible') {
-            get.click()
+          // 是否已经领取
+          const wait = item.querySelector('.player-box-stat1').style.visibility
+          const timer = item.querySelector('.player-box-stat2').style.visibility
+          const get = item.querySelector('.player-box-stat3').style.visibility
+          // 如果已经领取，删除节点
+          if (wait === 'hidden' && timer === 'hidden' && get === 'hidden') {
+            chests.splice(chests.indexOf(item), 1)
+            break
+          }
+          // 如果可以领取则领取，领取后删除节点
+          if (get === 'visible') {
+            item.querySelector('.player-box-stat3').click()
+            chests.splice(chests.indexOf(item), 1)
             document.querySelector('.player-chest-btn #player-box').style.display = 'none'
+            break
           }
         }
+      } else {
+        clearInterval(timer.chestTimer)
       }
     }, 5000)
   }
