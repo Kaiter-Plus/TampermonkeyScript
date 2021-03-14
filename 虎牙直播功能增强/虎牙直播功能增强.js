@@ -152,7 +152,7 @@
         .switchButton-label {
           display: block;
           cursor: pointer;
-          border: 2px solid #999999;
+          border: 1px solid #999999;
           border-radius: 20px;
           overflow: hidden;
         }
@@ -186,8 +186,8 @@
           background: #bbbbbb;
           top: 0;
           bottom: 0;
-          right: 24px;
-          border: 2px solid #584c3d;
+          right: 25px;
+          border: 1px solid #584c3d;
           border-radius: 14px;
           transition: all 0.3s ease-in 0s;
         }
@@ -204,8 +204,8 @@
   // 初始化工具
   function initTools() {
     insertIcon()
-    config[0] ? selectedHightestImageQuality() : null
-    config[1] ? getChest() : null
+    if (config[0]) selectedHightestImageQuality()
+    if (config[1]) getChest()
   }
 
   // 创建功能图标
@@ -357,30 +357,34 @@
   // 自动领取宝箱
   function getChest() {
     timer.chestTimer = setInterval(() => {
-      if (chests.length > 0) {
+      // 当最后一个还不是 undefind 时，说明还没有领取完，继续
+      if (chests[chests.length - 1]) {
         // 遍历领取
         for (const item of chests) {
+          // 如果是 undefind 则直接跳过
+          if (!item) continue
           // 是否已经领取
-          const wait = item.querySelector('.player-box-stat1').style.visibility
-          const timer = item.querySelector('.player-box-stat2').style.visibility
-          const get = item.querySelector('.player-box-stat3').style.visibility
-          // 如果已经领取，删除节点
-          if (wait === 'hidden' && timer === 'hidden' && get === 'hidden') {
-            chests.splice(chests.indexOf(item), 1)
-            break
+          const num = item.querySelector('.player-box-stat4').style.visibility
+          // 如果已经领取，把值设置为 undefind
+          if (num === 'visible') {
+            chests.splice(chests.indexOf(item), 1, (0)[0])
+            continue
           }
-          // 如果可以领取则领取，领取后删除节点
+          // 如果可以领取则领取，领取后把值设置为 undefind
+          const get = item.querySelector('.player-box-stat3').style.visibility
           if (get === 'visible') {
             item.querySelector('.player-box-stat3').click()
-            chests.splice(chests.indexOf(item), 1)
+            chests.splice(chests.indexOf(item), 1, (0)[0])
             document.querySelector('.player-chest-btn #player-box').style.display = 'none'
             break
           }
         }
       } else {
+        // 领取完，清空数组，结束定时器
+        chests = null
         clearInterval(timer.chestTimer)
       }
-    }, 5000)
+    }, 10000)
   }
 
   // 配置选项监听事件
