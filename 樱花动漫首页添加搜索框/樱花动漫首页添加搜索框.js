@@ -5,6 +5,7 @@
 // @grant       none
 // @version     0.1
 // @author      Kaiter-Plus
+// @license     BSD-3-Clause
 // @description 给樱花动漫的首页添加一个搜索框
 // @note        2021/1/16 下午5:16:42 添加搜索框
 // ==/UserScript==

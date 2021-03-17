@@ -5,6 +5,7 @@
 // @include     *://*
 // @grant       none
 // @version     0.1
+// @license     BSD-3-Clause
 // @noframes
 // @grant       GM_addStyle
 // @description 给网页添加两个个自动向上、向下滚动的按钮（本脚本还在编写阶段）

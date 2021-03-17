@@ -4,6 +4,7 @@
 // @match       *://*.cocomanhua.com/dynamic/user/subscription
 // @version     0.4
 // @author      Kaiter-Plus
+// @license     BSD-3-Clause
 // @icon        https://www.cocomanhua.com/favicon.ico
 // @description COCO 漫画“我的收藏”界面根据“更新日”进行排序
 // @grant       GM_addStyle

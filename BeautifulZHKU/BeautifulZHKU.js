@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name         仲恺农业工程学院网络管理系统主页面美化修改
 // @author       Kaiter
+// @license     BSD-3-Clause
 // @icon         data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAgAElEQVR4Xu1da3QUx5W+1SMNElhgDWBjCLZ52YBAoOmWZIFxMIzstZ34ibL2ZvOws4mG2JuzJ7s/sr/s/Nrds3uSsw5PbZLNczeBOH7EduxgQLYRMNLMCAQIMBjzsA0GBIg3SNN3z233eMdiutWPeWn61jk64qC6VXW/W1/fetyqEsCJEWAEDBEQjA0jwAgYI8AE4d7BCJggwATh7sEIMEG4DzACzhBgD+IMN5byCAJMEI8YmtV0hgATxBluLOURBJggHjE0q+kMASaIM9xYyiMIMEE8YmhW0xkCTBBnuLGURxBggnjE0KymMwSYIM5wYymPIMAE8YihWU1nCDBBnOHGUh5BgAniEUOzms4QYII4w42lPIIAE8QjhmY1nSHABHGGG0t5BAEmiEcMzWo6Q4AJ4gw3lvIIAkwQjxia1XSGABPEGW4s5REEmCAeMTSr6QwBJogz3FjKIwgwQTxiaFbTGQJMEGe4sZRHEGCCeMTQrKYzBJggznDLuJSiKN8CgDAiqkKIZdFo9NcZr4QLtI0AE8Q2ZJkTCAaDM4QQYSIGAPgHlNyLiMt8Pt+yjo6OY5mrlUuygwATxA5aGcqrKMrjqqqGhRBftFjkHyRJIqK8bTE/Z8sQAkyQDAE5WDGyLN+sewryFpUG+S8AANlkuMHfdyDiT+Lx+H8NVh//PTMIMEEyg6NhKcFg8EtCiKUAcL9RJiHEFgBYmZx3KIryFCI+AwA1BjJXAGBZIpFYtm3btoNZVsHTxTNBsmD+urq60TSEQkTyFl8wIUaLEGJlR0fHtnR5ZFm+UwjxDCL+tUkzX6W5SjwefzMLqni+SCZIBruALMt368Oor5gUu0sIsWrSpEkr165dm7BSfU1NzVhJksij0E/AQGYfeZWKiooVra2t/VbK5TyDI8AEGRwj0xwLFy4sO3v2LE24yVvcbpQZEX+HiCs7OzvfcVOlLMt/o3uVBpNyVuheZbebulj20wkhJwcIKIpSp+9bPGkifgQRV/X19a3csWPHaQfVmM1tZCIKAHzTZAi3nogSi8VeymTdXiqLCWLT2sFg8Nu6twiaiL5O3iIej79qs3jb2evr60f29/d/Vx9+TTAo4EMafpWVla1oa2s7Z7sSDwswQSwYv7a2tiqRSNAwqhkASg1EegFglaqqNIw6ZKHYjGcJBoOP6F5lkclQ7+dCiOWxWCye8QYUYYFMEBOjKoryhD6Mussk2yYaRsXj8d8WSv8gQquqSsMvmhcZpTY9pOV3hdLuQmwHE2SAVebOnXurz+ejjkXe4noDo6kAsJr2LmKx2I5CNCy1aerUqcNGjhy5VPcqUwzaeZLmKf39/Su7urqOF6ou+WoXE0RHXlGUB/Xwj/tMjNFFw6hYLLYyXwZzWq+iKPfpm4+GG5YA8L80/IpGo21O6yk2OU8TRN9fSHoLowku2fy3tKFXDB0nGAxOBYDv6l7FaD4V15eJ/7vYOrxdfTxJkJqamsWSJBExlpgA9gENo0pKSlZGIpGzdoEdCvkVRWnWvcosg/ZSbBiFtKzyakiLZwgiyzIFACa9xW1GHVgI8Sc9LurP+ejkPcs2VIEv0SQE1AIIWp7dXur3r6146q4T2WpPMBhcJEnS04j4qEkdLwkhVkSj0XXZakchllv0BAkGg3fo+xbfMDHASSFEi8/nI29BnTKnCRHFqVVvNYEQTSKdV0M8AUKsTSCuHbu0sTVbjautrZ2oqioFVtIKWIVBPd0AsLyioqLFCyEtRUsQffjwHQAw29BrFUKsjkajeVnqPLVy4ywUiSaB0AQCZljs+ESQtdn2KrIsf0MPaVEM2kVxZMsQcXU8Hi/akJaiIogsy7P1YRQRo8TAsFcRsUWPi6KvYU4Trlnj6z0VWIICmhDhMceV58irKIoyHxHJq3zVZFj6hj4sfcWxPgUqWBQECQaDX9V3uReY4EwrM/S1a8mHLU6teKsaJWwSIC0BwOkZbkPWvUp1dfUNpaWltDdEw68bDNpPCxvLy8rKWoolpGXIEkRRlMn6Ljd5i1EmHe6X+k731gx3ykGLw40bS07vVZsQiBjwyKACbjPkzqs8jogU/2X4QaI5HX2QhnpIy5AjiCzLD5O3QMS/MulPdDaihaJou7q6aKkyp+n0qg1zaG6BqE26DVfMstyorHuVmpoaRV8upxtZ0iZEpHP0FLj5+yzrm5XihwRB6uvrb+zv7yf3Tt7CbEPvRX2n+y9ZQcuk0J1r1vjH9wSahARLEOHhXNdvWF8OvMrcuXOvLykp+Q4iPg0AdPY+XaKbWZb39fW1DKWQloImiKIojaqqNgshzCazBDzNKygE5GiuO+bpletqUIgmQKRlWtqlLuSUda+iRxTTpL7RBIhf0RBsKEQmFBxBqqurR5SWltKGHnkLw+EJIr5FIMdisbW57pH4/OvDTvv9SVI8mOv6XdeXA69CK4qI+B09pMWoyRF9fvgL1zplqYCCIUhtbe088hYA8HUTXS8SKchbRKPRvVnCxLDYEyvelH2+kiWatwAwio7NdbPc1pdVr9LQ0FB+9epV+tiRVzE6knyGdukTiURLvs7SGIGYd4LIspz0FkZX3FDbI7pL/rnb3mBX/siPNpdfN/xCE4C0BAG/bFd+yOTPgVdRFOV+fchs5nXX6rZ+qxCwywtBampq5kiSRF8Vsw09wudnkiSt7ujo6Mg1WGdW/UVRhfTpMArEpFzXn+f6supV6urqbkskEmR7mtSXGeiqHS2YPHlyi9XbX7KBWU4JoijK12hcCgB3miizm3a6R44cuaq1tfVyNpQ2KvPYv785YthIH61C0RDqgVzWXZB1Zd+rSLIsU3+gUcQcAwyuIOIKfb65J9c4ZZ0gdP6AvIVODLMNvTWqqtIYdH2uQTi5cn2dJOESQNEEgLfmuv4hUl9WvYqiKCG9j9DHySjRJXkt8XicIq5zkrJGkGAw+KgQgr4O95poQpGztKG3Otdr48eXb7zO5+tvEkQKAWanCHNiiCFTSZa9Sk1NzS0+n48+qDSpN7rD+D06q3Pp0qWW7u7u89nELqMEkWX5Jn1pj4gx3qjhQog3yFvE43Ha2Mtp6l29oV5V1SYKFjTZ1Mppm4ZwZVn1KsFg8En9I3uHCUar9El9ZzZwzAhBZFm+RyeG2YZeLymiE2N/NpQxKrPn+ddHSmVlS1BViRRmISq5bFbx1JVlrxIMBhfow/S/Nfnortf71ppMAuuYIPPnz6+4fPlyMvxjmkmj6HoZ2jX9VSYbbqWsnlVvNdAqlBCCjtZOtCLDeVwjkDWvUltbO05V1eSk/iaDlh6hMz76norrU5i2CaKfD6BGmm3oIU2m9JWHnF5Qdmr1ulEItDyrNgkQ97g2NxfgDIEsexW6o1gftZg9QvRLSZJaOjo6NjtTwvrdvLQcl/QWc00q60ohRp/TRjmRO9uyfl5CBS20fJCARifFs4w7BLLmVeiOZH31yyyieLP+sf6lXTVMPUhtbe1c3aWRx/CZFP4/OlNz+kTYmRWvViakYU0SiCVoHhxnFxfOnw0EsuhVGhoaAnpIC/VVo41duiRvtU6Ww1ZUTEsQixt69LIRXXTQ0t7e3mOlskzlObV63Z2oCi20HNB4tSxT9XE5WUEgm17lMd2rmA2xLe27fY4g9DKSHgJALEy7YUbX4uirBVm/uTzVLL0/3RxIJC7qh5BwcVZMxoXmHoEsepWUkCaaHhiNgGh5mKLCKQiWrpT9XDIcYg22Bi2EiOpEyeqDksdXvXlXKZRQoCDNLcbl3oJcYw4RyIpXoSMUfr8/Gc1hdB8AbThqC0upkeKDrmLpd7qSRzE6JfcRFazPQTLynvfZ1RvH9Kv9TUJoEbSGV/nn0HBcVS4RyKJXoUdV9T0Vw8js1FHSoARJ4qIoSo0+riOySGnwIveUZKCjXc3TLRu+SJt5CEBnuY1uzsilqbiu/CPg2qvIslyaEuFRbaASvRyc7L87k3ksEyQpYDGchK6pJFdl6frOU6v+8gSAFv6+MP/24BYUJAK6VwmEQxQibylZDJSlg3ctRnFdtgmS2jILtxcOetCpZ8W6fxCS+LEljTkTI4C4NrC00ewVYdAvJ6cPrlm+N/XI4D+ageqKICnDrwcR8WWTig6TR5EkaVXqkvCZ1euDKmKMrc4I2ERgeSAcogvsPpcURXlKnwbUG5WXsg9iKcIjIwShxsiyjBaU1K791Ddqdpxaue4HIMS/WJDjLIxAKgIfBcKhL9B/zJkzZwJdOaSfTjVa5aQbH1v8fn/Lli1bTtmBMlsE+REiXtJDlcemaxAivvCDRY+PDk0N8rzDjsU4r4ZAS/vrz6zd/jZdrG34DDYAbNCHUY4vrcsKQRDxh/F4/DlSRFGUZ3S3RxdLX5OqbrwF7p9eD/fcJrPpGYFBEdj4/nZ4bfdWdfvRA+lWUjV5RKSXfGnzLzJogYNkyDpBkvUrirJEJ0raC8VuqgjA/TPq4aGZDVBeOsytXixfRAicv3IJXtsTgVd3b4Vj504bafYxXfJQUlLSEolEPsmU+jkjSApR5utXv3wtnRJ+Xyk8MKMOvjyzASaOSjs6y5TuXE6BI/B+z8fw2p52+FP3FrOWbtK3FH6dDXVyTpCkEnT2WAhBj0nSBCvtc8tfnFwNX5pxB8wdXyx3tGXDhMVX5uZD3fD67ghEjhhfYiKE+I0e6vRuNhHIG0GSSi1cuLDk/Pnzf68Pv9LGycweNwkemFEPi6ea3S2XTZi47Gwj0Jfo14ZRf+reCofPGD7XTlHjK/WwpiPZbhOVn3eCpCqpKMoTOlHSrmxNGDlGG349MutOKJHMjqfkAjquIxMIfNh7Al7b3Q4vd28GIkm6hIgdtIcWjUZzfrNmQREkZfh1lxBiqRDi8XSAlZf64YHp9fBQ1XwYV2F0M0wmzMdlZAuB2Ef74LXdEXj3gx2GVQghfq8PozZkqx2DlVuQBEmZ0E9GxH8ze8/87ilz4cGZDTBrHN/3NpixC+Hvf97TDq/s3gr7T1IQeNqkvc2uT7wP5LvNBU0QAkdRlIWIuHEwoOaMnwJfnnEH0MSeU2EhcOJCr+YtXt7VBuevmt8mG4vFaOx8zcGlfGk0FAlCl81RKPz8dKBNvH6sNvx6bLbZe575gttb9e48dlCbeL+1zzTsiZaqPlucicViGeuTmUA7Y41JjcVK3Ul328iBHiRZtizLd9OTX0avT43wl2lEeXT2nTB6+Ei3zWB5Gwhs2L8NXuneDLs+OWQkRbPx5/WLBJ8QQjybzMgEsQF0uiHWQPLRVfqqqn5PX/0qTVd8aFoQHq6aD7eP1eLbOGUBgbOXL2re4qVdbXDq4jmjGuhO3WW9vb0t+/fvpwNKEAwGn2OCuDCIkQcZWKQsy8MB4Pt6VGfaWxSDE6bCQzPnwbxbq1y0iEVTEdh38iMtBOT1Pe2GwCAiHZyjl26vuZWdCeKyP1klSGo1wWCQIjxpl742XfW3VN6orXzRDydnCLQd3KXtXXR+ZHzNshBiuf5WuuFaLhPEGf6fSTkhSFKY3pyYFBi37EDP0bRv41UMGw5fmlEPS2bfBSPLyAFxMkPgSn+fNox6cWcbHDuX/ljFDdddD8fPn/mnsrKylra2NsOxVrIeJojLPueGIFR1z8p1zx3pPfHsH3ds0oxrlCjcnla+JgeM7kR2qcgQFj9y5ji80r1Vm18YJYqXe3DmPFgwaVZ/IBxKOxdMJ8sEcdkxMkGQ5CTwYt8VeGHHu/Bq91Y4dSn9x035wm1aKEvdRKMHWV0qNITEox++By/t2gyRw7sNW33f7RR5fQdMGzMhmacvEA75rarJBLGKlEG+TBIktYo/7+2Al3dtBgqpTpfIkzxcNQ/um17nUoOhJ06bei/u2gSHTqcPGqwsr4BHZs3Xhqc0TP18wquBcKPlAz1MEJf9I1sESTar48P34MWdm6DjSPpn168vGwEPVs2DJbMXFPVBruPnz8Ar3Vs0LK4aBA3OvPEWbbn87ilG721qqF4OhEPlVs3OBLGKVI49yMDqDp4+Bn/Y8S68uTdq2OL7p9dpE3rarS+WtOPYB/DSzjZ4xyRokPaRaMVvxg03W1H7UiAcsrziwQSxAqlJnmx7kIFVn796CV7oelf7mp69cjFty+omTocl1QugZvxUl9rlT3zdvpi2GkX7GOnSdf5ybRhF8wsaUtlIFwPh0Air+ZkgVpHKswdJV/2nY/E2OHQ6/RHnqWPGw6OzFkDjtKBLLXMj3nv5gjbvIp3onHe6RJNtIkbjNGeXaCDAhdHh0HVWNWKCWEWqAAmSbFLk8B54Yee7hptigeEV8EjVfHhs9l1Q6iu8g1zvnfhQI4VZ0OBdk6u1RQk6vekqCXEu0LzYcvAbE8QV2teGu9sNhKR9kNRYHzfNeb/nqLZMTMMTo/SQPqEfVxFwU1VGZN8+0KUNo3Z9Qm8dXZvoggzyFnSTzNjr0l4L4KQdZwPh0CirgkwQq0gVsAcZ2LSzly9oE3oartDeSro0/9YqbUKf64Ncl/uuwkvdm7XVKKOgwVsrb4SHZ83Xop2zkHoD4ZBltjFBXFog15N0u82lK2le2LkJPuo9mVZ0+tiJ8Fj1Alg42XRp1G611+SneRJ5C7NogYZbZmpDwZoJWV1cOBMIhyyfg2aCuDR9oRMkqd6WQ92aV+k6mv6U6JgRo7RQFtpPyWTaeni35i3iBkGDQgiNFDS/uGnk6ExWbVTW6UA4ZHl8yQRxaZKhQpCkmrRsSvOU9fvTvyEkCQkenfXphH7MCMtz2c+hiIhaCAgR46hB0OD4kaO1+QXFR0kiY+fiBrWmAOipDIfGDJpRz8AEsYrUEJqDWFHp9KXzGlHMdqYXTpmjeZTbx6Y9vnJNNUfPntJCQGgoZZRkiiWrmg/1Nxs9xWel9a7ynAyEQ5Z3UpkgrrAurFUsp6rQ1/6FHe8Y3itLE3ma0NPEPl2Kf7RPIwUNp4wS3UBJHuPm6/P8ch3iicDSRsuNYII47VW63FAbYpmpu+ngTs2r0GUG6RJd4E3zFFoqppQ8e2G0UTl2xKhPl2mr5oPfV+IS6cyII8Dx0eHQjVZL8ypBnovH4z+0CpJZvmIiSFLPvSeOaBP61ve3p1W91FcCAgRcTfSl/Xv1TZO1YdSdk2ZlAuKMloEAn4wOhyw/180EcQl/MRIkCUnPxbOaR6EfFQd/oOve2xTNY0wZPd4lqlkVPxoIhyw3kAni0hbFTJBUaP64c5PmVU6cP/M5xEaVjdBIQYe4hg+Fd1MEfBxoDn12emow8zNBBkNokL97hSBJGN75YMdnHoWIsWjKXJcI5lz8s/cDrdTMBLGCkkkerxHEJVyFIP5hIByytm7t4XuxeJJeCF01P204HAiHbrFaNXsQq0gZ5GMP4hLAXIsLOBRoDlm+ap8J4tJATBCXAOZe/GAgHLJ8qIQJ4tJATBCXAOZcHD8IhBsnW62WCWIVKR5iuUSqQMQRDgSWhiy/usoEcWk39iAuAcyxuBBif2Xz4mlWq2WCWEWKPYhLpApDXADsqwyHbrPaGiaIVaSYIC6RKgxxBHhvdDhk+d5WJohLu/EQyyWAORZHgL2jwyHLh1GYIC4NxARxCWCuxQXsDjSHZlqtlgliFSkeYrlEqmDEuwPhkOUnvJggLu3GHsQlgLkX3xUIhywfVGGCuDQQE8QlgDkXx52BcONsq9UyQawixUMsl0gVijjuCIQbq622hgliFSkmiEukCkVcbA+EF1s+xMIEcWk3HmK5BDD34tsC4VCN1WqZIFaRYg/iEqmCEe8MhEOW34Nggri0G3sQlwDmXjweCIcsPy5S9AQJBoMLhBB/BwBfT7HFEQBYCwC/iMViho/IW7EdE8QKSoWTRwBEK8OhWqstKmqCDFTOAJR/jcVi/2wVsIH5mCBOkcuPnBDQUdkcsvw0cNESRJblEwBg6ZJiu4/epJqWCZKfju60VgHQXhkOWX54pCgJEgwGfyaEeMoOiKqqVnV2dnbbkaG8TBC7iOU3PwJGRocb77DaiqIjiKIoIURcZxWAlHwvxWKxR+zKMUHsIpbf/Ii4dfTSxgarrSg6gsiyvBQAVlgFICUfvak8NhaLpX9b2aBAJogDpPMpImBzoDk032oTipEg/wkA37MKQGo+IcQ90WjUlvdhgjhBOp8yoi0QXnyn1RYUI0E2AsBCqwCk5nMyWWeCOEE6rzKbAuGQ5XfmipEg/wEA/+jEBEKIu6PRaKsdWSaIHbQKIC/Cu4GlobustqToCKIoylOI+DOrAKTkOx6LxSw/rJKUY4I4QDqPIkKItyubF1seYRQjQWoQcRMADLdjB0T8cTwe/74dGcrLBLGLWN7ztwbCobuttqLoCEKKW9xB/xxGfr9/+JYtWy5ZBS5jHmT1+iaBuMZuvZzfKQK4KhBupJVOS6koCUKay7L8BgDcawkFgK/EYjGKzbKdXHuQ518fKYb5PwaEEbYrZwHbCKgicceY5nsjVgWLliC6J/mqEOI3JmCcBIDvOiVHJoZYVEbvTzdOTSQSzwPCfVYNx/lsIoB4Qki+f6lsXvRjO5JFTRDdk1DczTcRsVoIQUctPwGALkTcV1pa+pNIJPKhHcAG5nXrQVLLI6KoicQsBFwMKBYBgOXradzoUKSyRwFhgxBifQlg5LphvgPiybsv29W16AliFxC7+TNJkIF1n1j9xk0+UbIIVVwsQCwGgJvtts9D+c8CwAZAsR4FbhgdDtmOq0uHFRPEZQ/KJkEGNq13+capCSmxGIRYBIiLQcBol80fyuIJBNggQKxXE7hhzNOhjmwowwRxiWouCTKwqadXbZijgrpYACxCAPpd5lKdwhZH2CwkWN+v4oaxSxttbeg6VYwJ4hQ5XS6fBBnY9J6W9fMggYuF0AhTLwDKXaqXb/G4AGilIVOlv2S9kzmEWwWYIC4RLCSCDFTlkxVvVZf4RB2oWC8kqAMEy/dBuYTFifhBAIggQLtAKXJA2teuNDf3OSkokzJMEJdoFjJBBqp25Eeby8vKL9T7JFGHKOoBkLzMBJcQOBE/iwjtQsIIoBTp82H7jd8O0epiwSUmiEuTDCWCpFP15Mr1E0Co9RIRRgCd1abnySy/Iz4ofIgnUMABIaS4qibaQRWRMU837h5UrkAyMEFcGmKoEySd+jufXeMfd0PlFKnEN1mAOkVVYYoQOAWEmCwApiCC/zM5hH6NAAAHAOAAIhxAEAd8ou9Af+mVA2O/9dA5lxDnVZwJ4hL+YiTIYJD0LH9zoipJU3wSHAg0Nx4eLP9Q/jsTxKX1vEgQl5ANKXEmiEtzMUFcAljg4kwQlwZigrgEsMDFmSAuDcQEcQlggYszQVwaiAniEsACF2eCuDRQOoJIkrSDftrb299zWTyL5wkBRVHoLfVZqqrOFkI8m2xGLBYTeWpS2moLqjHpWjiQICl5rgIA3Ry/k34j4s7S0tJtkUikIHeMC8nouW5LfX39F/r6+mYJIehxT3q/kH5TWE7JwLYwQWxax4Qg6UrqIaIQYSRJ2plIJLo6Ozvp+Kdqs1rO7hCB2bNnV5aWlg4kAz2oY+nIMxPEJvA6QZ7Uvzz09bnmqzNIkYdSPQ0F7MVisfdtNoOzp0Fg5syZ/vLyco0MiEi2oR96GyRgE7DjAEAHsLpjsdjTNmWzmr3gh1ip2geDwRlkhBRXTQah2Ca7aRcial4GANp9Pl8kEonQiTlOJgikzhsAoEYIoQDAeJugHRdC0JBYI4Sqqt2SJBEx6P6CgktDiiAD0Vu4cGHJuXPn6Lmv5NcrOcYdaxPpC0kvI4SICiEiHR0d22yWUVTZk/MG/YNEXoHIMMmmkj0AECciECGEEN1+v797y5Ytp2yWk7fsQ5og6VCTZXmUEKKWLpFIIQ4R6P8DAK3BfUyfz5CBtyJipLOz82NrokMrV8q8gS4FVAg/AJhuU4sziBilDw0RQVXVXbpn6LVZTkFlLzqCpEO3pqZmvM/nI6PT88Sz9fHyNAeW2A8A5Fm20lxGn8/k/dCRHT1S5g30ESGvQLjMsVMGAFAEMZEhlvQMZWVl3W1tbUM6sjgdBp4gSDrF586dO41Io3cSmteQl7F7d3A/AGwnotCwTJKkrYW2N1NbW1ulqqrmFVIIIdkgxEUadureoYu8wpUrV7q7urpoWFr0ybMESWfZ2trauYlEok4fYiSHaHbPnZ8msqiqSoTZI4TYM2LEiD2tra2274yy0/uqq6tHDBs2bGYikagistMEGhHJO9hpP7UxRt5BCBGjCfSwYcNozmD7ylg7bS/kvEwQE+vowxGNMHpnoyGa3bF5soaDRBYA2IOIe+nfqqpeRsRLPp/vciKRuOz3+6mDXjp37tzl7u7u/urq6vKysrIyIUR5X1+f9luSpLL+/v5yIcRkSZJmImKVfgHerTY7Gg0NaYhEZIhKkrT9woUL3d3d3bQBy0lHgAlisys0NDQErly5Upskje5tbrJZTK6z00apNmcgMiQSidioUaN2tba20hCRkwkCTJAMdI/a2tqJiURCI41OHDp7XpGBop0UQWTo1IdI5Bmi0WiU5kkcTeAATSaIA9CsiBBpEPF2RLwNACgwj37o33b3EsyqowdRaRm6ExHpJ97Z2Ulk4JQhBJggGQLSajE0rxk+fDgRZZyqqmU0p6DfQgjtBxHp9sbkDY6XhRA0T9F+JEm6TPMW+g0AR6LR6F6r9XI+ZwgwQZzhxlIeQYAJ4hFDs5rOEGCCOMONpTyCABPEI4ZmNZ0hwARxhhtLeQQBJohHDM1qOkOACeIMN5byCAJMEI8YmtV0hgATxBluLOURBJggHjE0q+kMASaIM9xYyiMIMEE8YmhW0xkCTBBnuLGURxBggnjE0KymMwSYIM5wYymPIMAE8YihWU1nCDBBnOHGUh5BgAniEUOzms4QYII4w42lPIIAE8QjhmY1nSHABHGGG0t5BAEmiEcMzWo6Q4AJ4gw3lvIIAkwQjxia1XSGACLaWtwAAAAOSURBVBPEGW4s5REE/g/wE43IlHTU4QAAAABJRU5ErkJggg==
 // @noframes
 // @description  给仲恺教务网每个功能模块添加圆角、过渡和阴影，去除一些没有用的标签！
@@ -25,7 +26,7 @@
   // 设置主页背景
   $('body').css({
     overflow: 'auto',
-    background: 'linear-gradient(to right, #cedeeb, #c5e5f0)',
+    background: 'linear-gradient(to right, #cedeeb, #c5e5f0)'
   })
 
   // 获取 head
@@ -39,7 +40,7 @@
   // 移除登录界面父级 td 默认样式，并添加圆角
   $(login).parent().removeAttr('style').css({
     backgroundColor: '#fafafa',
-    borderRadius: '6px',
+    borderRadius: '6px'
   })
   // 登录界面加载完成后操作
   login.onload = function () {
@@ -57,7 +58,7 @@
     $(login).css({
       borderRadius: '6px',
       border: 'none',
-      height: '294px',
+      height: '294px'
     })
     //获取登录界面 head
     const loginHead = loginDocument.head
@@ -66,7 +67,7 @@
       width: '16px',
       height: '22px',
       color: '#666',
-      border: 'none',
+      border: 'none'
     })
     // 获取 select 的父元素 div，添加 class
     select.parent().addClass('selectDiv').css({
@@ -74,7 +75,7 @@
       padding: '4px',
       width: '156px',
       height: '22px',
-      backgroundColor: '#FFF',
+      backgroundColor: '#FFF'
     })
     // 美化输入框
     let loginInput = $('.tx1', loginDocument)
@@ -98,7 +99,7 @@
   // 设置 table 高和宽都是 100%
   $(scheduleDiv.children[0]).css({
     height: '100%',
-    width: '100%',
+    width: '100%'
   })
 
   // 移除友情链接
@@ -111,14 +112,14 @@
   $(sTableTop).css({
     textAlign: 'left',
     background: 'url("images/home_new/d_jxap_bg.gif")',
-    borderRadius: '6px 6px 0 0',
+    borderRadius: '6px 6px 0 0'
   })
   sTableRows[1].children[0].removeAttribute('style')
   let sTableBottom = sTableRows[1].children[0].children[0]
   $(sTableBottom).css({
     height: '100%',
     backgroundColor: '#fff',
-    borderRadius: '0 0 6px 6px',
+    borderRadius: '0 0 6px 6px'
   })
 
   //////////↓ 通知公告 ↓//////////
@@ -144,13 +145,13 @@
     marginTop: '0',
     width: '100%',
     height: '290px',
-    paddingBottom: '5px',
+    paddingBottom: '5px'
   })
 
   // 创建 div ,导入自定义日历
   let calDiv = $('<div>').attr({
     id: 'calendar',
-    class: 'calendar',
+    class: 'calendar'
   })
 
   // 将创建的 div, css 加入覆盖原来的日历
@@ -243,7 +244,7 @@
   let foot = $(footParent.children[2].children[0])
   foot.css({
     color: '#fff',
-    background: '#1f8dda',
+    background: '#1f8dda'
   })
 
   /******************* 分隔线 ********************/
@@ -276,22 +277,22 @@
           color: '#2c93db',
           paddingLeft: '15px',
           fontWeight: 'bold',
-          fontFamily: '微软雅黑',
+          fontFamily: '微软雅黑'
         })
         $(tableBottom).css({
           height: '204px',
           backgroundColor: '#fafafa',
-          borderRadius: '0 0 6px 6px',
+          borderRadius: '0 0 6px 6px'
         })
       } else {
         $(tableTop).css({
           backgroundColor: '#eee',
-          borderRadius: '6px 6px 0 0',
+          borderRadius: '6px 6px 0 0'
         })
         $(tableBottom).css({
           height: '246px',
           backgroundColor: '#fafafa',
-          borderRadius: '0 0 6px 6px',
+          borderRadius: '0 0 6px 6px'
         })
       }
       if (tableRows[1].children[0].children[0]) {
@@ -306,7 +307,7 @@
     $('#calendar').calendar({
       ifSwitch: true, // 是否切换月份
       hoverDate: true, // hover是否显示当天信息
-      backToday: true, // 是否返回当天
+      backToday: true // 是否返回当天
     })
   })
   ;(function ($) {
@@ -319,7 +320,7 @@
         },
         setDate: function (date) {
           _date = date
-        },
+        }
       }
     })()
     const Calendar = function (elem, options) {
@@ -327,7 +328,7 @@
       this.defaults = {
         ifSwitch: true,
         hoverDate: false,
-        backToday: false,
+        backToday: false
       }
       this.opts = $.extend({}, this.defaults, options)
     }
@@ -344,13 +345,13 @@
         this.$calendar_today
           .css({
             left: offset_l + 30,
-            top: offset_t - 24,
+            top: offset_t - 24
           })
           .stop()
           .animate({
             left: offset_l + 16,
             top: offset_t - 24,
-            opacity: 1,
+            opacity: 1
           })
         switch (_week) {
           case 0:
@@ -482,13 +483,13 @@
             self.$calendar_today
               .css({
                 left: 0,
-                top: 0,
+                top: 0
               })
               .hide()
           }
         )
       },
-      constructor: Calendar,
+      constructor: Calendar
     }
     $.fn.calendar = function (options) {
       const calendar = new Calendar(this, options)
@@ -767,7 +768,7 @@
         '    margin:6px 0;',
         '    font-size:14px;',
         '    line-height:14px;',
-        '}',
+        '}'
       ].join('\n')
     } else {
       css = [
@@ -819,7 +820,7 @@
         '}',
         '.btnlogin:focus {',
         '    opacity: 1.0;',
-        '}',
+        '}'
       ].join('\n')
     }
     return css

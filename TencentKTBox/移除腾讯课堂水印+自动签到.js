@@ -2,6 +2,7 @@
 // @name         腾讯课堂自动签到 + 去除“xxx正在观看xx”水印
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/TencentKTBox
 // @version      1.45
+// @license      BSD-3-Clause
 // @description  主要功能是腾讯课堂自动签到以及去除“xxx正在观看xx”水印！
 // @author       Kaiter-Plus
 // @match        https://ke.qq.com/webcourse/*
@@ -120,7 +121,7 @@
         '    color: #aaa;',
         '    left: -270px;',
         '    top: 0;',
-        '}',
+        '}'
       ].join('\n')
     )
   )
@@ -132,7 +133,7 @@
       $('<input>').addClass('switchButton-checkbox').attr({
         id: 'ON_OFF',
         type: 'checkbox',
-        checked: true,
+        checked: true
       })
     )
     .appendTo($('body'))
@@ -142,7 +143,7 @@
     .append(
       $('<span>').addClass('switchButton-inner').attr({
         'data-on': 'ON',
-        'data-off': 'OFF',
+        'data-off': 'OFF'
       })
     )
     .appendTo(switchButton)

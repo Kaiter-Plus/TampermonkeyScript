@@ -2,6 +2,7 @@
 // @name         中国大学MOOC视频中题目自动跳过
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/MOOCSkipQuestion
 // @version      0.1
+// @license      BSD-3-Clause
 // @description  中国大学MOOC,icourse163视频中题目自动跳过，移除弹题元素，防止暂停（本脚本仅供学习使用，请在24小时内删除！）
 // @author       Kaiter
 // @match        *://www.icourse163.org/learn/*
