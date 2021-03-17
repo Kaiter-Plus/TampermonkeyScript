@@ -4,6 +4,7 @@
 // @author      Kaiter-Plus
 // @description 给虎牙直播添加额外功能
 // @version     1.1
+// @license     BSD-3-Clause
 // @match       *://*.huya.com/*
 // @icon        https://www.huya.com/favicon.ico
 // @noframes
@@ -55,9 +56,9 @@
     // 自动选择最高画质
     GM_getValue('isSelectedHightestImageQuality'),
     // 自动领取百宝箱奖励
-    GM_getValue('isGetChest')
+    GM_getValue('isGetChest'),
     // 获取是否自动网页全屏
-    // GM_getValue('isFullScreen')
+    GM_getValue('isFullScreen')
   ]
 
   // 初始化
@@ -69,10 +70,10 @@
         // 使用数组保存
         chests = Array.from(document.querySelectorAll('#player-box .player-box-list li'))
       } else {
+        clearInterval(timer.initTimer)
         hightestImageQuality = document.querySelector('.player-videotype-list').children[0]
         initStyle()
         initTools()
-        clearInterval(timer.initTimer)
       }
     }, 1000)
   }
@@ -107,7 +108,7 @@
           color: #ff9600;
         }
         .reset-style {
-          height: 63px!important;
+          height: 94px!important;
           width: 220px!important;
         }
         .config-arrow {
@@ -128,6 +129,9 @@
           padding: 5px 15px;
           display: flex;
           justify-content: space-around;
+        }
+        .hidden-control {
+          bottom: -44px!important;
         }
         @media handheld, only screen and (max-width: 1440px) {
           .hy-nav-history {
@@ -159,23 +163,10 @@
         .switchButton-inner {
           display: block;
           width: 200%;
+          height: 18px;
           margin-left: -100%;
           overflow: hidden;
           transition: margin 0.3s ease-in 0s;
-        }
-        .switchButton-inner::before,
-        .switchButton-inner::after {
-          content: "";
-          display: block;
-          float: right;
-          width: 50%;
-          padding: 0;
-          height: 18px;
-          font-size: 14px;
-          color: white;
-          font-family: Trebuchet, Arial, sans-serif;
-          font-weight: bold;
-          box-sizing: border-box;
         }
         .switchButton-switch {
           position: absolute;
@@ -206,6 +197,7 @@
     insertIcon()
     if (config[0]) selectedHightestImageQuality()
     if (config[1]) getChest()
+    if (config[2]) fullScreen()
   }
 
   // 创建功能图标
@@ -297,7 +289,7 @@
               <ul id="config-container" class="subscribe-list reset-style" style="overflow: hidden; padding: 0px;">
                 <div class="jspContainer reset-style" style="width: 220px; height: 150px;">
                   <div class="jspPane" style="top: 0px; left: 0px; width: 220px;">
-                    ${createConfigItem(['自动选择最高画质', '自动领取百宝箱奖励'])}
+                    ${createConfigItem(['自动选择最高画质', '自动领取百宝箱奖励', '自动网页全屏'])}
                   </div>
                 </div>
               </ul>
@@ -387,6 +379,26 @@
     }, 10000)
   }
 
+  // 网页全屏功能
+  function fullScreen() {
+    // 获取 剧场模式 按钮并点击
+    const fullScreenButton = container.querySelector('#player-fullpage-btn')
+    fullScreenButton.click()
+    // 获取 右侧聊天框 并点击
+    const danmuChat = document.querySelector('#player-fullpage-right-btn')
+    if (Array.from(danmuChat.classList).indexOf('player-fullpage-right-open') === -1) {
+      danmuChat.click()
+    }
+    // 隐藏 礼物栏
+    document.querySelector('#player-gift-wrap').style.display = 'none'
+    // 播放器高度设为 100%
+    document.querySelector('#player-wrap').style.height = '100%'
+    // 显示弹幕输入框
+    container.querySelector('#player-full-input').style.display = 'block'
+    // 隐藏 控制栏
+    container.classList.add('hidden-control')
+  }
+
   // 配置选项监听事件
   function configSettings(e) {
     const target = e.target
@@ -398,6 +410,10 @@
       // 领取百宝箱奖励
       if (target.id === 'ON_OFF1') {
         switchFunction('isGetChest', target, getChest, timer.chestTimer)
+      }
+      // 网页全屏
+      if (target.id === 'ON_OFF2') {
+        switchFunction('isFullScreen', target, fullScreen, null)
       }
       e.stopPropagation()
     }
