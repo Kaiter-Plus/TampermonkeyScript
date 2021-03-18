@@ -176,8 +176,8 @@
           box-shadow: 0 0 0 0 transparent!important;
         }
         .recoverPage {
-          width: 2em;
-          line-height: 22px;
+          width: 1.5em;
+          line-height: 1.5em;
         }
       }
     `)
