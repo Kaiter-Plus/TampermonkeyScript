@@ -28,6 +28,7 @@
 // @exclude      /.*huya\.com/
 // @exclude      /localhost/
 // @exclude      /.*acfun\.cn/
+// @run-at       document-end
 // @noframes
 // @note         2021/03/18 网页整页翻译功能
 // ==/UserScript==
