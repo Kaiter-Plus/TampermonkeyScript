@@ -2,8 +2,8 @@
 // @name         网页翻译-扩展版本
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate/Translate_ext.js
-// @description  给每个非中文的网页右下角添加一个google翻译图标对非中文网页进行翻译，该版本主要适配 X浏览器、via浏览器等不支持油猴扩展的浏览器
-// @version      1.39
+// @description  给非中文的网页右下角添加一个google翻译图标对网页进行翻译，该版本主要适配手机浏览器： X浏览器、via浏览器等不支持油猴扩展的浏览器
+// @version      1.41
 // @license      BSD-3-Clause
 // @icon         https://www.google.cn/favicon.ico
 // @include      *://*
@@ -30,7 +30,7 @@
 // @exclude      /.*acfun\.cn/
 // @run-at       document-end
 // @noframes
-// @note         2021/03/18 网页整页翻译功能
+// @note         2021/03/18 网页整页翻译功能，稍微调整了布局
 // ==/UserScript==
 
 ;(function () {
@@ -68,11 +68,11 @@
       }
       #google_translate_element {
         position: fixed;
-        bottom: 30px;
+        bottom: 60px;
         height: 21px;
         border-radius: 11px;
         left: 0px;
-        transform: translateX(-85%);
+        transform: translateX(-75%);
         z-index: 10000000;
         overflow: hidden;
         box-shadow: 1px 1px 3px 0 #888;
@@ -95,8 +95,8 @@
         position: fixed;
         z-index: 10000000;
         bottom: 60px;
-        left: 0px;
-        transform: translateX(-73%);
+        right: 0px;
+        transform: translateX(78%);
         user-select: none;
         text-align: center;
         font-size: small;
@@ -140,9 +140,14 @@
           box-shadow: 0 0 0 0 transparent!important;
         }
         .recoverPage {
-          width: 1.5em;
-          line-height: 1.5em;
+          width: 2.8em;
+          line-height: 2.8em;
+          border-radius: 50%;
+          opacity: .3;
           transform: translateX(0);
+        }
+        .recoverPage:hover {
+          opacity: .3;
         }
       }
     `,
