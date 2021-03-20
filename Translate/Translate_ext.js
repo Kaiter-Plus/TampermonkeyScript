@@ -3,39 +3,42 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate/Translate_ext.js
 // @description  给非中文的网页右下角添加一个google翻译图标对网页进行翻译，该版本主要适配手机浏览器： X浏览器、via浏览器等不支持油猴扩展的浏览器
-// @version      1.41
+// @version      1.42
 // @license      BSD-3-Clause
 // @icon         https://www.google.cn/favicon.ico
 // @include      *://*
-// @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
-// @exclude      /.*duyaoss\.com/
-// @exclude      /.*lanzous\.com/
-// @exclude      /.*w3school.*cn/
-// @exclude      /.*iqiyi\.com/
-// @exclude      /.*baidu.*/
-// @exclude      /.*cnblogs\.com/
-// @exclude      /.*csdn\.net/
-// @exclude      /.*zhku\.edu\.cn/
-// @exclude      /.*zhihuishu\.com/
-// @exclude      /.*aliyuncs\.com/
-// @exclude      /.*chaoxing\.com/
-// @exclude      /.*youku\.com/
-// @exclude      /.*examcoo\.com/
-// @exclude      /.*mooc\.com/
-// @exclude      /.*bilibili\.com/
-// @exclude      /.*qq\.com/
-// @exclude      /.*yy\.com/
-// @exclude      /.*huya\.com/
-// @exclude      /localhost/
-// @exclude      /.*acfun\.cn/
 // @run-at       document-end
 // @noframes
 // @note         2021/03/18 网页整页翻译功能，稍微调整了布局
+// @note         2021/03/20 添加了排除网站的功能
 // ==/UserScript==
 
 ;(function () {
   'use strict'
-
+  // 此处使用正则表达式排除不用进行翻译的网站
+  const noTranslateDomain = [
+    /^([0-9]+\.){3}[0-9]+/,
+    /.*duyaoss\.com/,
+    /.*lanzous\.com/,
+    /.*w3school.*cn/,
+    /.*iqiyi\.com/,
+    /.*baidu.*/,
+    /.*cnblogs\.com/,
+    /.*csdn\.net/,
+    /.*zhku\.edu\.cn/,
+    /.*zhihuishu\.com/,
+    /.*aliyuncs\.com/,
+    /.*chaoxing\.com/,
+    /.*youku\.com/,
+    /.*examcoo\.com/,
+    /.*mooc\.com/,
+    /.*bilibili\.com/,
+    /.*qq\.com/,
+    /.*yy\.com/,
+    /.*huya\.com/,
+    /localhost/,
+    /.*acfun\.cn/
+  ]
   // 获取 head
   const head = document.head
   // 获取body
@@ -44,9 +47,20 @@
   const lang = document.documentElement.lang.toLowerCase().substr(0, 2)
   // 获取网页使用的主要语言
   const mainLang = document.characterSet.toLowerCase().substr(0, 2)
+  // 设置是否排除网站的标识
+  let noTranslateDomainflag = false
+  // 排除一些网站的翻译
+  noTranslateDomain.every(reg => {
+    if (reg.test(document.domain)) {
+      noTranslateDomainflag = true
+      return false
+    } else {
+      return true
+    }
+  })
 
   // 判断是不是中文，如果是则直接return，否则执行
-  if (lang === 'zh' || mainLang === 'gb') {
+  if (lang === 'zh' || mainLang === 'gb' || noTranslateDomainflag) {
     return
   } else {
     // 创建网页元素方法
