@@ -3,7 +3,7 @@
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/虎牙直播功能增强
 // @author      Kaiter-Plus
 // @description 给虎牙直播添加额外功能
-// @version     1.1
+// @version     1.2
 // @license     BSD-3-Clause
 // @match       *://*.huya.com/*
 // @icon        https://www.huya.com/favicon.ico
@@ -25,6 +25,7 @@
 // @note        2021/03/10 紧急修复了宝箱不会领取的 bug
 // @note        2021/03/12 添加了脚本的配置选项
 // @note        2021/03/13 优化自动领取百宝箱逻辑
+// @note        2021/03/22 添加 “自动网页全屏” 功能，并同时提供配置开关，默认关闭
 // ==/UserScript==
 ;(function () {
   'use strict'
@@ -40,10 +41,10 @@
   }
 
   // 控制栏容器
-  let controlContainer = null
+  let headerContainer = null
 
   // 直播界面容器
-  let container = null
+  let controlContainer = null
 
   // 最高画质
   let hightestImageQuality = null
@@ -64,9 +65,9 @@
   // 初始化
   function init() {
     timer.initTimer = setInterval(() => {
-      if (!container || chests.length <= 0) {
-        controlContainer = document.querySelector('.duya-header-control')
-        container = document.getElementById('player-ctrl-wrap')
+      if (!controlContainer || chests.length <= 0) {
+        headerContainer = document.querySelector('.duya-header-control')
+        controlContainer = document.getElementById('player-ctrl-wrap')
         // 使用数组保存
         chests = Array.from(document.querySelectorAll('#player-box .player-box-list li'))
       } else {
@@ -90,6 +91,7 @@
         }
         .video-tools-icon .icon {
           fill: currentColor;
+          cursor: pointer;
           color: #b2b4b4;
         }
         .video-tools-icon:hover .icon {
@@ -130,8 +132,11 @@
           display: flex;
           justify-content: space-around;
         }
-        .hidden-control {
+        .hidden-controls {
           bottom: -44px!important;
+        }
+        .show-controls {
+          bottom: 0px!important;
         }
         @media handheld, only screen and (max-width: 1440px) {
           .hy-nav-history {
@@ -301,12 +306,12 @@
       eventListener: configSettings
     })
 
-    controlContainer.appendChild(settings)
+    headerContainer.appendChild(settings)
     // 创建用于添加自定义功能图标的 fragment，避免多次回流（重排）
     const iconFragment = document.createDocumentFragment()
     iconFragment.appendChild(sync)
     iconFragment.appendChild(rev)
-    container.insertBefore(iconFragment, container.childNodes[3])
+    controlContainer.insertBefore(iconFragment, controlContainer.childNodes[3])
   }
 
   // 同步时间功能
@@ -349,20 +354,20 @@
   // 自动领取宝箱
   function getChest() {
     timer.chestTimer = setInterval(() => {
-      // 当最后一个还不是 undefind 时，说明还没有领取完，继续
+      // 当最后一个还不是 undefined 时，说明还没有领取完，继续
       if (chests[chests.length - 1]) {
         // 遍历领取
         for (const item of chests) {
-          // 如果是 undefind 则直接跳过
+          // 如果是 undefined 则直接跳过
           if (!item) continue
           // 是否已经领取
           const num = item.querySelector('.player-box-stat4').style.visibility
-          // 如果已经领取，把值设置为 undefind
+          // 如果已经领取，把值设置为 undefined
           if (num === 'visible') {
             chests.splice(chests.indexOf(item), 1, (0)[0])
             continue
           }
-          // 如果可以领取则领取，领取后把值设置为 undefind
+          // 如果可以领取则领取，领取后把值设置为 undefined
           const get = item.querySelector('.player-box-stat3').style.visibility
           if (get === 'visible') {
             item.querySelector('.player-box-stat3').click()
@@ -382,8 +387,7 @@
   // 网页全屏功能
   function fullScreen() {
     // 获取 剧场模式 按钮并点击
-    const fullScreenButton = container.querySelector('#player-fullpage-btn')
-    fullScreenButton.click()
+    controlContainer.querySelector('#player-fullpage-btn').click()
     // 获取 右侧聊天框 并点击
     const danmuChat = document.querySelector('#player-fullpage-right-btn')
     if (Array.from(danmuChat.classList).indexOf('player-fullpage-right-open') === -1) {
@@ -394,9 +398,78 @@
     // 播放器高度设为 100%
     document.querySelector('#player-wrap').style.height = '100%'
     // 显示弹幕输入框
-    container.querySelector('#player-full-input').style.display = 'block'
+    controlContainer.querySelector('#player-full-input').style.display = 'block'
     // 隐藏 控制栏
-    container.classList.add('hidden-control')
+    controlContainer.classList.add('hidden-controls')
+    // 添加鼠标事件
+    addEvent()
+  }
+
+  // 网页全屏后监听鼠标覆盖 / 移开事件
+  function addEvent() {
+    const mouseWrap = document.querySelector('#player-mouse-event-wrap')
+    const danmuInput = controlContainer.querySelector('#player-full-input-txt')
+    const fullpageBtn = controlContainer.querySelector('#player-fullpage-btn')
+    mouseWrap.addEventListener('mousemove', throttle(showControls, 300))
+    mouseWrap.addEventListener('mousemove', debounce(hiddenControls, 1200)) // 1.2s 后隐藏控制栏
+    controlContainer.addEventListener('mouseover', showControls, true)
+    // 回车显示并聚焦输入框
+    document.addEventListener('keydown', e => {
+      if (e.key.toLowerCase() === 'enter') {
+        showControls()
+        danmuInput.focus()
+      }
+    })
+    // 回车发送弹幕
+    danmuInput.addEventListener('keydown', e => {
+      e.stopPropagation()
+      if (e.key.toLowerCase() === 'enter') {
+        controlContainer.querySelector('#player-full-input-btn').click()
+      }
+    })
+    // 退出剧场模式是同时设置自动网页全屏为 false
+    fullpageBtn.addEventListener('click', () => {
+      headerContainer.querySelector('#ON_OFF2').click()
+      location.reload()
+    })
+  }
+
+  // 节流函数
+  function throttle(fn, delay) {
+    let valid = true
+    return function () {
+      if (!valid) {
+        return false
+      }
+      valid = false
+      setTimeout(() => {
+        fn()
+        valid = true
+      }, delay)
+    }
+  }
+
+  // 防抖函数
+  function debounce(fn, delay) {
+    let timer = null
+    return function () {
+      if (timer) {
+        clearTimeout(timer)
+      }
+      timer = setTimeout(fn, delay)
+    }
+  }
+
+  // 显示 控制栏
+  function showControls() {
+    controlContainer.classList.add('show-controls')
+    controlContainer.classList.remove('hidden-controls')
+  }
+
+  // 隐藏 控制栏
+  function hiddenControls() {
+    controlContainer.classList.remove('show-controls')
+    controlContainer.classList.add('hidden-controls')
   }
 
   // 配置选项监听事件
