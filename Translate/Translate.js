@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标,直接调用 Google 的翻译接口对非中文网页进行翻译
-// @version      1.39
+// @version      1.40
 // @license      BSD-3-Clause
 // @include      *://*
 // @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
@@ -65,6 +65,7 @@
 // @note         2021/03/10 修复了使用 Dark Reader 开启夜间模式之后图片显示问题，强迫症福音
 // @note         2021/03/11 添加了新的配置选项“切换自动检测中文”，用于开关脚本的中文检测功能
 // @note         2021/03/13 清除图片请求，加快一点点速度，但是不影响图标的显示
+// @note         2021/03/31 排除 pre，修复有些网页滚动消失的 bug
 // ==/UserScript==
 
 ;(function () {
@@ -106,6 +107,9 @@
 
     // 自定义样式，隐藏顶部栏
     GM_addStyle(`
+      html {
+        height: auto!important;
+      }
       html,body{
         top: 0!important;
       }
@@ -265,7 +269,7 @@
     }
 
     // 排除一些代码的翻译
-    const noTranslateArray = ['.bbCodeCode', 'tt', 'pre[translate="no"]']
+    const noTranslateArray = ['.bbCodeCode', 'tt', 'pre[translate="no"]', 'pre']
     noTranslateArray.forEach(selectorName => {
       ;[...document.querySelectorAll(selectorName)].forEach(node => {
         if (node.className.indexOf('notranslate') === -1) {
