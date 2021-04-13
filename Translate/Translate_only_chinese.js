@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name         网页翻译
+// @name         网页翻译——翻译为中文
 // @author       Kaiter-Plus
-// @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate
-// @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标,直接调用 Google 的翻译接口对非中文网页进行翻译
-// @version      1.41
+// @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate/Translate_only_chinese.js
+// @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标，该版本为中文翻译版本，只把外语翻译为中文
+// @version      0.01
 // @license      BSD-3-Clause
 // @include      *://*
 // @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
@@ -35,39 +35,7 @@
 // @grant        GM_getValue
 // @grant        GM_notification
 // @grant        GM_registerMenuCommand
-// @note         2020/03/26 网页整页翻译功能
-// @note         2020/04/13 排除纯ip网址
-// @note         2020/04/14 移除翻译后顶边栏
-// @note         2020/05/01 排除百度、QQ、超星等中文网址
-// @note         2020/05/04 修复去除上边栏网页先向下再向上跳的Bug
-// @note         2020/05/05 尝试修复百度出现超粗顶栏的Bug
-// @note         2020/05/12 添加恢复原网页的按钮（翻译按钮旁边），有点丑，不过希望可以先用着，有时间再看看能不能弄好看一点ヾ(≧▽≦*)o
-// @note         2020/05/23 稍微修改了一下恢复原网页的按钮的样式（还是不好看）
-// @note         2020/05/26 修改脚本为原生javascript，兼容暴力猴
-// @note         2020/05/26 修改翻译栏样式，固定宽高，防止在一些页面上出现太宽或太高的现象
-// @note         2020/06/06 修复火狐浏览器（firefox），内存溢出的bug，精简了一点代码
-// @note         2020/06/08 排除一些代码块的翻译，如果还有其它的网站的代码块需要排除，可以反馈给我，我排除一下
-// @note         2020/06/17 修改恢复原网页按钮的样式（使用@picasso250的样式），排除标签 tt
-// @note         2020/06/18 适配Quora
-// @note         2020/06/26 翻译和恢复按钮修改为在页面边缘附着的半透明半圆 -> 鼠标移入弹出翻译或恢复按钮
-// @note         2020/07/02 按钮向上移动了30像素，经测试，点击弹出按钮的方式不太友好，故放弃
-// @note         2020/08/23 使用了模板字符串代替原来的普通字符串，适配了移动端，移动端UI待改善
-// @note         2020/08/24 把“恢复”按钮的文字修改为“原”，稍微修改了一下移动端的布局
-// @note         2020/09/02 添加了一个网址的翻译排除
-// @note         2020/09/13 最近没有时间更新其它的，先做个小更新：添加了通过 meta 信息 charset 来判断是否添加翻译按钮（感谢 @qinxs）
-// @note         2020/10/03 放假了，更新了切换按钮的配置选项，点击浏览器的油猴或者暴力猴插件图标即可看见脚本的配置选项，点击即可切换按钮的位置
-// @note         2020/10/03 刚刚更新按钮位置配置信息时，忘记调整移动端的布局，重新调整更新一下
-// @note         2020/11/28 更新了一下脚本描述
-// @note         2021/01/14 恢复图片请求，好看一点
-// @note         2021/01/18 解决 YY 直播界面导航栏向下顶的bug（直接排除了 YY）
-// @note         2021/01/27 修复在一些网页可能存在页面被导航栏遮挡的bug
-// @note         2021/02/01 修复手机端显示“提供更好的翻译建议”挡视野，妨碍复制的问题
-// @note         2021/03/10 排除了 acfun，防止搜索界面出现底部移动的 bug
-// @note         2021/03/10 修复了使用 Dark Reader 开启夜间模式之后图片显示问题，强迫症福音
-// @note         2021/03/11 添加了新的配置选项“切换自动检测中文”，用于开关脚本的中文检测功能
-// @note         2021/03/13 清除图片请求，加快一点点速度，但是不影响图标的显示
-// @note         2021/03/31 排除 pre，修复有些网页滚动消失的 bug
-// @note         2021/04/02 上次更新后出现的 bug 更多了，暂时把代码回退为上一个版本
+// @note         2021/04/13 新建副本，只把其它语言翻译为中文
 // ==/UserScript==
 
 ;(function () {
@@ -113,75 +81,46 @@
         top: 0!important;
       }
       #google_translate_element {
+        display: none;
+      }
+      .buttonContainer {
+        width: 6em;
         position: fixed;
         bottom: 30px;
-        height: 21px;
-        border-radius: 11px;
         z-index: 10000000;
-        overflow: hidden;
-        box-shadow: 1px 1px 3px 0 #888;
-        opacity: .5;
-        transition: all .3s;
-      }
-      #google_translate_element .goog-te-gadget-simple {
-        border: 0;
-      }
-      #google_translate_element .goog-te-gadget-simple span {
-        margin-right: 0;
-        border-radius: 11px;
-      }
-      #lb {
-        display: inline-block;
-      }
-      .recoverPage {
-        width: 4em;
-        background-color: #fff;
-        position: fixed;
-        z-index: 10000000;
-        bottom: 60px;
         user-select: none;
+        overflow: hidden;
         text-align: center;
-        font-size: small;
+        font-size: 13px;
         line-height: 2em;
         border-radius: 1em;
         box-shadow: 1px 1px 3px 0 #888;
         opacity: .5;
         transition: all .3s;
       }
-      #google_translate_element:hover, .recoverPage:hover {
+      .recoverPage, .translateButton {
+        float: left;
+        width: 50%;
+        box-sizing: border-box;
+      }
+      .recoverPage {
+        border-radius: 1em 0 1rem;
+        background-color: #fff;
+      }
+      .translateButton {
+        color: #fff;
+        border-radius: 0 1rem 1rem 0;
+        background-color: #55b9f3;
+      }
+      .buttonContainer:hover {
         opacity: 1;
         transform: translateX(0);
       }
-      .recoverPage:active {
+      .recoverPage:active, .translateButton:active {
         box-shadow: 1px 1px 3px 0 #888 inset;
-      }
-      #google_translate_element .goog-te-gadget-simple {
-        width: 100%;
       }
       .goog-te-banner-frame.skiptranslate {
         display: none
-      }
-      @media handheld, only screen and (max-width: 768px) {
-        #google_translate_element {
-          width: 104px;
-        }
-        #google_translate_element .goog-te-combo {
-          margin: 0;
-          padding-top: 2px;
-          border: none;
-        }
-        #goog-gt-tt {
-          visibility: hidden!important;
-          display: none!important;
-        }
-        .goog-text-highlight {
-          background-color: inherit!important;
-          box-shadow: 0 0 0 0 transparent!important;
-        }
-        .recoverPage {
-          width: 1.5em;
-          line-height: 1.5em;
-        }
       }
     `)
 
@@ -201,12 +140,7 @@
             new google.translate.TranslateElement(
               {
                 pageLanguage: 'auto',
-                //包括的语言，中文简体，中文繁体，英语，日语，俄语
-                includedLanguages: 'zh-CN,zh-TW,en,ja,ru',
-                /*0，原生select，并且谷歌logo显示在按钮下方。
-                 1，原生select，并且谷歌logo显示在右侧。
-                 2，完全展开语言列表，适合pc。
-               */
+                includedLanguages: 'zh-CN',
                 layout: /mobile/i.test(navigator.userAgent) ? 0 : 2,
               },
               'google_translate_element'
@@ -224,10 +158,15 @@
               a.parentNode.insertBefore(c.children[0], a.parentNode.children[0])
               a.remove()
             });
+            // 按钮容器
+            const buttonContainer = document.createElement('div')
+            buttonContainer.setAttribute('class', 'notranslate buttonContainer')
+            document.body.appendChild(buttonContainer)
+            // 恢复按钮
             const recoverPage = document.createElement('div')
             recoverPage.setAttribute('class', 'notranslate recoverPage')
-            recoverPage.innerText = '原'
-            document.body.appendChild(recoverPage)
+            recoverPage.innerText = '恢复'
+            buttonContainer.appendChild(recoverPage)
             // 点击恢复原网页
             recoverPage.onclick = () => {
               const phoneRecoverIframe = document.getElementById(':1.container') // 移动端
@@ -240,6 +179,25 @@
                 recoverDocument.getElementById(':2.restore').click()
               }
             }
+            // 翻译按钮
+            const langIframe = document.querySelector('.goog-te-menu-frame')
+            const langDocument = langIframe.contentWindow.document || langIframe.contentDocument
+            let translateLang
+            const translateTimer = setInterval(() => {
+              translateLang = langDocument.querySelectorAll('table a')[1]
+              if (translateLang) {
+                clearInterval(translateTimer)
+                // 添加翻译按钮
+                const translateButton = document.createElement('div')
+                translateButton.setAttribute('class', 'notranslate translateButton')
+                translateButton.innerText = '翻译'
+                buttonContainer.appendChild(translateButton)
+                // 点击恢复原网页
+                translateButton.onclick = () => {
+                  translateLang.click()
+                }
+              }
+            }, 300)
           }
         }, 300)
       }`,
@@ -264,7 +222,6 @@
         'src',
         head
       )
-      // createElement('//cdn.jsdelivr.net/gh/lindongbin/gt/element.js','script','src', head)
     }
 
     // 排除一些代码的翻译
@@ -282,34 +239,16 @@
   function setButtonPosition() {
     if (buttonPosition) {
       GM_addStyle(`
-        #google_translate_element {
+        .buttonContainer {
           left: 0px;
-          transform: translateX(-85%);
-        }
-        .recoverPage {
-          left: 0px;
-          transform: translateX(-73%);
-        }
-        @media handheld, only screen and (max-width: 768px) {
-          .recoverPage {
-            transform: translateX(0);
-          }
+          transform: translateX(-80%);
         }
       `)
     } else {
       GM_addStyle(`
-        #google_translate_element {
+        .buttonContainer {
           right: 0px;
-          transform: translateX(85%);
-        }
-        .recoverPage {
-          right: 0px;
-          transform: translateX(73%);
-        }
-        @media handheld, only screen and (max-width: 768px) {
-          .recoverPage {
-            transform: translateX(0);
-          }
+          transform: translateX(80%);
         }
       `)
     }
