@@ -3,7 +3,7 @@
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/虎牙直播功能增强
 // @author      Kaiter-Plus
 // @description 给虎牙直播添加额外功能
-// @version     1.2
+// @version     1.3
 // @license     BSD-3-Clause
 // @match       *://*.huya.com/*
 // @icon        https://www.huya.com/favicon.ico
@@ -26,6 +26,7 @@
 // @note        2021/03/12 添加了脚本的配置选项
 // @note        2021/03/13 优化自动领取百宝箱逻辑
 // @note        2021/03/22 添加 “自动网页全屏” 功能，并同时提供配置开关，默认关闭
+// @note        2021/05/25 虎牙网站更新，修复脚本失效
 // ==/UserScript==
 ;(function () {
   'use strict'
@@ -66,7 +67,7 @@
   function init() {
     timer.initTimer = setInterval(() => {
       if (!controlContainer || chests.length <= 0) {
-        headerContainer = document.querySelector('.duya-header-control')
+        headerContainer = document.querySelector('.duya-header-bd')
         controlContainer = document.getElementById('player-ctrl-wrap')
         // 使用数组保存
         chests = Array.from(document.querySelectorAll('#player-box .player-box-list li'))
@@ -139,13 +140,16 @@
           bottom: 0px!important;
         }
         @media handheld, only screen and (max-width: 1440px) {
-          .hy-nav-history {
+          .duya-header-right>div>div:nth-child(1)>div:nth-child(4) {
+            display: none;
+          }
+          .duya-header-right>div>div:nth-child(1)>div:nth-child(5) {
             display: none;
           }
         }
         @media handheld, only screen and (max-width: 1721px) {
-          .hy-nav-kaibo {
-            visibility: hidden;
+          .duya-header-right>div>div:nth-child(1)>div:nth-child(1) {
+            display: none;
           }
         }
         /* 自定义开关 */
@@ -287,7 +291,7 @@
           <i class="arrow"></i>
           <div id="J_hyHdFollowBox">
             <div class="subscribe-hd">
-              <div class="subscribe-tit">脚本配置选项</div>
+              <div class="subscribe-tit" style="padding: 12px 0 7px 15px;color: #666;font-size: 12px;">脚本配置选项</div>
             </div>
             <hr style="margin: 0 15px;" />
             <div class="subscribe-bd reset-style">
