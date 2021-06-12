@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate/Translate_only_chinese.js
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标，该版本为中文翻译版本，只把外语翻译为中文
-// @version      0.01
+// @version      0.02
 // @license      BSD-3-Clause
 // @include      *://*
 // @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
@@ -36,6 +36,7 @@
 // @grant        GM_notification
 // @grant        GM_registerMenuCommand
 // @note         2021/04/13 新建副本，只把其它语言翻译为中文
+// @note         2021/06/12 适配了移动端
 // ==/UserScript==
 
 ;(function () {
@@ -104,7 +105,7 @@
         box-sizing: border-box;
       }
       .recoverPage {
-        border-radius: 1em 0 1rem;
+        border-radius: 1em 0 0 1rem;
         background-color: #fff;
       }
       .translateButton {
@@ -158,6 +159,8 @@
               a.parentNode.insertBefore(c.children[0], a.parentNode.children[0])
               a.remove()
             });
+            // 获取设备信息
+            const device = navigator.userAgent.indexOf('Mobile')
             // 按钮容器
             const buttonContainer = document.createElement('div')
             buttonContainer.setAttribute('class', 'notranslate buttonContainer')
@@ -169,33 +172,52 @@
             buttonContainer.appendChild(recoverPage)
             // 点击恢复原网页
             recoverPage.onclick = () => {
-              const phoneRecoverIframe = document.getElementById(':1.container') // 移动端
-              const PCRecoverIframe = document.getElementById(':2.container') // PC端
-              if (phoneRecoverIframe) {
-                const recoverDocument = phoneRecoverIframe.contentWindow.document
+              let recoverIframe = null
+              if (~device) {
+                // 移动端
+                const recoverDocument = document.getElementById(':1.container').contentWindow.document
                 recoverDocument.getElementById(':1.restore').click()
-              } else if (PCRecoverIframe) {
-                const recoverDocument = PCRecoverIframe.contentWindow.document
+              } else {
+                // PC端
+                const recoverDocument = document.getElementById(':2.container').contentWindow.document
                 recoverDocument.getElementById(':2.restore').click()
               }
             }
             // 翻译按钮
-            const langIframe = document.querySelector('.goog-te-menu-frame')
-            const langDocument = langIframe.contentWindow.document || langIframe.contentDocument
-            let translateLang
-            const translateTimer = setInterval(() => {
-              translateLang = langDocument.querySelectorAll('table a')[1]
-              if (translateLang) {
-                clearInterval(translateTimer)
-                // 添加翻译按钮
-                const translateButton = document.createElement('div')
-                translateButton.setAttribute('class', 'notranslate translateButton')
-                translateButton.innerText = '翻译'
-                buttonContainer.appendChild(translateButton)
-                // 点击恢复原网页
-                translateButton.onclick = () => {
-                  translateLang.click()
-                }
+            let langIframe = document.querySelector('.goog-te-menu-frame')
+            const langIframeTimer = setInterval(() => {
+              if (langIframe) {
+                const langDocument = langIframe.contentWindow.document || langIframe.contentDocument
+                let translateLang
+                const translateTimer = setInterval(() => {
+                  if (~device) {
+                    translateLang = document.querySelector('.goog-te-combo')
+                  } else {
+                    translateLang = langDocument.querySelectorAll('table a')[1]
+                  }
+                  if (translateLang) {
+                    clearInterval(translateTimer)
+                    // 添加翻译按钮
+                    const translateButton = document.createElement('div')
+                    translateButton.setAttribute('class', 'notranslate translateButton')
+                    translateButton.innerText = '翻译'
+                    buttonContainer.appendChild(translateButton)
+                    // 点击翻译
+                    translateButton.onclick = () => {
+                      if (~device) {
+                        const event = document.createEvent('HTMLEvents');
+                        event.initEvent("change", true, true);
+                        event.eventType = 'message';
+                        document.querySelector('.goog-te-combo').dispatchEvent(event)
+                      } else {
+                        translateLang.click()
+                      }
+                    }
+                  }
+                }, 300)
+                clearInterval(langIframeTimer)
+              } else {
+                langIframe = document.querySelector('.goog-te-menu-frame')
               }
             }, 300)
           }
