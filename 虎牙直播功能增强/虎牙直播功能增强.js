@@ -128,8 +128,9 @@
         .hy-header-style-normal .hy-nav-title .title {
           position: relative;
           top: 7px;
-          left: -20px;
+          left: -19px;
           color: #555;
+          font-size: 12px;
         }
         .hy-header-style-normal .hy-nav-title:hover svg,
         .hy-header-style-normal .hy-nav-title:hover .title {
