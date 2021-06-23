@@ -11,8 +11,6 @@
 // @grant       GM_setValue
 // @grant       GM_getValue
 // @grant       GM_addStyle
-// @grant       GM_notification
-// @grant       GM_registerMenuCommand
 // @run-at      document-end
 // @note        2020/12/10 添加 “同步时间” 功能
 // @note        2020/12/28 添加 “画面镜像” 功能
