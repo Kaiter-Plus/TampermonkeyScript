@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标,直接调用 Google 的翻译接口对非中文网页进行翻译
-// @version      1.42
+// @version      1.43
 // @license      BSD-3-Clause
 // @include      *://*
 // @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
@@ -70,6 +70,7 @@
 // @note         2021/03/31 排除 pre，修复有些网页滚动消失的 bug
 // @note         2021/04/02 上次更新后出现的 bug 更多了，暂时把代码回退为上一个版本
 // @note         2021/07/14 排除抖音，防止可能出现的 bug
+// @note         2021/09/19 优化开启关闭自动检测中文逻辑
 // ==/UserScript==
 
 ;(function () {
@@ -89,15 +90,17 @@
   let buttonPosition = currentPosition ? true : false
   // 获取是否自动检测中文配置信息
   const currentCheck = GM_getValue('isCheck')
-  // 检测设置：true 关闭，false 开启， 默认开启
+  // 检测设置：true 关闭, false 开启,  默认开启
   let isCheck = currentCheck ? true : false
 
   // 判断是不是中文，如果是则直接return，否则执行
-  if (lang.substr(0, 2) === 'zh' || (mainLang.substr(0, 2) === 'gb' && !isCheck)) {
+  if (!isCheck && (lang.substr(0, 2) === 'zh' || mainLang.substr(0, 2) === 'gb')) {
     addSwitchChecked()
+    addSwitchButtonPosition()
     return
   } else {
     addSwitchChecked()
+    addSwitchButtonPosition()
     // 创建网页元素方法
     function createElement(html, nodeText, attr, parent) {
       const element = document.createElement(nodeText)
@@ -326,10 +329,11 @@
       location.reload()
     })
   }
-  function switchButtonPosition() {
-    GM_setValue('position', !buttonPosition)
-    setButtonPosition()
-    location.reload()
+  function addSwitchButtonPosition() {
+    GM_registerMenuCommand('切换按钮位置', function () {
+      GM_setValue('position', !buttonPosition)
+      setButtonPosition()
+      location.reload()
+    })
   }
-  GM_registerMenuCommand('切换按钮位置', switchButtonPosition)
 })()

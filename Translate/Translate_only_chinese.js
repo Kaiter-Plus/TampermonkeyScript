@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate/Translate_only_chinese.js
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标，该版本为中文翻译版本，只把外语翻译为中文
-// @version      0.03
+// @version      0.04
 // @license      BSD-3-Clause
 // @include      *://*
 // @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
@@ -39,6 +39,7 @@
 // @note         2021/04/13 新建副本，只把其它语言翻译为中文
 // @note         2021/06/12 适配了移动端
 // @note         2021/07/14 排除抖音，防止可能出现的 bug
+// @note         2021/09/19 优化开启关闭自动检测中文逻辑
 // ==/UserScript==
 
 ;(function () {
@@ -62,7 +63,7 @@
   let isCheck = currentCheck ? true : false
 
   // 判断是不是中文，如果是则直接return，否则执行
-  if (lang.substr(0, 2) === 'zh' || (mainLang.substr(0, 2) === 'gb' && !isCheck)) {
+  if (!isCheck && (lang.substr(0, 2) === 'zh' || mainLang.substr(0, 2) === 'gb')) {
     addSwitchChecked()
     return
   } else {
