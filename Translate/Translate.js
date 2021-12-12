@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标,直接调用 Google 的翻译接口对非中文网页进行翻译
-// @version      1.43
+// @version      1.44
 // @license      BSD-3-Clause
 // @include      *://*
 // @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
@@ -71,6 +71,7 @@
 // @note         2021/04/02 上次更新后出现的 bug 更多了，暂时把代码回退为上一个版本
 // @note         2021/07/14 排除抖音，防止可能出现的 bug
 // @note         2021/09/19 优化开启关闭自动检测中文逻辑
+// @note         2021/12/12 应用户反馈，去除显示“提供更好的翻译建议”弹框
 // ==/UserScript==
 
 ;(function () {
@@ -166,6 +167,14 @@
       .goog-te-banner-frame.skiptranslate {
         display: none
       }
+      #goog-gt-tt {
+        visibility: hidden!important;
+        display: none!important;
+      }
+      .goog-text-highlight {
+        background-color: inherit!important;
+        box-shadow: 0 0 0 0 transparent!important;
+      }
       @media handheld, only screen and (max-width: 768px) {
         #google_translate_element {
           width: 104px;
@@ -174,14 +183,6 @@
           margin: 0;
           padding-top: 2px;
           border: none;
-        }
-        #goog-gt-tt {
-          visibility: hidden!important;
-          display: none!important;
-        }
-        .goog-text-highlight {
-          background-color: inherit!important;
-          box-shadow: 0 0 0 0 transparent!important;
         }
         .recoverPage {
           width: 1.5em;
