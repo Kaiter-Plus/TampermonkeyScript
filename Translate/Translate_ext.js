@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate/Translate_ext.js
 // @description  给非中文的网页右下角添加一个google翻译图标对网页进行翻译，该版本主要适配手机浏览器： X浏览器、via浏览器等不支持油猴扩展的浏览器
-// @version      1.44
+// @version      1.45
 // @license      BSD-3-Clause
 // @icon         https://www.google.cn/favicon.ico
 // @include      *://*
@@ -11,7 +11,7 @@
 // @noframes
 // @note         2021/03/18 网页整页翻译功能，稍微调整了布局
 // @note         2021/03/20 添加了排除网站的功能
-// @note         2021/12/12 脚本被某些有心人举报，被删除，重新上传
+// @note         2021/12/14 直接使用 https 获取谷歌翻译接口（防止有可能火狐浏览器无法用于翻译本地文件的bug）@古海沉舟
 // ==/UserScript==
 
 ;(function () {
@@ -232,14 +232,14 @@
     if (/quora/i.test(location.href)) {
       // 这里主要是适配quora
       createElement(
-        '//translate.google.com/translate_a/element.js?&cb=googleTranslateElementInit',
+        'https://translate.google.com/translate_a/element.js?&cb=googleTranslateElementInit',
         'script',
         'src',
         head
       )
     } else {
       createElement(
-        '//translate.google.cn/translate_a/element.js?&cb=googleTranslateElementInit',
+        'https://translate.google.cn/translate_a/element.js?&cb=googleTranslateElementInit',
         'script',
         'src',
         head

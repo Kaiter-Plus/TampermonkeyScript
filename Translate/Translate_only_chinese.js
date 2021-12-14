@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate/Translate_only_chinese.js
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标，该版本为中文翻译版本，只把外语翻译为中文
-// @version      0.04
+// @version      0.05
 // @license      BSD-3-Clause
 // @include      *://*
 // @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
@@ -40,6 +40,8 @@
 // @note         2021/06/12 适配了移动端
 // @note         2021/07/14 排除抖音，防止可能出现的 bug
 // @note         2021/09/19 优化开启关闭自动检测中文逻辑
+// @note         2021/12/12 应用户反馈，去除显示“提供更好的翻译建议”弹框
+// @note         2021/12/14 直接使用 https 获取谷歌翻译接口（防止有可能火狐浏览器无法用于翻译本地文件的bug）@古海沉舟
 // ==/UserScript==
 
 ;(function () {
@@ -125,6 +127,14 @@
       }
       .goog-te-banner-frame.skiptranslate {
         display: none
+      }
+      #goog-gt-tt {
+        visibility: hidden!important;
+        display: none!important;
+      }
+      .goog-text-highlight {
+        background-color: inherit!important;
+        box-shadow: 0 0 0 0 transparent!important;
       }
     `)
 
@@ -235,14 +245,14 @@
     if (/quora/i.test(location.href)) {
       // 这里主要是适配quora
       createElement(
-        '//translate.google.com/translate_a/element.js?&cb=googleTranslateElementInit',
+        'https://translate.google.com/translate_a/element.js?&cb=googleTranslateElementInit',
         'script',
         'src',
         head
       )
     } else {
       createElement(
-        '//translate.google.cn/translate_a/element.js?&cb=googleTranslateElementInit',
+        'https://translate.google.cn/translate_a/element.js?&cb=googleTranslateElementInit',
         'script',
         'src',
         head
