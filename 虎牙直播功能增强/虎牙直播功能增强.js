@@ -479,11 +479,12 @@
   // 退出网页全屏
   function quitFullScreen() {
     const narrowPageBtn = controlContainer.querySelector('.player-narrowpage')
-    if (GM_getValue('isFullScreen')) {
-      narrowPageBtn.onclick = () => {
-        headerContainer.querySelector('#ON_OFF2').click()
+    narrowPageBtn.onclick = () => {
+      headerContainer.querySelector('#ON_OFF2').click()
+      if (!GM_getValue('isFullScreen')) {
         // 移除网页全屏样式
         dynamicStyle.parentNode.removeChild(dynamicStyle)
+        narrowPageBtn.onclick = null
       }
     }
   }
