@@ -96,7 +96,7 @@
   // 初始化图标样式
   function initStyle() {
     GM_addStyle(`
-        #J_global_user_tips{
+        #J_global_user_tips {
           display: none;
         }
         .video-tools-icon {
@@ -157,12 +157,6 @@
           padding: 5px 15px;
           display: flex;
           justify-content: space-around;
-        }
-        .hidden-controls {
-          bottom: -44px!important;
-        }
-        .show-controls {
-          bottom: 0px!important;
         }
         @media handheld, only screen and (max-width: 1440px) {
           .duya-header-right>div>div:nth-child(1)>div:nth-child(4) {
@@ -243,6 +237,7 @@
     tag.innerHTML = option.innerHTML
     tag.style = option.style
     tag.addEventListener('click', option.eventListener)
+    tag.tabIndex = option.tabIndex ? option.tabIndex : ''
     return tag
   }
 
@@ -271,7 +266,7 @@
     // 同步时间图标
     const sync = createTagIcon({
       tagName: 'div',
-      id: 'ex-videosync',
+      id: 'ex-videoSync',
       className: 'video-tools-icon',
       title: '同步时间',
       innerHTML: `
@@ -301,7 +296,7 @@
     // 插入配置选项
     const settings = createTagIcon({
       tagName: 'div',
-      id: '',
+      id: 'ex-settings',
       className: 'hy-nav-item',
       title: '',
       innerHTML: `
@@ -334,6 +329,7 @@
         </div>
       `,
       style: '',
+      tabIndex: 1,
       eventListener: configSettings
     })
 
@@ -417,6 +413,8 @@
 
   // 网页全屏功能
   function fullScreen() {
+    // 添加全屏动态样式
+    addDynamicStyle()
     // 获取 剧场模式 按钮并点击
     controlContainer.querySelector('#player-fullpage-btn').click()
     // 获取 右侧聊天框 并点击
@@ -432,15 +430,31 @@
     controlContainer.querySelector('#player-full-input').style.display = 'block'
     // 隐藏 控制栏
     controlContainer.classList.add('hidden-controls')
+    // 退出剧场模式
+    quitFullScreen()
     // 添加鼠标事件
     addEvent()
+  }
+
+  // 网页全屏样式
+  let dynamicStyle = null
+  // 添加动态样式
+  function addDynamicStyle() {
+    // 添加网页全屏样式
+    dynamicStyle = GM_addStyle(`
+      .hidden-controls {
+        bottom: -44px!important;
+      }
+      .show-controls {
+        bottom: 0px!important;
+      }
+    `)
   }
 
   // 网页全屏后监听鼠标覆盖 / 移开事件
   function addEvent() {
     const mouseWrap = document.querySelector('#player-mouse-event-wrap')
-    const danmuInput = controlContainer.querySelector('#player-full-input-txt')
-    const fullpageBtn = controlContainer.querySelector('#player-fullpage-btn')
+    const danMuInput = controlContainer.querySelector('#player-full-input-txt')
     mouseWrap.addEventListener('mousemove', throttle(showControls, 300))
     mouseWrap.addEventListener('mousemove', debounce(hiddenControls, 1200)) // 1.2s 后隐藏控制栏
     controlContainer.addEventListener('mouseover', showControls, true)
@@ -448,21 +462,30 @@
     document.addEventListener('keydown', e => {
       if (e.key.toLowerCase() === 'enter') {
         showControls()
-        danmuInput.focus()
+        danMuInput.focus()
       }
     })
     // 回车发送弹幕
-    danmuInput.addEventListener('keydown', e => {
+    danMuInput.addEventListener('keydown', e => {
       e.stopPropagation()
       if (e.key.toLowerCase() === 'enter') {
         controlContainer.querySelector('#player-full-input-btn').click()
+        document.querySelector('#ex-settings').focus()
+        hiddenControls()
       }
     })
-    // 退出剧场模式是同时设置自动网页全屏为 false
-    fullpageBtn.addEventListener('click', () => {
-      headerContainer.querySelector('#ON_OFF2').click()
-      location.reload()
-    })
+  }
+
+  // 退出网页全屏
+  function quitFullScreen() {
+    const narrowPageBtn = controlContainer.querySelector('.player-narrowpage')
+    if (GM_getValue('isFullScreen')) {
+      narrowPageBtn.onclick = () => {
+        headerContainer.querySelector('#ON_OFF2').click()
+        // 移除网页全屏样式
+        dynamicStyle.parentNode.removeChild(dynamicStyle)
+      }
+    }
   }
 
   // 节流函数
