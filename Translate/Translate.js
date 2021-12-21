@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标,直接调用 Google 的翻译接口对非中文网页进行翻译
-// @version      1.45
+// @version      1.46
 // @license      BSD-3-Clause
 // @include      *://*
 // @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
@@ -36,6 +36,7 @@
 // @grant        GM_getValue
 // @grant        GM_notification
 // @grant        GM_registerMenuCommand
+// @grant        GM_unregisterMenuCommand
 // @note         2020/03/26 网页整页翻译功能
 // @note         2020/04/13 排除纯ip网址
 // @note         2020/04/14 移除翻译后顶边栏
@@ -73,10 +74,75 @@
 // @note         2021/09/19 优化开启关闭自动检测中文逻辑
 // @note         2021/12/12 应用户反馈，去除显示“提供更好的翻译建议”弹框
 // @note         2021/12/14 直接使用 https 获取谷歌翻译接口（防止有可能火狐浏览器无法用于翻译本地文件的bug）@古海沉舟
+// @note         2021/12/21 优化菜单切换逻辑，优化交互体验
 // ==/UserScript==
 
 ;(function () {
   'use strict'
+
+  // 菜单
+  const menu = [
+    {
+      key: 'position',
+      name: '按钮位置',
+      value: true,
+      tip: {
+        open: '👈',
+        close: '👉'
+      },
+      click: setButtonPosition
+    },
+    {
+      key: 'isCheck',
+      name: '自动检测中文',
+      value: true,
+      tip: {
+        open: '✅',
+        close: '❌'
+      },
+      click: null
+    }
+  ]
+
+  // 保存已注册的菜单
+  const munuRegister = []
+
+  // 配置默认菜单
+  menu.forEach(v => {
+    if (GM_getValue(v.key) === null) GM_setValue(v.key, v.value)
+  })
+
+  // 注册菜单
+  function registerMenuCommand() {
+    if (munuRegister.length === menu.length) {
+      munuRegister.forEach(v => {
+        GM_unregisterMenuCommand(v)
+      })
+    }
+    menu.forEach((v, i) => {
+      v.value = GM_getValue(v.key)
+      munuRegister[i] = GM_registerMenuCommand(`${v.value ? v.tip.open : v.tip.close} ${v.name}`, () => {
+        menuSwitch(v)
+      })
+    })
+  }
+
+  // 切换菜单
+  function menuSwitch(item) {
+    // 设置数据
+    item.value = !item.value
+    GM_setValue(item.key, item.value)
+    // 系统通知
+    GM_notification({
+      text: `已${item.value ? item.tip.open : item.tip.close}[${item.name}] 功能`,
+      title: '网页翻译',
+      timeout: 1000
+    })
+    // 如果有点击事件，执行
+    if (item.click) item.click()
+    // 重新注册
+    registerMenuCommand()
+  }
 
   // 获取 head
   const head = document.head
@@ -86,23 +152,35 @@
   const lang = document.documentElement.lang
   // 获取网页使用的主要语言
   const mainLang = document.characterSet.toLowerCase()
-  // 获取按钮位置信息
-  const currentPosition = GM_getValue('position')
-  // 按钮位置：true 为左，false 为右， 默认为右
-  let buttonPosition = currentPosition ? true : false
-  // 获取是否自动检测中文配置信息
-  const currentCheck = GM_getValue('isCheck')
-  // 检测设置：true 关闭, false 开启,  默认开启
-  let isCheck = currentCheck ? true : false
+  // 位置信息样式
+  let positionStyle = null
+
+  // 设置按钮位置
+  function setButtonPosition() {
+    if (positionStyle) positionStyle.parentNode.removeChild(positionStyle)
+    positionStyle = GM_addStyle(`
+      #google_translate_element {
+        ${GM_getValue('position') ? 'left' : 'right'}: 0;
+        transform: translateX(${GM_getValue('position') ? '-' : ''}85%);
+      }
+      .recoverPage {
+        ${GM_getValue('position') ? 'left' : 'right'}: 0;
+        transform: translateX(${GM_getValue('position') ? '-' : ''}73%);
+      }
+      @media handheld, only screen and (max-width: 768px) {
+        .recoverPage {
+          transform: translateX(0);
+        }
+      }
+    `)
+  }
 
   // 判断是不是中文，如果是则直接return，否则执行
-  if (!isCheck && (lang.substr(0, 2) === 'zh' || mainLang.substr(0, 2) === 'gb')) {
-    addSwitchChecked()
-    addSwitchButtonPosition()
+  if (!GM_getValue('isCheck') && (lang.substr(0, 2) === 'zh' || mainLang.substr(0, 2) === 'gb')) {
+    registerMenuCommand()
     return
   } else {
-    addSwitchChecked()
-    addSwitchButtonPosition()
+    registerMenuCommand()
     // 创建网页元素方法
     function createElement(html, nodeText, attr, parent) {
       const element = document.createElement(nodeText)
@@ -282,60 +360,6 @@
           node.classList.add('notranslate')
         }
       })
-    })
-  }
-
-  // 设置按钮位置
-  function setButtonPosition() {
-    if (buttonPosition) {
-      GM_addStyle(`
-        #google_translate_element {
-          left: 0px;
-          transform: translateX(-85%);
-        }
-        .recoverPage {
-          left: 0px;
-          transform: translateX(-73%);
-        }
-        @media handheld, only screen and (max-width: 768px) {
-          .recoverPage {
-            transform: translateX(0);
-          }
-        }
-      `)
-    } else {
-      GM_addStyle(`
-        #google_translate_element {
-          right: 0px;
-          transform: translateX(85%);
-        }
-        .recoverPage {
-          right: 0px;
-          transform: translateX(73%);
-        }
-        @media handheld, only screen and (max-width: 768px) {
-          .recoverPage {
-            transform: translateX(0);
-          }
-        }
-      `)
-    }
-  }
-
-  // 添加注册菜单项
-  function addSwitchChecked() {
-    GM_registerMenuCommand('切换自动检测中文', function () {
-      isCheck = !isCheck
-      GM_setValue('isCheck', isCheck)
-      isCheck ? GM_notification('已关闭自动检测中文') : GM_notification('已开启自动检测中文')
-      location.reload()
-    })
-  }
-  function addSwitchButtonPosition() {
-    GM_registerMenuCommand('切换按钮位置', function () {
-      GM_setValue('position', !buttonPosition)
-      setButtonPosition()
-      location.reload()
     })
   }
 })()
