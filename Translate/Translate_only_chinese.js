@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate/Translate_only_chinese.js
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标，该版本为中文翻译版本，只把外语翻译为中文
-// @version      0.06
+// @version      0.07
 // @license      BSD-3-Clause
 // @include      *://*
 // @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
@@ -44,6 +44,7 @@
 // @note         2021/12/12 应用户反馈，去除显示“提供更好的翻译建议”弹框
 // @note         2021/12/14 直接使用 https 获取谷歌翻译接口（防止有可能火狐浏览器无法用于翻译本地文件的bug）@古海沉舟
 // @note         2021/12/21 优化菜单切换逻辑，优化交互体验
+// @note         2021/12/28 优化判断网页是否是中文逻辑
 // ==/UserScript==
 
 ;(function () {
@@ -119,8 +120,24 @@
   const body = document.body
   // 获取当前页面的语言
   const lang = document.documentElement.lang
+  // 获取网页的标题
+  const pageTitle = document.title
+  // 获取网页描述信息
+  const description = document.querySelector('meta[name="description"]').outerHTML
   // 获取网页使用的主要语言
   const mainLang = document.characterSet.toLowerCase()
+
+  // 判断是不是中文网页
+  function isChinesePage() {
+    return (
+      GM_getValue('isCheck') &&
+      (lang.substring(0, 2) === 'zh' ||
+        mainLang.substring(0, 2) === 'gb' ||
+        /[\u4E00-\u9FFF]/.test(pageTitle) ||
+        /[\u4E00-\u9FFF]/.test(description))
+    )
+  }
+
   // 位置信息样式
   let positionStyle = null
 
@@ -136,7 +153,7 @@
   }
 
   // 判断是不是中文，如果是则直接return，否则执行
-  if (!GM_getValue('isCheck') && (lang.substr(0, 2) === 'zh' || mainLang.substr(0, 2) === 'gb')) {
+  if (GM_getValue('isCheck') && (lang.substring(0, 2) === 'zh' || mainLang.substring(0, 2) === 'gb')) {
     registerMenuCommand()
     return
   } else {
