@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate/Translate_only_chinese.js
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标，该版本为中文翻译版本，只把外语翻译为中文
-// @version      0.09
+// @version      0.10
 // @license      BSD-3-Clause
 // @include      *://*
 // @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
@@ -46,6 +46,7 @@
 // @note         2021/12/21 优化菜单切换逻辑，优化交互体验
 // @note         2021/12/28 优化判断网页是否是中文逻辑
 // @note         2022/01/08 修复上一个版本更新后大多数网站不能使用的 Bug, 解决一些网站开启脚本之后不能滚动
+// @note         2022/01/10 修复访问站内 http 链接自动跳转 https 的问题
 // ==/UserScript==
 
 ;(function () {
@@ -166,10 +167,10 @@
     }
 
     // 设置网页自动把 http 升级为 https
-    const e = document.createElement('meta')
-    e.setAttribute('http-equiv', 'Content-Security-Policy')
-    e.setAttribute('content', 'upgrade-insecure-requests')
-    head.appendChild(e)
+    // const e = document.createElement('meta')
+    // e.setAttribute('http-equiv', 'Content-Security-Policy')
+    // e.setAttribute('content', 'upgrade-insecure-requests')
+    // head.appendChild(e)
 
     // 自定义样式，隐藏顶部栏
     GM_addStyle(`
