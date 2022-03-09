@@ -7,7 +7,6 @@
 // @author      Kaiter-Plus
 // @license     BSD-3-Clause
 // @noframes
-// @grant       GM_addStyle
 // @description 给网站添加双击 T 键返回顶部的功能
 // @note        2022/3/9 给网站添加双击 T 键返回顶部的功能 (为什么是双击 T 键呢？因为代表 ToTop)
 // ==/UserScript==
