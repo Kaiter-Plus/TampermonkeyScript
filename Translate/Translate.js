@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标,直接调用 Google 的翻译接口对非中文网页进行翻译
-// @version      1.51
+// @version      1.52
 // @license      BSD-3-Clause
 // @include      *://*
 // @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
@@ -79,6 +79,7 @@
 // @note         2022/01/08 修复上一个版本更新后大多数网站不能使用的 Bug, 解决一些网站开启脚本之后不能滚动
 // @note         2022/01/10 修复访问站内 http 链接自动跳转 https 的问题
 // @note         2022/01/18 增加排除网页元素
+// @note         2022/03/09 增加排除网页元素
 // ==/UserScript==
 
 ;(function () {
@@ -374,7 +375,17 @@
     }
 
     // 排除一些代码的翻译
-    const noTranslateArray = ['.bbCodeCode', 'tt', 'pre[translate="no"]', 'pre', '.post_spoiler_show']
+    const noTranslateArray = [
+      '.bbCodeCode',
+      'tt',
+      'pre[translate="no"]',
+      'pre',
+      '.post_spoiler_show',
+      '.c-article-section__content sub',
+      '.c-article-section__content sup',
+      '.c-article-equation',
+      '.mathjax-tex'
+    ]
     noTranslateArray.forEach(selectorName => {
       ;[...document.querySelectorAll(selectorName)].forEach(node => {
         if (node.className.indexOf('notranslate') === -1) {
