@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标,直接调用 Google 的翻译接口对非中文网页进行翻译
-// @version      1.52
+// @version      1.53
 // @license      BSD-3-Clause
 // @include      *://*
 // @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
@@ -80,6 +80,7 @@
 // @note         2022/01/10 修复访问站内 http 链接自动跳转 https 的问题
 // @note         2022/01/18 增加排除网页元素
 // @note         2022/03/09 增加排除网页元素
+// @note         2022/03/19 增加配置选项【显示翻译建议】，默认关闭，打开之后通过悬浮文字可以看到原文
 // ==/UserScript==
 
 ;(function () {
@@ -106,6 +107,16 @@
         close: '❌'
       },
       click: null
+    },
+    {
+      key: 'isShowTip',
+      name: '显示翻译建议',
+      value: false,
+      tip: {
+        open: '✅',
+        close: '❌'
+      },
+      click: setShowTip
     }
   ]
 
@@ -114,7 +125,7 @@
 
   // 配置默认菜单
   menu.forEach(v => {
-    if (GM_getValue(v.key) === null) GM_setValue(v.key, v.value)
+    if (GM_getValue(v.key) === undefined) GM_setValue(v.key, v.value)
   })
 
   // 注册菜单
@@ -170,7 +181,6 @@
 
   // 位置信息样式
   let positionStyle = null
-
   // 设置按钮位置
   function setButtonPosition() {
     if (positionStyle) positionStyle.parentNode.removeChild(positionStyle)
@@ -191,12 +201,27 @@
     `)
   }
 
-  // 判断是不是中文，如果是则直接return，否则执行
-  if (isChinesePage()) {
-    registerMenuCommand()
-    return
-  } else {
-    registerMenuCommand()
+  // 显示翻译建议信息
+  let tipStyle = null
+  function setShowTip() {
+    if (tipStyle) tipStyle.parentNode.removeChild(tipStyle)
+    positionStyle = GM_addStyle(`
+      #goog-gt-tt {
+        visibility: ${GM_getValue('isShowTip') ? 'visible' : 'hidden'}!important;
+        display: ${GM_getValue('isShowTip') ? 'block' : 'none'}!important;
+      }
+      .goog-text-highlight {
+        background-color: ${GM_getValue('isShowTip') ? '#c9d7f1' : 'inherit'}!important;
+        box-shadow: ${GM_getValue('isShowTip') ? '2 2 4 #99a' : '0 0 0 0 transparent'}!important;
+      }
+    `)
+  }
+
+  // 注册菜单
+  registerMenuCommand()
+
+  // 判断是不是中文，不是则执行
+  if (!isChinesePage()) {
     // 创建网页元素方法
     function createElement(html, nodeText, attr, parent) {
       const element = document.createElement(nodeText)
@@ -237,6 +262,9 @@
         margin-right: 0;
         border-radius: 11px;
       }
+      .goog-te-banner-frame.skiptranslate {
+        display: none;
+      }
       #lb {
         display: inline-block;
       }
@@ -265,17 +293,6 @@
       #google_translate_element .goog-te-gadget-simple {
         width: 100%;
       }
-      .goog-te-banner-frame.skiptranslate {
-        display: none
-      }
-      #goog-gt-tt {
-        visibility: hidden!important;
-        display: none!important;
-      }
-      .goog-text-highlight {
-        background-color: inherit!important;
-        box-shadow: 0 0 0 0 transparent!important;
-      }
       @media handheld, only screen and (max-width: 768px) {
         #google_translate_element {
           width: 104px;
@@ -296,60 +313,55 @@
 
     // 创建容器
     createElement('google_translate_element', 'div', 'id', body)
-
     // 初始化
     createElement(
-      `function googleTranslateElementInit() {
-        let google_translate_element = document.getElementById('google_translate_element')
-        let timer = setInterval(function () {
-          google_translate_element = document.getElementById('google_translate_element')
-          if (google_translate_element) {
-            clearInterval(timer)
-            new google.translate.TranslateElement(
-              {
-                pageLanguage: 'auto',
-                //包括的语言，中文简体，中文繁体，英语，日语，俄语
-                includedLanguages: 'zh-CN,zh-TW,en,ja,ru',
-                /*0，原生select，并且谷歌logo显示在按钮下方。
-                 1，原生select，并且谷歌logo显示在右侧。
-                 2，完全展开语言列表，适合pc。
-               */
-                layout: /mobile/i.test(navigator.userAgent) ? 0 : 2,
-              },
-              'google_translate_element'
-            )
-            // 清除图片的请求，加快访问速度
-            let img = [].slice.call(document.querySelectorAll('#goog-gt-tt img,#google_translate_element img'));
-            img.forEach(function(v) {
-              const a = v
-              a.src = ''
-              let b = a.outerHTML.replace(/<img(.*?)>/, () => {
-                return '<span id="lb"' + RegExp.$1 +'></span>'
-              })
-              const c = document.createElement('div')
-              c.innerHTML = b
-              a.parentNode.insertBefore(c.children[0], a.parentNode.children[0])
-              a.remove()
-            });
-            const recoverPage = document.createElement('div')
-            recoverPage.setAttribute('class', 'notranslate recoverPage')
-            recoverPage.innerText = '原'
-            document.body.appendChild(recoverPage)
-            // 点击恢复原网页
-            recoverPage.onclick = () => {
-              const phoneRecoverIframe = document.getElementById(':1.container') // 移动端
-              const PCRecoverIframe = document.getElementById(':2.container') // PC端
-              if (phoneRecoverIframe) {
-                const recoverDocument = phoneRecoverIframe.contentWindow.document
-                recoverDocument.getElementById(':1.restore').click()
-              } else if (PCRecoverIframe) {
-                const recoverDocument = PCRecoverIframe.contentWindow.document
-                recoverDocument.getElementById(':2.restore').click()
-              }
-            }
+      `
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          {
+            pageLanguage: 'auto',
+            //包括的语言，中文简体，中文繁体，英语，日语，俄语
+            includedLanguages: 'zh-CN,zh-TW,en,ja,ru',
+            /*
+             * 0，原生select，并且谷歌logo显示在按钮下方。
+             * 1，原生select，并且谷歌logo显示在右侧。
+             * 2，完全展开语言列表，适合pc。
+             */
+            layout: /mobile/i.test(navigator.userAgent) ? 0 : 2
+          },
+          'google_translate_element'
+        )
+        // 清除图片的请求，加快访问速度
+        let img = [].slice.call(document.querySelectorAll('#goog-gt-tt img,#google_translate_element img'))
+        img.forEach(function (v) {
+          const a = v
+          a.src = ''
+          let b = a.outerHTML.replace(/<img(.*?)>/, () => {
+            return '<span id="lb"' + RegExp.$1 + '></span>'
+          })
+          const c = document.createElement('div')
+          c.innerHTML = b
+          a.parentNode.insertBefore(c.children[0], a.parentNode.children[0])
+          a.remove()
+        })
+        const recoverPage = document.createElement('div')
+        recoverPage.setAttribute('class', 'notranslate recoverPage')
+        recoverPage.innerText = '原'
+        document.body.appendChild(recoverPage)
+        // 点击恢复原网页
+        recoverPage.onclick = () => {
+          const phoneRecoverIframe = document.getElementById(':1.container') // 移动端
+          const PCRecoverIframe = document.getElementById(':2.container') // PC端
+          if (phoneRecoverIframe) {
+            const recoverDocument = phoneRecoverIframe.contentWindow.document
+            recoverDocument.getElementById(':1.restore').click()
+          } else if (PCRecoverIframe) {
+            const recoverDocument = PCRecoverIframe.contentWindow.document
+            recoverDocument.getElementById(':2.restore').click()
           }
-        }, 300)
-      }`,
+        }
+      }
+    `,
       'script',
       '',
       head
@@ -371,7 +383,6 @@
         'src',
         head
       )
-      // createElement('//cdn.jsdelivr.net/gh/lindongbin/gt/element.js','script','src', head)
     }
 
     // 排除一些代码的翻译
