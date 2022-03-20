@@ -195,12 +195,12 @@
     if (tipStyle) tipStyle.parentNode.removeChild(tipStyle)
     tipStyle = GM_addStyle(`
       #goog-gt-tt {
-        visibility: ${GM_getValue('isShowTip') ? 'visible' : 'hidden'}!important;
-        display: ${GM_getValue('isShowTip') ? 'block' : 'none'}!important;
+        visibility: ${GM_getValue('isShowTip') ? 'visible' : 'hidden!important'};
+        display: ${GM_getValue('isShowTip') ? 'block' : 'none!important'};
       }
       .goog-text-highlight {
-        background-color: ${GM_getValue('isShowTip') ? '#c9d7f1' : 'inherit'}!important;
-        box-shadow: ${GM_getValue('isShowTip') ? '2 2 4 #99a' : '0 0 0 0 transparent'}!important;
+        background-color: ${GM_getValue('isShowTip') ? '#c9d7f1' : 'inherit!important'};
+        box-shadow: ${GM_getValue('isShowTip') ? '2 2 4 #99a' : '0 0 0 0 transparent!important'};
       }
     `)
   }
