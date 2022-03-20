@@ -148,7 +148,7 @@
 
   // 配置默认菜单
   menu.forEach(v => {
-    if (GM_getValue(v.key) === undefined) GM_setValue(v.key, v.value)
+    if (GM_getValue(v.key) === undefined || GM_getValue(v.key) === null) GM_setValue(v.key, v.value)
   })
 
   // 注册菜单
@@ -228,7 +228,7 @@
   let tipStyle = null
   function setShowTip() {
     if (tipStyle) tipStyle.parentNode.removeChild(tipStyle)
-    positionStyle = GM_addStyle(`
+    tipStyle = GM_addStyle(`
       #goog-gt-tt {
         visibility: ${GM_getValue('isShowTip') ? 'visible' : 'hidden'}!important;
         display: ${GM_getValue('isShowTip') ? 'block' : 'none'}!important;
@@ -255,6 +255,11 @@
       }
       parent.appendChild(element)
     }
+
+    // 初始化按钮位置
+    setButtonPosition()
+    // 初始化是否显示更好的翻译建议
+    setShowTip()
 
     // 设置网页自动把 http 升级为 https
     // const e = document.createElement('meta')
@@ -331,8 +336,6 @@
         }
       }
     `)
-
-    setButtonPosition()
 
     // 创建容器
     createElement('google_translate_element', 'div', 'id', body)
