@@ -3,8 +3,9 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标,直接调用 Google 的翻译接口对非中文网页进行翻译
-// @version      1.56
+// @version      1.57
 // @license      BSD-3-Clause
+// @require      https://greasyfork.org/scripts/441796-google-translate-supported-languages/code/Google%20Translate%20Supported%20Languages.js?version=1030327
 // @include      *://*
 // @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
 // @exclude      /.*duyaoss\.com/
@@ -88,11 +89,14 @@
 ;(function () {
   'use strict'
 
+  // 所有支持的语言
+  const supportedLanguages = window.kSupportedLanguages
+
   // 获取可以翻译的所有语言，防止请求被墙导致脚本不能使用
   const languagesTimer = setInterval(() => {
     const sandbox = document.querySelector('[sandbox=allow-scripts]')
     if (sandbox) {
-      sandbox.srcdoc = `<!DOCTYPE html><body><script>(function(){var d="function"==typeof Object.create?Object.create:function(a){var b=function(){};b.prototype=a;return new b},f;if("function"==typeof Object.setPrototypeOf)f=Object.setPrototypeOf;else{var g;a:{var k={a:!0},l={};try{l.__proto__=k;g=l.a;break a}catch(a){}g=!1}f=g?function(a,b){a.__proto__=b;if(a.__proto__!==b)throw new TypeError(a+" is not extensible");return a}:null}var m=f,n=this||self,p=function(a){return a};var q={};var r;var t=function(a,b){if(b!==q)throw Error("Bad secret");this.g=a},u=function(){};t.prototype=d(u.prototype);t.prototype.constructor=t;if(m)m(t,u);else for(var v in u)if("prototype"!=v)if(Object.defineProperties){var w=Object.getOwnPropertyDescriptor(u,v);w&&Object.defineProperty(t,v,w)}else t[v]=u[v];t.prototype.toString=function(){return this.g.toString()};function x(a){if(void 0===r){var b=null;var c=n.trustedTypes;if(c&&c.createPolicy)try{b=c.createPolicy("goog#html",{createHTML:p,createScript:p,createScriptURL:p})}catch(e){n.console&&n.console.error(e.message)}r=b}b=r;b=null==b?void 0:b.createScriptURL(a);return new t(null!=b?b:a,q)};if(!function(){if(self.origin)return"null"===self.origin;if(""!==location.host)return!1;try{return window.parent.escape(""),!1}catch(a){return!0}}())throw Error("sandboxing error");window.addEventListener("message",function(a){var b=a.ports[0];a=a.data;var c=a.callbackName.split("."),e=window;"window"===c[0]&&c.unshift();for(var h=0;h<c.length-1;h++)e[c[h]]={},e=e[c[h]];e[c[c.length-1]]=function(y){b.postMessage(JSON.stringify(y))};c=document.createElement("script");a=x(a.url);if(a instanceof t)a=a.g;else throw Error("Unexpected type when unwrapping TrustedResourceUrl");c.src='https://greasyfork.org/scripts/441796-google-translate-supported-languages/code/Google%20Translate%20Supported%20Languages.js?version=1030282';document.body.appendChild(c)},!0);}).call(this);</script></body>`
+      sandbox.srcdoc = `<!DOCTYPE html><body><script>(function(){var d="function"==typeof Object.create?Object.create:function(a){var b=function(){};b.prototype=a;return new b},f;if("function"==typeof Object.setPrototypeOf)f=Object.setPrototypeOf;else{var g;a:{var k={a:!0},l={};try{l.__proto__=k;g=l.a;break a}catch(a){}g=!1}f=g?function(a,b){a.__proto__=b;if(a.__proto__!==b)throw new TypeError(a+" is not extensible");return a}:null}var m=f,n=this||self,p=function(a){return a};var q={};var r;var t=function(a,b){if(b!==q)throw Error("Bad secret");this.g=a},u=function(){};t.prototype=d(u.prototype);t.prototype.constructor=t;if(m)m(t,u);else for(var v in u)if("prototype"!=v)if(Object.defineProperties){var w=Object.getOwnPropertyDescriptor(u,v);w&&Object.defineProperty(t,v,w)}else t[v]=u[v];t.prototype.toString=function(){return this.g.toString()};function x(a){if(void 0===r){var b=null;var c=n.trustedTypes;if(c&&c.createPolicy)try{b=c.createPolicy("goog#html",{createHTML:p,createScript:p,createScriptURL:p})}catch(e){n.console&&n.console.error(e.message)}r=b}b=r;b=null==b?void 0:b.createScriptURL(a);return new t(null!=b?b:a,q)};if(!function(){if(self.origin)return"null"===self.origin;if(""!==location.host)return!1;try{return window.parent.escape(""),!1}catch(a){return!0}}())throw Error("sandboxing error");window.addEventListener("message",function(a){var b=a.ports[0];a=a.data;var c=a.callbackName.split("."),e=window;"window"===c[0]&&c.unshift();for(var h=0;h<c.length-1;h++)e[c[h]]={},e=e[c[h]];e[c[c.length-1]]=function(y){b.postMessage(JSON.stringify(y))};c=document.createElement("script");a=x(a.url);if(a instanceof t)a=a.g;else throw Error("Unexpected type when unwrapping TrustedResourceUrl");c.innerHTML=${supportedLanguages};document.body.appendChild(c)},!0);}).call(this);</script></body>`
       clearInterval(languagesTimer)
     }
   }, 10)
