@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate/Translate_only_chinese.js
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标，该版本为中文翻译版本，只把外语翻译为中文
-// @version      0.17
+// @version      0.18
 // @license      BSD-3-Clause
 // @require      https://greasyfork.org/scripts/441796-google-translate-supported-languages/code/Google%20Translate%20Supported%20Languages.js?version=1030327
 // @include      *://*
@@ -53,6 +53,7 @@
 // @note         2022/03/19 增加配置选项【显示翻译建议】，默认关闭，打开之后通过悬浮文字可以看到原文
 // @note         2022/03/20 修复默认不是隐藏【更好的翻译选项】的 bug
 // @note         2022/03/20 众望所归，终于可以不用开加速器就可以直接翻译了，速度飞快
+// @note         2022/03/20 修复开启显示【更好的翻译建议】无法自动消失的 bug
 // ==/UserScript==
 
 ;(function () {
