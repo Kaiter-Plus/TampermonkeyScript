@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate/Translate_only_chinese.js
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标，该版本为中文翻译版本，只把外语翻译为中文
-// @version      0.19
+// @version      0.20
 // @license      BSD-3-Clause
 // @require      https://greasyfork.org/scripts/441796-google-translate-supported-languages/code/Google%20Translate%20Supported%20Languages.js?version=1030327
 // @include      *://*
@@ -55,6 +55,7 @@
 // @note         2022/03/20 众望所归，终于可以不用开加速器就可以直接翻译了，速度飞快
 // @note         2022/03/20 修复开启显示【更好的翻译建议】无法自动消失的 bug
 // @note         2022/03/23 添加【翻译】快捷键：Ctrl + Alt + T, 【还原】快捷键：Ctrl + Alt + R
+// @note         2022/03/27 修改【翻译】快捷键：Alt + T, 【还原】快捷键：Alt + R
 // ==/UserScript==
 
 ;(function () {
@@ -375,13 +376,13 @@
                 }
                 // 添加翻译快捷键
                 document.addEventListener('keydown', (e) => {
-                  if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 't') {
+                  if (e.altKey && e.key.toLowerCase() === 't') {
                     translateButton.click()
                   }
                 })
                 // 添加还原快捷键
                 document.addEventListener('keydown', (e) => {
-                  if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'r') {
+                  if (e.altKey && e.key.toLowerCase() === 'r') {
                     recoverPage.click()
                   }
                 })
