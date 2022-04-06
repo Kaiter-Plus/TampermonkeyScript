@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate/Translate_only_chinese.js
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标，该版本为中文翻译版本，只把外语翻译为中文
-// @version      0.21
+// @version      0.22
 // @license      BSD-3-Clause
 // @require      https://greasyfork.org/scripts/441796-google-translate-supported-languages/code/Google%20Translate%20Supported%20Languages.js?version=1030327
 // @include      *://*
@@ -57,6 +57,7 @@
 // @note         2022/03/23 添加【翻译】快捷键：Ctrl + Alt + T, 【还原】快捷键：Ctrl + Alt + R
 // @note         2022/03/27 修改【翻译】快捷键：Alt + T, 【还原】快捷键：Alt + R
 // @note         2022/03/28 修改【翻译】快捷键：Ctrl + Shift + Alt + T, 【还原】快捷键：Ctrl + Shift + Alt + R
+// @note         2022/04/06 添加自定义快捷键选项
 // ==/UserScript==
 
 ;(function () {
@@ -93,6 +94,7 @@
       key: 'position',
       name: '按钮位置',
       value: true,
+      showNotification: true,
       tip: {
         open: '👈',
         close: '👉'
@@ -103,6 +105,7 @@
       key: 'isCheck',
       name: '自动检测中文',
       value: true,
+      showNotification: true,
       tip: {
         open: '✅',
         close: '❌'
@@ -113,11 +116,23 @@
       key: 'isShowTip',
       name: '显示翻译建议',
       value: false,
+      showNotification: true,
       tip: {
         open: '✅',
         close: '❌'
       },
       click: setShowTip
+    },
+    {
+      key: 'setHotkey',
+      name: '设置快捷键',
+      value: false,
+      showNotification: false,
+      tip: {
+        open: '',
+        close: ''
+      },
+      click: openSettings
     }
   ]
 
@@ -150,11 +165,13 @@
     item.value = !item.value
     GM_setValue(item.key, item.value)
     // 系统通知
-    GM_notification({
-      text: `已${item.value ? item.tip.open : item.tip.close}[${item.name}] 功能`,
-      title: '网页翻译',
-      timeout: 1000
-    })
+    if (item.showNotification) {
+      GM_notification({
+        text: `已${item.value ? item.tip.open : item.tip.close}[${item.name}] 功能`,
+        title: '网页翻译',
+        timeout: 1000
+      })
+    }
     // 如果有点击事件，执行
     if (item.click) item.click()
     // 重新注册
@@ -179,6 +196,14 @@
       (lang.substring(0, 2) === 'zh' || mainLang.substring(0, 2) === 'gb' || /[\u4E00-\u9FFF]/.test(pageTitle))
     )
   }
+
+  // 打开设置快捷键弹窗
+  function openSettings() {
+    document.querySelector('.hotkey-settings').classList.add('show')
+    document.querySelector('.hotkey-settings__container').classList.add('show')
+  }
+
+  // 快捷键设置弹窗
 
   // 位置信息样式
   let positionStyle = null
@@ -211,6 +236,273 @@
 
   // 注册菜单
   registerMenuCommand()
+
+  const keyName = ['translate', 'recover']
+  let currentKeyName = ''
+  let hotkeys = GM_getValue('hotkeys')
+  hotkeys = hotkeys
+    ? hotkeys
+    : {
+        translate: [],
+        recover: []
+      }
+
+  const exclude = /control|shift|alt/
+
+  // 设置按钮
+  function setting(keyName) {
+    currentKeyName = keyName
+    hotkeys[keyName] = []
+    document.getElementById(`i-${keyName}`).value = '松开手指即可设置完成！'
+    document.removeEventListener('keydown', clickHotkey)
+    document.addEventListener('keyup', setHotkey)
+  }
+
+  // 开始设置
+  function setHotkey(e) {
+    if (!exclude.test(e.key.toLowerCase())) {
+      if (e.ctrlKey) hotkeys[currentKeyName].push('ctrl')
+      if (e.shiftKey) hotkeys[currentKeyName].push('shift')
+      if (e.altKey) hotkeys[currentKeyName].push('alt')
+      hotkeys[currentKeyName].push(e.key)
+      // 判断快捷键是否重复
+      const key = keyName[keyName.indexOf(currentKeyName) ? 0 : 1]
+      if (hotkeys[key][0] && hotkeys[key].length === hotkeys[currentKeyName].length) {
+        const isDuplicate = hotkeys[key].every(v => {
+          return hotkeys[currentKeyName].indexOf(v) > -1
+        })
+        if (isDuplicate) {
+          return (document.getElementById(`i-${currentKeyName}`).value = '重复了，请重新设置')
+        }
+      }
+      GM_setValue('hotkeys', hotkeys)
+      document.getElementById(`i-${currentKeyName}`).value = `${hotkeys[currentKeyName].join(' + ')}`
+      // 设置完成移除事件
+      document.removeEventListener('keyup', setHotkey)
+    }
+  }
+
+  // 按键按下事件
+  document.addEventListener('keydown', clickHotkey)
+
+  // 快捷键
+  function clickHotkey(e) {
+    const keys = []
+    if (!exclude.test(e.key.toLowerCase())) {
+      if (e.ctrlKey) keys.push('ctrl')
+      if (e.shiftKey) keys.push('shift')
+      if (e.altKey) keys.push('alt')
+      keys.push(e.key)
+      let key = ''
+      keyName.forEach(v => {
+        if (hotkeys[v][0] && hotkeys[v].length === keys.length) {
+          const isRight = hotkeys[v].every(v => {
+            return keys.indexOf(v) > -1
+          })
+          if (isRight) {
+            key = v
+            return
+          }
+        }
+      })
+      if (key) document.getElementById(`${key}Button`).click()
+    }
+  }
+
+  // 关闭按钮
+  function closeSettings() {
+    document.querySelector('.hotkey-settings').classList.remove('show')
+    document.querySelector('.hotkey-settings__container').classList.remove('show')
+    // 重新添加按键按下事件
+    document.addEventListener('keydown', clickHotkey)
+  }
+
+  // 快捷键设置结构
+  function inttSettingsUI() {
+    // 主要容器
+    const settings = document.createElement('div')
+    settings.className = 'hotkey-settings'
+    // 弹窗容器
+    const container = document.createElement('div')
+    container.className = 'hotkey-settings__container'
+    // 关闭按钮
+    const close = document.createElement('div')
+    close.className = 'hotkey-settings__close'
+    close.textContent = '×'
+    close.addEventListener('click', closeSettings)
+    // 标题
+    const header = document.createElement('div')
+    header.className = 'hotkey-settings__header'
+    header.textContent = '快捷键设置'
+    // 设置区域
+    const content = document.createElement('div')
+    content.className = 'hotkey-settings__content'
+    // 提示
+    const tip = document.createElement('div')
+    tip.className = 'hotkey-settings__tip'
+    tip.textContent = '目前支持的快捷键附加键有：Ctrl, Shift, Alt'
+    // 设置区域内容
+    keyName.forEach(v => {
+      const contentItem = document.createElement('div')
+      contentItem.className = 'hotkey-settings__content-item'
+      const title = document.createElement('span')
+      title.className = 'hotkey-settings__title'
+      title.textContent = v === 'translate' ? '翻译：' : '还原：'
+      const input = document.createElement('input')
+      input.id = `i-${v}`
+      input.disabled = true
+      input.className = 'hotkey-input'
+      if (hotkeys[v][0]) {
+        input.value = hotkeys[v].join(' + ')
+      } else {
+        input.value = '还没有设置快捷键哦~'
+      }
+      input.setAttribute('type', 'text')
+      const button = document.createElement('button')
+      button.id = `b-${v}`
+      button.className = 'hotkey-button'
+      button.textContent = '设置'
+      button.addEventListener('click', e => setting(v))
+      contentItem.appendChild(title)
+      contentItem.appendChild(input)
+      contentItem.appendChild(button)
+      content.appendChild(contentItem)
+    })
+    container.appendChild(close)
+    container.appendChild(header)
+    container.appendChild(content)
+    container.appendChild(tip)
+    settings.appendChild(container)
+    document.body.appendChild(settings)
+  }
+
+  // 设置快捷键的样式
+  function addHotkeyStyle() {
+    GM_addStyle(`
+      .hotkey-settings {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 999999999;
+        backdrop-filter: blur(10px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 16px;
+        color: #606266;
+        visibility: hidden;
+      }
+
+      .hotkey-settings.show {
+        visibility: visible;
+      }
+
+      .hotkey-settings .hotkey-settings__container {
+        width: 400px;
+        border-radius: 6px;
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 10%);
+        background-color: #fff;
+        transform: scale(0);
+        position: relative;
+        transition: transform 0.3s;
+      }
+
+      .hotkey-settings__container.show {
+        transform: scale(1);
+      }
+
+      .hotkey-settings__container .hotkey-settings__close {
+        width: 20px;
+        height: 20px;
+        line-height: 21px;
+        border-radius: 50%;
+        text-align: center;
+        color: #fff;
+        font-weight: bold;
+        background-color: #F56C6C;
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        user-select: none;
+      }
+
+      .hotkey-settings__container .hotkey-settings__close:hover {
+        opacity: 0.7;
+      }
+
+      .hotkey-settings__container .hotkey-settings__header {
+        padding: 0 12px;
+        height: 30px;
+        line-height: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .hotkey-settings__container .hotkey-settings__content {
+        padding: 0 12px;
+      }
+
+      .hotkey-settings__container .hotkey-settings__tip {
+        padding: 12px;
+        color: #909399;
+      }
+
+      .hotkey-settings__container .hotkey-settings__content .hotkey-settings__content-item {
+        display: flex;
+        align-items: center;
+      }
+
+      .hotkey-settings__container .hotkey-settings__content .hotkey-input {
+        flex: 1;
+        -webkit-appearance: none;
+        background-color: #fff;
+        background-image: none;
+        border-radius: 4px;
+        border: 1px solid #dcdfe6;
+        box-sizing: border-box;
+        color: #606266;
+        display: inline-block;
+        font-size: inherit;
+        height: 40px;
+        line-height: 40px;
+        outline: none;
+        padding: 0 15px;
+        margin: 6px 12px;
+      }
+
+      .hotkey-settings__container .hotkey-settings__content .hotkey-button {
+        display: inline-block;
+        height: 40px;
+        line-height: 40px;
+        white-space: nowrap;
+        cursor: pointer;
+        border: 1px solid #409eff;
+        -webkit-appearance: none;
+        text-align: center;
+        box-sizing: border-box;
+        outline: none;
+        margin: 0;
+        transition: 0.1s;
+        font-weight: 500;
+        user-select: none;
+        padding: 0 15px;
+        font-size: 14px;
+        border-radius: 4px;
+        color: #fff;
+        background-color: #409eff;
+      }
+
+      .hotkey-settings__container .hotkey-settings__content .hotkey-button:hover {
+        opacity: 0.5;
+      }
+    `)
+  }
+
+  addHotkeyStyle()
+  inttSettingsUI()
 
   // 判断是不是中文，如果是则直接return，否则执行
   if (!isChinesePage()) {
@@ -329,6 +621,7 @@
         document.body.appendChild(buttonContainer)
         // 恢复按钮
         const recoverPage = document.createElement('div')
+        recoverPage.setAttribute('id', 'recoverButton')
         recoverPage.setAttribute('class', 'notranslate recoverPage')
         recoverPage.innerText = '恢复'
         buttonContainer.appendChild(recoverPage)
@@ -361,6 +654,7 @@
                 clearInterval(translateTimer)
                 // 添加翻译按钮
                 const translateButton = document.createElement('div')
+                translateButton.setAttribute('id', 'translateButton')
                 translateButton.setAttribute('class', 'notranslate translateButton')
                 translateButton.innerText = '翻译'
                 buttonContainer.appendChild(translateButton)
@@ -375,18 +669,6 @@
                     translateLang.click()
                   }
                 }
-                // 添加翻译快捷键
-                document.addEventListener('keydown', (e) => {
-                  if (e.ctrlKey && e.shiftKey && e.altKey && e.key.toLowerCase() === 't') {
-                    translateButton.click()
-                  }
-                })
-                // 添加还原快捷键
-                document.addEventListener('keydown', (e) => {
-                  if (e.ctrlKey && e.shiftKey && e.altKey && e.key.toLowerCase() === 'r') {
-                    recoverPage.click()
-                  }
-                })
               }
             }, 300)
             clearInterval(langIframeTimer)
