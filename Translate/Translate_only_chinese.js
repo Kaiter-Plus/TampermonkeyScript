@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate/Translate_only_chinese.js
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标，该版本为中文翻译版本，只把外语翻译为中文
-// @version      0.22
+// @version      0.23
 // @license      BSD-3-Clause
 // @require      https://greasyfork.org/scripts/441796-google-translate-supported-languages/code/Google%20Translate%20Supported%20Languages.js?version=1030327
 // @include      *://*
@@ -58,6 +58,7 @@
 // @note         2022/03/27 修改【翻译】快捷键：Alt + T, 【还原】快捷键：Alt + R
 // @note         2022/03/28 修改【翻译】快捷键：Ctrl + Shift + Alt + T, 【还原】快捷键：Ctrl + Shift + Alt + R
 // @note         2022/04/06 添加自定义快捷键选项
+// @note         2022/04/24 增加排除网页元素
 // ==/UserScript==
 
 ;(function () {
@@ -719,6 +720,35 @@
           node.classList.add('notranslate')
         }
       })
+    })
+
+    // 针对一些网站排除一些无需翻译的文字
+    const noTranslateList = [
+      {
+        site: 'cratchapixel.com',
+        selector: ['span.MathJax']
+      }
+    ]
+    noTranslateList.forEach(item => {
+      if (~document.domain.indexOf(item.site)) {
+        item.selector.forEach(selectorName => {
+          let timer = null
+          let classList = document.querySelectorAll(selectorName)
+          if (!classList[0]) {
+            timer = setInterval(() => {
+              classList = document.querySelectorAll(selectorName)
+              if (classList[0]) {
+                clearInterval(timer)
+                ;[...classList].forEach(node => {
+                  if (!~node.className.indexOf('notranslate')) {
+                    node.classList.add('notranslate')
+                  }
+                })
+              }
+            })
+          }
+        })
+      }
     })
 
     // 解决一些网站开启脚本之后不能滚动
