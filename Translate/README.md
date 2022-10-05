@@ -35,6 +35,7 @@
 - 由于一些网站使用了 <span style="color:red">CSP</span>，所以可能有些网站翻译不了。有些网站可以使用以下方法解决（方法来源: @"Andy AO"），使用扩展，先去掉 <span style="color:red">CSP</span>，就能够解决这类网站不能翻译的问题.下列扩展亲测可用：
   - 可以直接到扩展商店搜索<span style="color:red">Disable Content-Security-Policy </span>下载
   - 或者[点击跳转到 Crx4Chrome 下载 Disable Content-Security-Policy 3.0.0](https://www.crx4chrome.com/crx/16901/)
+  - 或者到油猴的<span style="color:red">设置</span>里找<span style="color:red">安全</span>-><span style="color:red">如果站点有内容安全策略（CSP）则向其策略</span>->改为<span style="color:red">全部移除</span>(方法来源: @xxxxue)
 
 ## 2 更新日志
 
