@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate/Translate_only_chinese.js
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标，该版本为中文翻译版本，只把外语翻译为中文
-// @version      0.24
+// @version      0.25
 // @license      BSD-3-Clause
 // @require      https://greasyfork.org/scripts/441796-google-translate-supported-languages/code/Google%20Translate%20Supported%20Languages.js?version=1030327
 // @include      *://*
@@ -60,6 +60,7 @@
 // @note         2022/04/06 添加自定义快捷键选项
 // @note         2022/04/24 增加排除网页元素
 // @note         2022/10/05 由于谷歌关闭了国内的翻译接口，所以只能使用国际版的接口，现在使用脚本必须配合梯子
+// @note         2022/10/07 优化使用体验，翻译和还原可以使用同一快捷键
 // ==/UserScript==
 
 ;(function () {
@@ -205,8 +206,6 @@
     document.querySelector('.hotkey-settings__container').classList.add('show')
   }
 
-  // 快捷键设置弹窗
-
   // 位置信息样式
   let positionStyle = null
   // 设置按钮位置
@@ -240,45 +239,29 @@
   registerMenuCommand()
 
   const keyName = ['translate', 'recover']
-  let currentKeyName = ''
-  let hotkeys = GM_getValue('hotkeys')
-  hotkeys = hotkeys
-    ? hotkeys
-    : {
-        translate: [],
-        recover: []
-      }
+  let hotkey = GM_getValue('hotkey')
+  hotkey = hotkey ? hotkey : []
 
   const exclude = /control|shift|alt/
 
   // 设置按钮
-  function setting(keyName) {
-    currentKeyName = keyName
-    hotkeys[keyName] = []
-    document.getElementById(`i-${keyName}`).value = '松开手指即可设置完成！'
+  function setting() {
+    document.getElementById(`i-hotkey`).value = '松开手指即可设置完成！'
     document.removeEventListener('keydown', clickHotkey)
     document.addEventListener('keyup', setHotkey)
   }
 
   // 开始设置
   function setHotkey(e) {
+    hotkey = []
     if (!exclude.test(e.key.toLowerCase())) {
-      if (e.ctrlKey) hotkeys[currentKeyName].push('ctrl')
-      if (e.shiftKey) hotkeys[currentKeyName].push('shift')
-      if (e.altKey) hotkeys[currentKeyName].push('alt')
-      hotkeys[currentKeyName].push(e.key)
-      // 判断快捷键是否重复
-      const key = keyName[keyName.indexOf(currentKeyName) ? 0 : 1]
-      if (hotkeys[key][0] && hotkeys[key].length === hotkeys[currentKeyName].length) {
-        const isDuplicate = hotkeys[key].every(v => {
-          return hotkeys[currentKeyName].indexOf(v) > -1
-        })
-        if (isDuplicate) {
-          return (document.getElementById(`i-${currentKeyName}`).value = '重复了，请重新设置')
-        }
-      }
-      GM_setValue('hotkeys', hotkeys)
-      document.getElementById(`i-${currentKeyName}`).value = `${hotkeys[currentKeyName].join(' + ')}`
+      if (e.ctrlKey) hotkey.push('ctrl')
+      if (e.shiftKey) hotkey.push('shift')
+      if (e.altKey) hotkey.push('alt')
+      hotkey.push(e.key)
+      // 保存键值
+      GM_setValue('hotkey', hotkey)
+      document.getElementById(`i-hotkey`).value = `${hotkey.join(' + ')}`
       // 设置完成移除事件
       document.removeEventListener('keyup', setHotkey)
     }
@@ -296,17 +279,15 @@
       if (e.altKey) keys.push('alt')
       keys.push(e.key)
       let key = ''
-      keyName.forEach(v => {
-        if (hotkeys[v][0] && hotkeys[v].length === keys.length) {
-          const isRight = hotkeys[v].every(v => {
-            return keys.indexOf(v) > -1
-          })
-          if (isRight) {
-            key = v
-            return
-          }
+      if (hotkey[0] && hotkey.length === keys.length) {
+        const isRight = hotkey.every(v => {
+          return keys.indexOf(v) > -1
+        })
+        if (isRight) {
+          const reg = /googtrans=\/auto\/zh-CN/g
+          key = reg.test(document.cookie) ? keyName[1] : keyName[0]
         }
-      })
+      }
       if (key) document.getElementById(`${key}Button`).click()
     }
   }
@@ -344,32 +325,30 @@
     tip.className = 'hotkey-settings__tip'
     tip.textContent = '目前支持的快捷键附加键有：Ctrl, Shift, Alt'
     // 设置区域内容
-    keyName.forEach(v => {
-      const contentItem = document.createElement('div')
-      contentItem.className = 'hotkey-settings__content-item'
-      const title = document.createElement('span')
-      title.className = 'hotkey-settings__title'
-      title.textContent = v === 'translate' ? '翻译：' : '还原：'
-      const input = document.createElement('input')
-      input.id = `i-${v}`
-      input.disabled = true
-      input.className = 'hotkey-input'
-      if (hotkeys[v][0]) {
-        input.value = hotkeys[v].join(' + ')
-      } else {
-        input.value = '还没有设置快捷键哦~'
-      }
-      input.setAttribute('type', 'text')
-      const button = document.createElement('button')
-      button.id = `b-${v}`
-      button.className = 'hotkey-button'
-      button.textContent = '设置'
-      button.addEventListener('click', e => setting(v))
-      contentItem.appendChild(title)
-      contentItem.appendChild(input)
-      contentItem.appendChild(button)
-      content.appendChild(contentItem)
-    })
+    const contentItem = document.createElement('div')
+    contentItem.className = 'hotkey-settings__content-item'
+    const title = document.createElement('span')
+    title.className = 'hotkey-settings__title'
+    title.textContent = '快捷键：'
+    const input = document.createElement('input')
+    input.id = `i-hotkey`
+    input.disabled = true
+    input.className = 'hotkey-input'
+    if (hotkey[0]) {
+      input.value = hotkey.join(' + ')
+    } else {
+      input.value = '还没有设置快捷键哦~'
+    }
+    input.setAttribute('type', 'text')
+    const button = document.createElement('button')
+    button.id = `b--hotkey`
+    button.className = 'hotkey-button'
+    button.textContent = '设置'
+    button.addEventListener('click', e => setting())
+    contentItem.appendChild(title)
+    contentItem.appendChild(input)
+    contentItem.appendChild(button)
+    content.appendChild(contentItem)
     container.appendChild(close)
     container.appendChild(header)
     container.appendChild(content)
