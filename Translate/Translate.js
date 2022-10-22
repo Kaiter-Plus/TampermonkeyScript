@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标,直接调用 Google 的翻译接口对非中文网页进行翻译
-// @version      1.60
+// @version      1.61
 // @license      BSD-3-Clause
 // @require      https://greasyfork.org/scripts/441796-google-translate-supported-languages/code/Google%20Translate%20Supported%20Languages.js?version=1030327
 // @include      *://*
@@ -87,6 +87,7 @@
 // @note         2022/03/20 修复开启显示【更好的翻译建议】无法自动消失的 bug
 // @note         2022/04/24 增加排除网页元素
 // @note         2022/10/05 由于谷歌关闭了国内的翻译接口，所以只能使用国际版的接口，现在使用脚本必须配合梯子
+// @note         2022/10/22 调整移动端按钮的位置; 修改 PC 端按钮的颜色(@"xq tian")
 // ==/UserScript==
 
 ;(function () {
@@ -293,13 +294,16 @@
         box-shadow: 1px 1px 3px 0 #888;
         opacity: .5;
         transition: all .3s;
+        background-color: #646cff;
       }
       #google_translate_element .goog-te-gadget-simple {
         border: 0;
+        background-color: transparent;
       }
       #google_translate_element .goog-te-gadget-simple span {
         margin-right: 0;
         border-radius: 11px;
+        color: rgba(255, 255, 255, .87);
       }
       .goog-te-banner-frame.skiptranslate {
         display: none;
@@ -309,7 +313,8 @@
       }
       .recoverPage {
         width: 4em;
-        background-color: #fff;
+        background-color: #646cff;
+        color: rgba(255, 255, 255, .87);
         position: fixed;
         z-index: 10000000;
         bottom: 60px;
@@ -335,15 +340,21 @@
       @media handheld, only screen and (max-width: 768px) {
         #google_translate_element {
           width: 104px;
+          color: unset;
+          background-color: #fff;
         }
         #google_translate_element .goog-te-combo {
           margin: 0;
           padding-top: 2px;
           border: none;
+          color: unset;
+          background-color: transparent;
         }
         .recoverPage {
           width: 1.5em;
+          color: unset;
           line-height: 1.5em;
+          background-color: #fff;
         }
       }
     `)
