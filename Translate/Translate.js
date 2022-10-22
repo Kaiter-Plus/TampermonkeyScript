@@ -225,6 +225,9 @@
         transform: translateX(${GM_getValue('position') ? '-' : ''}73%);
       }
       @media handheld, only screen and (max-width: 768px) {
+        #google_translate_element {
+          transform: translateX(${GM_getValue('position') ? '-' : ''}60%);
+        }
         .recoverPage {
           transform: translateX(0);
         }
