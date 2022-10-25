@@ -3,9 +3,8 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate/Translate_only_chinese.js
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标，该版本为中文翻译版本，只把外语翻译为中文
-// @version      0.25
+// @version      0.26
 // @license      BSD-3-Clause
-// @require      https://greasyfork.org/scripts/441796-google-translate-supported-languages/code/Google%20Translate%20Supported%20Languages.js?version=1030327
 // @include      *://*
 // @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
 // @exclude      /.*duyaoss\.com/
@@ -38,47 +37,12 @@
 // @grant        GM_notification
 // @grant        GM_registerMenuCommand
 // @grant        GM_unregisterMenuCommand
-// @note         2021/04/13 新建副本，只把其它语言翻译为中文
-// @note         2021/06/12 适配了移动端
-// @note         2021/07/14 排除抖音，防止可能出现的 bug
-// @note         2021/09/19 优化开启关闭自动检测中文逻辑
-// @note         2021/12/12 应用户反馈，去除显示“提供更好的翻译建议”弹框
-// @note         2021/12/14 直接使用 https 获取谷歌翻译接口（防止有可能火狐浏览器无法用于翻译本地文件的bug）@古海沉舟
-// @note         2021/12/21 优化菜单切换逻辑，优化交互体验
-// @note         2021/12/28 优化判断网页是否是中文逻辑
-// @note         2022/01/08 修复上一个版本更新后大多数网站不能使用的 Bug, 解决一些网站开启脚本之后不能滚动
-// @note         2022/01/10 修复访问站内 http 链接自动跳转 https 的问题
-// @note         2022/01/18 增加排除网页元素
-// @note         2022/03/09 增加排除网页元素
-// @note         2022/03/19 增加配置选项【显示翻译建议】，默认关闭，打开之后通过悬浮文字可以看到原文
-// @note         2022/03/20 修复默认不是隐藏【更好的翻译选项】的 bug
-// @note         2022/03/20 众望所归，终于可以不用开加速器就可以直接翻译了，速度飞快
-// @note         2022/03/20 修复开启显示【更好的翻译建议】无法自动消失的 bug
-// @note         2022/03/23 添加【翻译】快捷键：Ctrl + Alt + T, 【还原】快捷键：Ctrl + Alt + R
-// @note         2022/03/27 修改【翻译】快捷键：Alt + T, 【还原】快捷键：Alt + R
-// @note         2022/03/28 修改【翻译】快捷键：Ctrl + Shift + Alt + T, 【还原】快捷键：Ctrl + Shift + Alt + R
-// @note         2022/04/06 添加自定义快捷键选项
-// @note         2022/04/24 增加排除网页元素
-// @note         2022/10/05 由于谷歌关闭了国内的翻译接口，所以只能使用国际版的接口，现在使用脚本必须配合梯子
-// @note         2022/10/07 优化使用体验，翻译和还原可以使用同一快捷键
 // ==/UserScript==
 
 ;(function () {
   'use strict'
 
-  // 所有支持的语言
-  const supportedLanguages = window.kSupportedLanguages
-
-  // 获取可以翻译的所有语言，防止请求被墙导致脚本不能使用
-  const languagesTimer = setInterval(() => {
-    const sandbox = document.querySelector('[sandbox=allow-scripts]')
-    if (sandbox) {
-      sandbox.srcdoc = `<!DOCTYPE html><body><script>(function(){var d="function"==typeof Object.create?Object.create:function(a){var b=function(){};b.prototype=a;return new b},f;if("function"==typeof Object.setPrototypeOf)f=Object.setPrototypeOf;else{var g;a:{var k={a:!0},l={};try{l.__proto__=k;g=l.a;break a}catch(a){}g=!1}f=g?function(a,b){a.__proto__=b;if(a.__proto__!==b)throw new TypeError(a+" is not extensible");return a}:null}var m=f,n=this||self,p=function(a){return a};var q={};var r;var t=function(a,b){if(b!==q)throw Error("Bad secret");this.g=a},u=function(){};t.prototype=d(u.prototype);t.prototype.constructor=t;if(m)m(t,u);else for(var v in u)if("prototype"!=v)if(Object.defineProperties){var w=Object.getOwnPropertyDescriptor(u,v);w&&Object.defineProperty(t,v,w)}else t[v]=u[v];t.prototype.toString=function(){return this.g.toString()};function x(a){if(void 0===r){var b=null;var c=n.trustedTypes;if(c&&c.createPolicy)try{b=c.createPolicy("goog#html",{createHTML:p,createScript:p,createScriptURL:p})}catch(e){n.console&&n.console.error(e.message)}r=b}b=r;b=null==b?void 0:b.createScriptURL(a);return new t(null!=b?b:a,q)};if(!function(){if(self.origin)return"null"===self.origin;if(""!==location.host)return!1;try{return window.parent.escape(""),!1}catch(a){return!0}}())throw Error("sandboxing error");window.addEventListener("message",function(a){var b=a.ports[0];a=a.data;var c=a.callbackName.split("."),e=window;"window"===c[0]&&c.unshift();for(var h=0;h<c.length-1;h++)e[c[h]]={},e=e[c[h]];e[c[c.length-1]]=function(y){b.postMessage(JSON.stringify(y))};c=document.createElement("script");a=x(a.url);if(a instanceof t)a=a.g;else throw Error("Unexpected type when unwrapping TrustedResourceUrl");c.innerHTML=${supportedLanguages};document.body.appendChild(c)},!0);}).call(this);</script></body>`
-      clearInterval(languagesTimer)
-    }
-  }, 10)
-
-  // 获取可以翻译的所有语言，防止请求被墙导致脚本不能使用
+  // 取消没有用的图片请求
   const pointTimer = setInterval(() => {
     const banner = document.querySelector('.goog-te-banner-frame')
     if (banner) {

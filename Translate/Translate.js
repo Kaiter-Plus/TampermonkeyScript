@@ -3,9 +3,8 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标,直接调用 Google 的翻译接口对非中文网页进行翻译
-// @version      1.61
+// @version      1.62
 // @license      BSD-3-Clause
-// @require      https://greasyfork.org/scripts/441796-google-translate-supported-languages/code/Google%20Translate%20Supported%20Languages.js?version=1030327
 // @include      *://*
 // @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
 // @exclude      /.*duyaoss\.com/
@@ -38,74 +37,12 @@
 // @grant        GM_notification
 // @grant        GM_registerMenuCommand
 // @grant        GM_unregisterMenuCommand
-// @note         2020/03/26 网页整页翻译功能
-// @note         2020/04/13 排除纯ip网址
-// @note         2020/04/14 移除翻译后顶边栏
-// @note         2020/05/01 排除百度、QQ、超星等中文网址
-// @note         2020/05/04 修复去除上边栏网页先向下再向上跳的Bug
-// @note         2020/05/05 尝试修复百度出现超粗顶栏的Bug
-// @note         2020/05/12 添加恢复原网页的按钮（翻译按钮旁边），有点丑，不过希望可以先用着，有时间再看看能不能弄好看一点ヾ(≧▽≦*)o
-// @note         2020/05/23 稍微修改了一下恢复原网页的按钮的样式（还是不好看）
-// @note         2020/05/26 修改脚本为原生javascript，兼容暴力猴
-// @note         2020/05/26 修改翻译栏样式，固定宽高，防止在一些页面上出现太宽或太高的现象
-// @note         2020/06/06 修复火狐浏览器（firefox），内存溢出的bug，精简了一点代码
-// @note         2020/06/08 排除一些代码块的翻译，如果还有其它的网站的代码块需要排除，可以反馈给我，我排除一下
-// @note         2020/06/17 修改恢复原网页按钮的样式（使用@picasso250的样式），排除标签 tt
-// @note         2020/06/18 适配Quora
-// @note         2020/06/26 翻译和恢复按钮修改为在页面边缘附着的半透明半圆 -> 鼠标移入弹出翻译或恢复按钮
-// @note         2020/07/02 按钮向上移动了30像素，经测试，点击弹出按钮的方式不太友好，故放弃
-// @note         2020/08/23 使用了模板字符串代替原来的普通字符串，适配了移动端，移动端UI待改善
-// @note         2020/08/24 把“恢复”按钮的文字修改为“原”，稍微修改了一下移动端的布局
-// @note         2020/09/02 添加了一个网址的翻译排除
-// @note         2020/09/13 最近没有时间更新其它的，先做个小更新：添加了通过 meta 信息 charset 来判断是否添加翻译按钮（感谢 @qinxs）
-// @note         2020/10/03 放假了，更新了切换按钮的配置选项，点击浏览器的油猴或者暴力猴插件图标即可看见脚本的配置选项，点击即可切换按钮的位置
-// @note         2020/10/03 刚刚更新按钮位置配置信息时，忘记调整移动端的布局，重新调整更新一下
-// @note         2020/11/28 更新了一下脚本描述
-// @note         2021/01/14 恢复图片请求，好看一点
-// @note         2021/01/18 解决 YY 直播界面导航栏向下顶的bug（直接排除了 YY）
-// @note         2021/01/27 修复在一些网页可能存在页面被导航栏遮挡的bug
-// @note         2021/02/01 修复手机端显示“提供更好的翻译建议”挡视野，妨碍复制的问题
-// @note         2021/03/10 排除了 acfun，防止搜索界面出现底部移动的 bug
-// @note         2021/03/10 修复了使用 Dark Reader 开启夜间模式之后图片显示问题，强迫症福音
-// @note         2021/03/11 添加了新的配置选项“切换自动检测中文”，用于开关脚本的中文检测功能
-// @note         2021/03/13 清除图片请求，加快一点点速度，但是不影响图标的显示
-// @note         2021/03/31 排除 pre，修复有些网页滚动消失的 bug
-// @note         2021/04/02 上次更新后出现的 bug 更多了，暂时把代码回退为上一个版本
-// @note         2021/07/14 排除抖音，防止可能出现的 bug
-// @note         2021/09/19 优化开启关闭自动检测中文逻辑
-// @note         2021/12/12 应用户反馈，去除显示“提供更好的翻译建议”弹框
-// @note         2021/12/14 直接使用 https 获取谷歌翻译接口（防止有可能火狐浏览器无法用于翻译本地文件的bug）@古海沉舟
-// @note         2021/12/21 优化菜单切换逻辑，优化交互体验
-// @note         2021/12/28 优化判断网页是否是中文逻辑
-// @note         2022/01/08 修复上一个版本更新后大多数网站不能使用的 Bug, 解决一些网站开启脚本之后不能滚动
-// @note         2022/01/10 修复访问站内 http 链接自动跳转 https 的问题
-// @note         2022/01/18 增加排除网页元素
-// @note         2022/03/09 增加排除网页元素
-// @note         2022/03/19 增加配置选项【显示翻译建议】，默认关闭，打开之后通过悬浮文字可以看到原文
-// @note         2022/03/20 修复默认不是隐藏【更好的翻译选项】的 bug
-// @note         2022/03/20 众望所归，终于可以不用开加速器就可以直接翻译了，速度飞快
-// @note         2022/03/20 修复开启显示【更好的翻译建议】无法自动消失的 bug
-// @note         2022/04/24 增加排除网页元素
-// @note         2022/10/05 由于谷歌关闭了国内的翻译接口，所以只能使用国际版的接口，现在使用脚本必须配合梯子
-// @note         2022/10/22 调整移动端按钮的位置; 修改 PC 端按钮的颜色(@"xq tian")
 // ==/UserScript==
 
 ;(function () {
   'use strict'
 
-  // 所有支持的语言
-  const supportedLanguages = window.kSupportedLanguages
-
-  // 获取可以翻译的所有语言，防止请求被墙导致脚本不能使用
-  const languagesTimer = setInterval(() => {
-    const sandbox = document.querySelector('[sandbox=allow-scripts]')
-    if (sandbox) {
-      sandbox.srcdoc = `<!DOCTYPE html><body><script>(function(){var d="function"==typeof Object.create?Object.create:function(a){var b=function(){};b.prototype=a;return new b},f;if("function"==typeof Object.setPrototypeOf)f=Object.setPrototypeOf;else{var g;a:{var k={a:!0},l={};try{l.__proto__=k;g=l.a;break a}catch(a){}g=!1}f=g?function(a,b){a.__proto__=b;if(a.__proto__!==b)throw new TypeError(a+" is not extensible");return a}:null}var m=f,n=this||self,p=function(a){return a};var q={};var r;var t=function(a,b){if(b!==q)throw Error("Bad secret");this.g=a},u=function(){};t.prototype=d(u.prototype);t.prototype.constructor=t;if(m)m(t,u);else for(var v in u)if("prototype"!=v)if(Object.defineProperties){var w=Object.getOwnPropertyDescriptor(u,v);w&&Object.defineProperty(t,v,w)}else t[v]=u[v];t.prototype.toString=function(){return this.g.toString()};function x(a){if(void 0===r){var b=null;var c=n.trustedTypes;if(c&&c.createPolicy)try{b=c.createPolicy("goog#html",{createHTML:p,createScript:p,createScriptURL:p})}catch(e){n.console&&n.console.error(e.message)}r=b}b=r;b=null==b?void 0:b.createScriptURL(a);return new t(null!=b?b:a,q)};if(!function(){if(self.origin)return"null"===self.origin;if(""!==location.host)return!1;try{return window.parent.escape(""),!1}catch(a){return!0}}())throw Error("sandboxing error");window.addEventListener("message",function(a){var b=a.ports[0];a=a.data;var c=a.callbackName.split("."),e=window;"window"===c[0]&&c.unshift();for(var h=0;h<c.length-1;h++)e[c[h]]={},e=e[c[h]];e[c[c.length-1]]=function(y){b.postMessage(JSON.stringify(y))};c=document.createElement("script");a=x(a.url);if(a instanceof t)a=a.g;else throw Error("Unexpected type when unwrapping TrustedResourceUrl");c.innerHTML=${supportedLanguages};document.body.appendChild(c)},!0);}).call(this);</script></body>`
-      clearInterval(languagesTimer)
-    }
-  }, 10)
-
-  // 获取可以翻译的所有语言，防止请求被墙导致脚本不能使用
+  // 取消没有用的图片请求
   const pointTimer = setInterval(() => {
     const banner = document.querySelector('.goog-te-banner-frame')
     if (banner) {
