@@ -3,7 +3,7 @@
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/虎牙直播功能增强
 // @author      Kaiter-Plus
 // @description 给虎牙直播添加额外功能（同步时间、画面镜像、自动选择最高画、自动选领取百宝箱奖励、自动网页全屏）
-// @version     1.41
+// @version     1.42
 // @license     BSD-3-Clause
 // @match       *://*.huya.com/*
 // @icon        https://www.huya.com/favicon.ico
@@ -12,21 +12,6 @@
 // @grant       GM_getValue
 // @grant       GM_addStyle
 // @run-at      document-end
-// @note        2020/12/10 添加 “同步时间” 功能
-// @note        2020/12/28 添加 “画面镜像” 功能
-// @note        2021/01/29 代码重构
-// @note        2021/03/01 添加 “自动选择最高画质” 功能，并同时提供配置开关，默认关闭
-// @note        2021/03/02 添加 “自动选领取百宝箱奖励” 功能，并同时提供配置开关，默认关闭
-// @note        2021/03/03 修改 更改配置时为不用重载界面
-// @note        2021/03/04 修复了一个小 bug
-// @note        2021/03/08 修复了最后两个宝箱不会领取的 bug
-// @note        2021/03/10 紧急修复了宝箱不会领取的 bug
-// @note        2021/03/12 添加了脚本的配置选项
-// @note        2021/03/13 优化自动领取百宝箱逻辑
-// @note        2021/03/22 添加 “自动网页全屏” 功能，并同时提供配置开关，默认关闭
-// @note        2021/05/25 虎牙网站更新，修复脚本失效
-// @note        2021/06/12 虎牙网站更新，再一次修复脚本失效，同时移除虎牙自带的节日广告
-// @note        2021/12/20 修复退出网页全屏需自动刷新才能正常使用的bug
 // ==/UserScript==
 ;(function () {
   'use strict'
@@ -51,7 +36,7 @@
   let hightestImageQuality = null
 
   // 所有宝箱
-  let chests = null
+  let chests = []
 
   // 配置选项
   const config = [
@@ -66,11 +51,11 @@
   // 初始化
   function init() {
     timer.initTimer = setInterval(() => {
-      if (!controlContainer || chests.length <= 0) {
+      if (controlContainer === null || chests.length === 0) {
         headerContainer = document.querySelector('.duya-header-right div')
         controlContainer = document.getElementById('player-ctrl-wrap')
         // 使用数组保存
-        chests = Array.from(document.querySelectorAll('#player-box .player-box-list li'))
+        chests = Array.from(document.querySelectorAll('#player-box .player-box-list .box-item'))
       } else {
         clearInterval(timer.initTimer)
         hightestImageQuality = document.querySelector('.player-videotype-list').children[0]
