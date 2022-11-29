@@ -8,9 +8,8 @@
 ## 1 脚本介绍
 
 - 给虎牙直播视频界面的功能栏添加一些额外的功能
-- <span style="color:red">主要是无聊写的，有什么新奇的点子（功能）可以反馈给我，看看能不能添加上去</span>
-- 脚本配置选项位置  
-  ![脚本配置选项位置](https://greasyfork.s3.us-east-2.amazonaws.com/8hnt13b5lh0bxqrrh4dcjcc3kogs)
+- 脚本配置选项位置（页面右下角）  
+  ![脚本配置选项位置](https://greasyfork.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBOTUwQVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--1982585de8204c148489d317f8892a82f3236f82/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJY0c1bkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFISWFRSEkiLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--e4f27e4605e5535222e2c2f9dcbe36f4bd1deb29/image.png?locale=zh-CN)
 
 ## 2 已添加的功能
 
@@ -41,6 +40,7 @@
 
 ## 3 更新日志
 
+- 2022/11/29 重构脚本
 - 2022/11/02 修复脚本无法正常加载的 bug
 - 2021/12/20 修复退出网页全屏需自动刷新才能正常使用的 bug
 - 2021/06/12 虎牙网站更新，再次修复脚本失效
