@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate/Translate_ext.js
 // @description  给非中文的网页右下角添加一个google翻译图标对网页进行翻译，该版本主要适配手机浏览器： X浏览器、via浏览器等不支持油猴扩展的浏览器
-// @version      1.46
+// @version      1.47
 // @license      BSD-3-Clause
 // @icon         https://www.google.cn/favicon.ico
 // @include      *://*
@@ -132,8 +132,8 @@
       #google_translate_element .goog-te-gadget-simple {
         width: 100%;
       }
-      .goog-te-banner-frame.skiptranslate {
-        display: none
+      [id=":2.container"].skiptranslate {
+        display: none;
       }
       @media handheld, only screen and (max-width: 768px) {
         #google_translate_element {

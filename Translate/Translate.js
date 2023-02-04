@@ -3,7 +3,7 @@
 // @author       Kaiter-Plus
 // @namespace    https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/Translate
 // @description  给每个非中文的网页右下角（可以调整到左下角）添加一个google翻译图标,直接调用 Google 的翻译接口对非中文网页进行翻译
-// @version      1.62
+// @version      1.63
 // @license      BSD-3-Clause
 // @include      *://*
 // @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
@@ -44,7 +44,7 @@
 
   // 取消没有用的图片请求
   const pointTimer = setInterval(() => {
-    const banner = document.querySelector('.goog-te-banner-frame')
+    const banner = document.getElementById(':2.container')
     if (banner) {
       const doc = banner.contentWindow.document || banner.contentDocument
       const imgs = doc.getElementsByTagName('img')
@@ -242,7 +242,7 @@
         border-radius: 11px;
         color: rgba(255, 255, 255, .87);
       }
-      .goog-te-banner-frame.skiptranslate {
+      [id=":2.container"].skiptranslate {
         display: none;
       }
       #lb {
