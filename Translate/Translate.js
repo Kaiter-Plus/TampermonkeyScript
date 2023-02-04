@@ -95,7 +95,7 @@
     },
     {
       key: 'support',
-      name: '支持一下作者',
+      name: '赞助一下作者',
       value: false,
       showNotification: false,
       tip: {
