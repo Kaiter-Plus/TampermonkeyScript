@@ -537,9 +537,11 @@
       .recoverPage:active, .translateButton:active {
         box-shadow: 1px 1px 3px 0 #888 inset;
       }
+      /* 隐藏移动端顶部栏 */
       [id=":1.container"].skiptranslate {
         display: none;
       }
+      /* 隐藏 PC 端顶部栏 */
       [id=":2.container"].skiptranslate {
         display: none;
       }

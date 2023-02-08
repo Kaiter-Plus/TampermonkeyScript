@@ -270,9 +270,11 @@
         border-radius: 11px;
         color: rgba(255, 255, 255, .87);
       }
+      /* 隐藏移动端顶部栏 */
       [id=":1.container"].skiptranslate {
         display: none;
       }
+      /* 隐藏 PC 端顶部栏 */
       [id=":2.container"].skiptranslate {
         display: none;
       }
