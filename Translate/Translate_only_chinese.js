@@ -6,7 +6,7 @@
 // @version      0.29
 // @license      BSD-3-Clause
 // @include      *://*
-// @exclude      /^(http|https).*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/
+// @exclude      /^(http|https).*((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}/
 // @exclude      /.*duyaoss\.com/
 // @exclude      /.*lanzous\.com/
 // @exclude      /.*w3school.*cn/
