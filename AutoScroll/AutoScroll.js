@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name        自动滚动
 // @author      Kaiter-Plus
+// @description 给网页添加两个个自动向上、向下滚动的按钮
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/AutoScroll
 // @include     *://*
 // @grant       none
@@ -8,50 +9,88 @@
 // @license     BSD-3-Clause
 // @noframes
 // @grant       GM_addStyle
-// @description 给网页添加两个个自动向上、向下滚动的按钮（本脚本还在编写阶段）
+// @grant       GM_getValue
+// @grant       GM_setValue
+// @grant       GM_addElement
 // ==/UserScript==
 ;(function () {
   'use strict'
 
-  // 获取 head
-  const head = document.head
+  // 默认速度
+  let defaultSpeed = 5
+  // 定时器id
+  let currentFrameId = 0
+  // 记录上一次执行的时间
+  let prevTIme = 0
 
-  // 获取 body
-  const body = document.body
-
-  // 创建网页元素方法
-  function createElement(text, tagName, attr) {
-    const element = document.createElement(tagName)
-    if (attr) {
-      for (let key in attr) {
-        element[key] = attr[key]
-      }
-    }
-    element.innerHTML = text
-    return element
-  }
+  // 初始化速度
+  const speed = GM_getValue('speed')
+  speed ? (defaultSpeed = +speed) : GM_setValue('speed', defaultSpeed)
 
   // 创建一个滚动容器
-  const scrollContainer = createElement('', 'div', {
+  const scrollContainer = GM_addElement(document.body, 'div', {
     id: 'scroll-container',
-    className: 'scroll-container'
+    class: 'scroll-container'
   })
-
-  body.appendChild(scrollContainer)
 
   // 创建自动向上的按钮
-  const autoUp = createElement('', 'div', {
-    className: 'auto-up',
-    id: 'auto-up'
+  const scrollUp = GM_addElement(scrollContainer, 'div', {
+    class: 'scroll-up',
+    id: 'scroll-up'
   })
-  scrollContainer.appendChild(autoUp)
+  scrollUp.addEventListener('mouseover', () => {
+    autoScroll(-1)
+  })
+  scrollUp.addEventListener('mouseout', stopScroll)
+
+  // 创建速度显示
+  const scrollSpeed = GM_addElement(scrollContainer, 'div', {
+    class: 'scroll-speed',
+    textContent: speed
+  })
+  scrollSpeed.addEventListener('wheel', settingSpeed)
 
   // 创建自动向下的按钮
-  const autoDown = createElement('', 'div', {
-    className: 'auto-down',
-    id: 'auto-down'
+  const scrollDown = GM_addElement(scrollContainer, 'div', {
+    class: 'scroll-down',
+    id: 'scroll-down'
   })
-  scrollContainer.appendChild(autoDown)
+  scrollDown.addEventListener('mouseover', () => {
+    autoScroll(1)
+  })
+  scrollDown.addEventListener('mouseout', stopScroll)
+
+  // 自动滚动
+  function autoScroll(direction) {
+    scroll(direction)
+  }
+
+  // 滚动
+  function scroll(direction) {
+    currentFrameId = window.requestAnimationFrame(time => {
+      if (!prevTIme) prevTIme = time
+      const elapsed = (time - prevTIme) / 1000
+      // 每 50ms 执行一次
+      window.scrollBy(0, defaultSpeed * 10 * direction * elapsed)
+      prevTIme = time
+      scroll(direction)
+    })
+  }
+
+  // 停止滚动
+  function stopScroll() {
+    prevTIme = 0
+    window.cancelAnimationFrame(currentFrameId)
+  }
+
+  // 设置滚动速度
+  function settingSpeed(e) {
+    e.preventDefault()
+    if (e.deltaY < 0) defaultSpeed += 1
+    else defaultSpeed -= 1
+    scrollSpeed.textContent = defaultSpeed
+    GM_setValue('speed', defaultSpeed)
+  }
 
   // 添加自定义样式
   GM_addStyle(`
@@ -63,17 +102,19 @@
       text-align: center;
       transform: translateY(-50%);
     }
-    .auto-up, .auto-down {
+    .scroll-up,
+    .scroll-down {
       width: 40px;
       height: 40px;
       line-height: 40px;
       margin-bottom: 5px;
       border-radius: 50%;
       text-align: center;
-      background-color: rgba(204, 204, 204, .4);
+      background-color: rgba(204, 204, 204, 0.4);
     }
-    .auto-up::after, .auto-down::after {
-      content: "";
+    .scroll-up::after,
+    .scroll-down::after {
+      content: '';
       display: inline-block;
       width: 16px;
       height: 16px;
@@ -82,39 +123,26 @@
       border-width: 2px;
       border-style: solid;
     }
-    .auto-up::after{
+    .scroll-up::after {
       transform: rotate(-45deg);
       border-color: #fff #fff transparent transparent;
       margin-top: 14.3425px;
     }
-    .auto-down::after {
+    .scroll-down::after {
       transform: rotate(-45deg);
       border-color: transparent transparent #fff #fff;
       margin-top: 8.685px;
     }
-    .auto-up:hover, .auto-down:hover {
-      background-color: rgba(204, 204, 204, .8);
+    .scroll-up:hover,
+    .scroll-down:hover {
+      background-color: rgba(204, 204, 204, 0.8);
     }
+    
+    .scroll-speed {
+      font-size: 18px;
+      user-select: none;
+      cursor: s-resize;
+      line-height: 1.2;
+    }    
   `)
-
-  // 向上滚动
-  let autoUpTimer = null
-  autoScroll(autoUp, autoUpTimer, -1)
-
-  // 向下滚动
-  let autoDownTimer = null
-  autoScroll(autoDown, autoDownTimer, 1)
-
-  // 添加鼠标覆盖移出事件监听
-  function autoScroll(target, timer, scrollPixel) {
-    target.onmouseover = () => {
-      clearInterval(timer)
-      timer = setInterval(() => {
-        window.scrollBy(0, scrollPixel)
-      }, 10)
-    }
-    target.onmouseout = () => {
-      clearInterval(timer)
-    }
-  }
 })()

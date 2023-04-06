@@ -12,18 +12,19 @@
 
 ## 1 功能介绍
 
-给网站添加双击 T 键返回顶部的功能
+给网页添加两个个自动向上、向下滚动的按钮
 
 ### 1.1 我为什么要使用它
 
-作为一个新时代青年，怎么可能因为移动鼠标去点击返回顶部的按钮而浪费时间呢，况且有些网站还没有返回顶部的功能按钮，小手一抬，双击 T 键它不香吗 😊
+使用很简单，直接使用【鼠标指针】移动覆盖到相应的按钮上即可使网页自动滚动，【鼠标指针】移动覆盖到【中间数值】，然后使用【鼠标滚轮】滚动即可调整滚动速度
 
-### 1.2 为什么是双击 T 呢
+### 1.2 功能截图
 
-因为代表 ToTop（绝对不是因为懒 🤣）
+![功能截图](https://greasyfork.org/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBN3liQVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--ee0d49a093c6d2f9d6e2c83c65b6537621a6ee30/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJY0c1bkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFISWFRSEkiLCJleHAiOm51bGwsInB1ciI6InZhcmlhdGlvbiJ9fQ==--e4f27e4605e5535222e2c2f9dcbe36f4bd1deb29/image.png?locale=zh-CN)
 
 ## 2 更新日志
 
 ### 2.1 2022 更新日志
 
-- 2022/3/9 给网站添加双击 T 键返回顶部的功能
+- 2023/04/06 添加滚动速度调整功能
+- 2021/03/17 实现鼠标覆盖自动向上向下滚动功能
