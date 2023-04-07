@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name        自动滚动
 // @author      Kaiter-Plus
-// @description 给网页添加两个个自动向上、向下滚动的按钮
+// @description 给网页添加自动向上、向下滚动的按钮，对于看文章，看小说，看漫画等场景下使用极为舒适
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/AutoScroll
 // @include     *://*
 // @grant       none
-// @version     0.1
+// @version     1.0
 // @license     BSD-3-Clause
 // @noframes
 // @grant       GM_addStyle
@@ -101,16 +101,17 @@
       z-index: 99999;
       text-align: center;
       transform: translateY(-50%);
+      border-radius: 20px;
+      overflow: hidden;
+      background-color: rgba(204, 204, 204, 0.4);
+      line-height: 40px;
+      color: rgba(60, 60, 67, .92);
     }
     .scroll-up,
     .scroll-down {
       width: 40px;
       height: 40px;
-      line-height: 40px;
-      margin-bottom: 5px;
-      border-radius: 50%;
       text-align: center;
-      background-color: rgba(204, 204, 204, 0.4);
     }
     .scroll-up::after,
     .scroll-down::after {
@@ -125,12 +126,12 @@
     }
     .scroll-up::after {
       transform: rotate(-45deg);
-      border-color: #fff #fff transparent transparent;
+      border-color: rgba(60, 60, 67, .92) rgba(60, 60, 67, .92) transparent transparent;
       margin-top: 14.3425px;
     }
     .scroll-down::after {
       transform: rotate(-45deg);
-      border-color: transparent transparent #fff #fff;
+      border-color: transparent transparent rgba(60, 60, 67, .92) rgba(60, 60, 67, .92);
       margin-top: 8.685px;
     }
     .scroll-up:hover,
@@ -142,7 +143,6 @@
       font-size: 18px;
       user-select: none;
       cursor: s-resize;
-      line-height: 1.2;
     }    
   `)
 })()
