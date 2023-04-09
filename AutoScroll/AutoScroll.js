@@ -5,7 +5,7 @@
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/AutoScroll
 // @include     *://*
 // @grant       none
-// @version     1.0
+// @version     1.01
 // @license     BSD-3-Clause
 // @noframes
 // @grant       GM_addStyle
@@ -22,6 +22,8 @@
   let currentFrameId = 0
   // 记录上一次执行的时间
   let prevTIme = 0
+  // 按下的位置
+  const pressPosition = { top: 0, left: 0 }
 
   // 初始化速度
   const speed = GM_getValue('speed')
@@ -32,11 +34,12 @@
     id: 'scroll-container',
     class: 'scroll-container'
   })
+  scrollContainer.addEventListener('mousedown', press)
 
   // 创建自动向上的按钮
   const scrollUp = GM_addElement(scrollContainer, 'div', {
-    class: 'scroll-up',
-    id: 'scroll-up'
+    id: 'scroll-up',
+    class: 'scroll-up'
   })
   scrollUp.addEventListener('mouseover', () => {
     autoScroll(-1)
@@ -45,6 +48,7 @@
 
   // 创建速度显示
   const scrollSpeed = GM_addElement(scrollContainer, 'div', {
+    id: 'scroll-speed',
     class: 'scroll-speed',
     textContent: speed
   })
@@ -52,8 +56,8 @@
 
   // 创建自动向下的按钮
   const scrollDown = GM_addElement(scrollContainer, 'div', {
-    class: 'scroll-down',
-    id: 'scroll-down'
+    id: 'scroll-down',
+    class: 'scroll-down'
   })
   scrollDown.addEventListener('mouseover', () => {
     autoScroll(1)
@@ -90,6 +94,39 @@
     else defaultSpeed -= 1
     scrollSpeed.textContent = defaultSpeed
     GM_setValue('speed', defaultSpeed)
+  }
+
+  // 按下事件
+  function press(e) {
+    // 设置只有在速度显示区域才能拖动
+    if (e.target.id === 'scroll-speed') {
+      // 记录位置
+      pressPosition.top = e.clientY - e.currentTarget.offsetTop
+      pressPosition.left = e.clientX - e.currentTarget.offsetLeft
+      // 修改样式显示
+      scrollSpeed.style.cursor = 'move'
+      // 开始监听移动事件
+      document.addEventListener('mousemove', move)
+      document.addEventListener('mouseup', release)
+    }
+  }
+
+  // 移动事件
+  function move(e) {
+    const top = e.clientY - pressPosition.top
+    const left = e.clientX - pressPosition.left
+    scrollContainer.style.right = `unset`
+    scrollContainer.style.top = `${top}px`
+    scrollContainer.style.left = `${left}px`
+  }
+
+  // 抬起事件
+  function release(e) {
+    // 修改样式显示
+    scrollSpeed.style.cursor = 's-resize'
+    // 清除事件
+    document.removeEventListener('mousemove', move)
+    document.removeEventListener('mouseup', release)
   }
 
   // 添加自定义样式
