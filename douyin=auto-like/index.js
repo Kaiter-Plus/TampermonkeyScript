@@ -61,7 +61,7 @@
     }
   }
 
-  // 一处你【您手速太快了，请休息一下】
+  // 移除【您手速太快了，请休息一下】提示
   function removeTip() {
     const toastContainer = document.getElementById('toastContainer')
     if (toastContainer) {
