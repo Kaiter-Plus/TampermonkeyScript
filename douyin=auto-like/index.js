@@ -71,5 +71,9 @@
         }
       })
     }
+    const toast = document.querySelector('[data-e2e="toast"]')
+    if (toast && toast.textContent === '您手速太快了，请休息一下') {
+      toast.style.display = 'none'
+    }
   }
 })()
