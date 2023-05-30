@@ -3,7 +3,7 @@
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/douyin=auto-like
 // @author      Kaiter-Plus
 // @description 网页版抖音直播添加自动点赞功能
-// @version     0.03
+// @version     0.04
 // @license     BSD-3-Clause
 // @match       *://live.douyin.com/*
 // @icon        https://lf1-cdn-tos.bytegoofy.com/goofy/ies/douyin_web/public/favicon.ico
@@ -25,6 +25,7 @@
 
   // 循环点击
   function autoClick(timestamp) {
+    removeTip()
     const duration = timestamp - prevTImestamp
     if (duration >= CLICK_DURATION) {
       if (clickModal) {
@@ -57,6 +58,18 @@
   function clearLikeIcon() {
     if (clickModal.children.length > 30) {
       clickModal.textContent = ''
+    }
+  }
+
+  // 一处你【您手速太快了，请休息一下】
+  function removeTip() {
+    const toastContainer = document.getElementById('toastContainer')
+    if (toastContainer) {
+      Array.from(toastContainer.children).forEach(element => {
+        if (element.textContent === '您手速太快了，请休息一下') {
+          element.style.display = 'none'
+        }
+      })
     }
   }
 })()
