@@ -3,7 +3,7 @@
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/douyin=auto-like
 // @author      Kaiter-Plus
 // @description 网页版抖音直播添加自动点赞功能
-// @version     0.05
+// @version     0.06
 // @license     BSD-3-Clause
 // @match       *://live.douyin.com/*
 // @icon        https://lf1-cdn-tos.bytegoofy.com/goofy/ies/douyin_web/public/favicon.ico
@@ -32,8 +32,8 @@
         clearLikeIcon()
         // 获取元素的坐标
         const rect = clickModal.getBoundingClientRect()
-        const x = rect.bottom - Math.random() * 200
-        const y = rect.right - Math.random() * 200
+        const x = rect.top + Math.random() * 50 + 50
+        const y = rect.left + Math.random() * 50 + 50
         // 创建模拟点击事件
         const clickEvent = new MouseEvent('click', {
           view: window,
