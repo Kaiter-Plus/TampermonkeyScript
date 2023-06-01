@@ -3,10 +3,11 @@
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/douyin=auto-like
 // @author      Kaiter-Plus
 // @description 网页版抖音直播添加自动点赞功能
-// @version     0.06
+// @version     0.07
 // @license     BSD-3-Clause
 // @match       *://live.douyin.com/*
 // @icon        https://lf1-cdn-tos.bytegoofy.com/goofy/ies/douyin_web/public/favicon.ico
+// @grant       unsafeWindow
 // @noframes
 // @run-at      document-end
 // ==/UserScript==
@@ -36,7 +37,7 @@
         const y = rect.left + Math.random() * 50 + 50
         // 创建模拟点击事件
         const clickEvent = new MouseEvent('click', {
-          view: window,
+          view: unsafeWindow,
           bubbles: true,
           cancelable: true,
           clientX: x,
