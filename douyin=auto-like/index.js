@@ -3,13 +3,18 @@
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/douyin=auto-like
 // @author      Kaiter-Plus
 // @description 网页版抖音直播添加自动点赞功能
-// @version     0.07
+// @version     0.09
 // @license     BSD-3-Clause
 // @match       *://live.douyin.com/*
 // @icon        https://lf1-cdn-tos.bytegoofy.com/goofy/ies/douyin_web/public/favicon.ico
-// @grant       unsafeWindow
 // @noframes
 // @run-at      document-end
+// @grant       unsafeWindow
+// @grant       GM_setValue
+// @grant       GM_getValue
+// @grant       GM_notification
+// @grant       GM_registerMenuCommand
+// @grant       GM_unregisterMenuCommand
 // ==/UserScript==
 
 ;(() => {
@@ -77,4 +82,68 @@
       toast.style.display = 'none'
     }
   }
+
+  // 菜单
+  const menu = [
+    {
+      key: 'switch',
+      name: '自动点赞',
+      value: true,
+      showNotification: true,
+      tip: {
+        open: '✅',
+        close: '❌'
+      },
+      click: switchFn
+    }
+  ]
+
+  // 保存已注册的菜单
+  const menuRegister = []
+
+  // 配置默认菜单
+  menu.forEach(v => {
+    if (GM_getValue(v.key) === undefined || GM_getValue(v.key) === null) GM_setValue(v.key, v.value)
+  })
+
+  // 注册菜单
+  function registerMenuCommand() {
+    if (menuRegister.length === menu.length) {
+      menuRegister.forEach(v => {
+        GM_unregisterMenuCommand(v)
+      })
+    }
+    menu.forEach((v, i) => {
+      v.value = GM_getValue(v.key)
+      menuRegister[i] = GM_registerMenuCommand(`${v.value ? v.tip.open : v.tip.close} ${v.name}`, () => {
+        menuSwitch(v)
+      })
+    })
+  }
+
+  // 切换菜单
+  function menuSwitch(item) {
+    // 设置数据
+    item.value = !item.value
+    GM_setValue(item.key, item.value)
+    // 系统通知
+    if (item.showNotification) {
+      GM_notification({
+        text: `已${item.value ? item.tip.open : item.tip.close}[${item.name}] 功能`,
+        title: '抖音自动点赞',
+        timeout: 1000
+      })
+    }
+    // 如果有点击事件，执行
+    if (item.click) item.click()
+    // 重新注册
+    registerMenuCommand()
+  }
+
+  // 切换开关
+  function switchFn() {
+    if (GM_getValue('switch')) autoClick(0)
+    else cancelAnimationFrame(timer)
+  }
+  registerMenuCommand()
 })()
