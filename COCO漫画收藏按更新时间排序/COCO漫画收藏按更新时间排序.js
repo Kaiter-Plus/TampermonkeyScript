@@ -3,16 +3,13 @@
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/COCO漫画收藏按更新时间排序
 // @match       *://*.cocomanhua.com/dynamic/user/subscription
 // @match       *://*.cocomanga.com/dynamic/user/subscription
-// @version     0.5
+// @match       *://*.colamanhua.com/dynamic/user/subscription
+// @match       *://*.colamanga.com/dynamic/user/subscription
+// @version     0.7
 // @author      Kaiter-Plus
 // @icon        https://www.cocomanhua.com/favicon.ico
 // @description COCO 漫画“我的收藏”界面根据“更新日”进行排序
 // @grant       GM_addStyle
-// @note        2021/03/01 COCO 漫画 我的收藏 界面根据 更新日进行排序
-// @note        2021/03/02 保留表格标题
-// @note        2021/03/03 最新的更新标题标为红色，更加显眼
-// @note        2021/03/04 更新访问过的最新标题为黑色，不用自己记有没有访问过了
-// @note        2021/10/31 COCO漫画域名更新
 // ==/UserScript==
 ;(function () {
   'use strict'
