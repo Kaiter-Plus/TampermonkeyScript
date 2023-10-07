@@ -3,7 +3,7 @@
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/douyin=auto-like
 // @author      Kaiter-Plus
 // @description 网页版抖音直播添加自动点赞功能
-// @version     0.10
+// @version     0.11
 // @license     BSD-3-Clause
 // @match       *://live.douyin.com/*
 // @icon        https://lf1-cdn-tos.bytegoofy.com/goofy/ies/douyin_web/public/favicon.ico
@@ -26,12 +26,13 @@
   let clickModal = document.querySelector(CLICK_MODAL_CLASS)
   // 定时器
   let timer = null
+  // 清除【手速太快】提示的定时器
+  let removeTipTimer = null
   // 记录上一次执行的时间
   let prevTImestamp = 0
 
   // 循环点击
   function autoClick(timestamp) {
-    removeTip()
     const duration = timestamp - prevTImestamp
     if (duration >= CLICK_DURATION) {
       if (clickModal) {
@@ -67,18 +68,23 @@
 
   // 移除【您手速太快了，请休息一下】提示
   function removeTip() {
-    const toastContainer = document.getElementById('toastContainer')
-    if (toastContainer) {
-      Array.from(toastContainer.children).forEach(element => {
-        if (element.textContent === '您手速太快了，请休息一下') {
-          element.style.display = 'none'
-        }
-      })
+    const duration = timestamp - prevTImestamp
+    if (duration >= CLICK_DURATION) {
+      const reg = /.*手速太快.*/
+      const toastContainer = document.getElementById('toastContainer')
+      if (toastContainer) {
+        Array.from(toastContainer.children).forEach(element => {
+          if (reg.test(element.textContent)) {
+            element.style.display = 'none'
+          }
+        })
+      }
+      const toast = document.querySelector('[data-e2e="toast"]')
+      if (toast && reg.test(toast.textContent)) {
+        toast.style.display = 'none'
+      }
     }
-    const toast = document.querySelector('[data-e2e="toast"]')
-    if (toast && toast.textContent === '您手速太快了，请休息一下') {
-      toast.style.display = 'none'
-    }
+    removeTipTimer = requestAnimationFrame(removeTip)
   }
 
   // 菜单
@@ -147,6 +153,7 @@
   function init() {
     clickModal = document.querySelector(CLICK_MODAL_CLASS)
     registerMenuCommand()
+    removeTip()
     if (GM_getValue('switch')) autoClick(0)
   }
 
