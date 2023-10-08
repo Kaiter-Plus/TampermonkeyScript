@@ -396,7 +396,7 @@
           const danMuInput = playerControl.querySelector('#player-full-input-txt')
           mouseWrap.addEventListener('mousemove', this.throttle(this.showControls, 300))
           mouseWrap.addEventListener('mousemove', this.debounce(this.hiddenControls, 1200)) // 1.2s 后隐藏控制栏
-          playerControl.addEventListener('mouseover', showControls, true)
+          playerControl.addEventListener('mouseover', this.showControls, true)
           // 回车显示并聚焦输入框
           document.addEventListener('keydown', e => {
             if (e.key.toLowerCase() === 'enter') {
