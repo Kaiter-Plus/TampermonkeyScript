@@ -3,7 +3,7 @@
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/huya-lab
 // @author      Kaiter-Plus
 // @description 给虎牙直播添加额外功能（同步时间、画面镜像、自动选择最高画、自动选领取百宝箱奖励、自动网页全屏）
-// @version     2.0.0
+// @version     2.0.1
 // @license     BSD-3-Clause
 // @match       *://*.huya.com/*
 // @icon        https://www.huya.com/favicon.ico
@@ -251,7 +251,9 @@
         return {
           enabled: false,
           timer: null,
-          chests: null
+          loaded: false, // 领取页面是否加载完毕
+          chestList: null, // 所有宝箱
+          chest: null // 白炽宝箱
         }
       },
       created() {
@@ -263,10 +265,11 @@
         // 功能初始化
         toggleState(value) {
           if (value) {
-            // 获取百宝箱
-            this.chests = Array.from(document.querySelectorAll('#player-box .player-box-list .box-item'))
-            if (!this.chests) {
-              this.$message.warning('虎牙百宝箱还没有加载完成，请稍后操作~')
+            this.loadChestView()
+            // 获取白炽宝箱(普通用户宝箱)
+            this.chest = document.querySelector('#box-list-top .item:nth-child(1)')
+            if (!this.chest) {
+              this.$message.warning('白炽宝箱还没有加载完成，请稍后操作~')
               this.enabled = false
               GM_setValue('autoGetChests', this.enabled)
             }
@@ -280,34 +283,41 @@
         // 自动获取百宝箱
         getChests() {
           this.timer = setInterval(() => {
-            // 当最后一个还不是 undefined 时，说明还没有领取完，继续
-            if (this.chests[this.chests.length - 1]) {
-              // 遍历领取
-              for (const item of this.chests) {
-                // 如果是 undefined 则直接跳过
-                if (!item) continue
-                // 是否已经领取
-                const state = item.querySelector('.player-box-stat4').style.visibility
-                // 如果已经领取，把值设置为 undefined
-                if (state === 'visible') {
-                  this.chests.splice(this.chests.indexOf(item), 1, (0)[0])
-                  continue
-                }
-                // 如果可以领取则领取，领取后把值设置为 undefined
-                const get = item.querySelector('.player-box-stat3').style.visibility
-                if (get === 'visible') {
-                  item.querySelector('.player-box-stat3').click()
-                  this.chests.splice(this.chests.indexOf(item), 1, (0)[0])
-                  document.querySelector('.player-chest-btn #player-box').style.display = 'none'
-                  break
-                }
-              }
+            this.loadChestView()
+            if (!this.chestList) {
+              this.chestList = Array.from(document.querySelectorAll('#box-item-list>.box-item'))
             } else {
-              // 领取完，清空数组，结束定时器
-              this.chests = null
-              clearInterval(this.timer)
+              // 如果已经领取完了，清除定时器
+              const lastChestText = this.chestList[this.chestList.length - 1].querySelector('p').innerText
+              if (lastChestText === '已领取') {
+                // this.$message.warning('宝箱已经领取完了~')
+                this.chestList = null
+                clearInterval(this.timer)
+              }
+            }
+            // 如果当前是可领取状态，领取
+            const btn = this.chest.querySelector('.btn')
+            if (btn.style.display === 'block') {
+              // this.$message.warning('开始领取宝箱了~')
+              btn.click()
+              // 隐藏领取成功弹框
+              document.querySelector('#player-box-panel .box-mask').style.display = 'none'
             }
           }, 10000)
+        },
+        loadChestView() {
+          if (!this.loaded) {
+            // 是否是第一次加载，第一次加载需要点击一下才会出现页面
+            const chestView = document.querySelector('#box-list-top')
+            if (!chestView) {
+              const chestBtn = document.querySelector('#player-gift-wrap .player-chest-btn')
+              chestBtn.click()
+              // 点击之后会显示宝箱的视图，隐藏
+              document.querySelector('#player-box-panel .close').click()
+            } else {
+              this.loaded = true
+            }
+          }
         }
       },
       template: `
