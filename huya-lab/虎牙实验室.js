@@ -252,8 +252,7 @@
           enabled: false,
           timer: null,
           loaded: false, // 领取页面是否加载完毕
-          chestList: null, // 所有宝箱
-          chest: null // 白炽宝箱
+          chestList: null // 所有宝箱
         }
       },
       created() {
@@ -267,13 +266,12 @@
           if (value) {
             this.loadChestView()
             // 获取白炽宝箱(普通用户宝箱)
-            this.chest = document.querySelector('#box-list-top .item:nth-child(1)')
-            if (!this.chest) {
+            if (!document.querySelector('#box-list-top .item:nth-child(1)')) {
               this.$message.warning('白炽宝箱还没有加载完成，请稍后操作~')
-              this.enabled = false
-              GM_setValue('autoGetChests', this.enabled)
+              this.toggleState(this.enabled)
+            } else {
+              this.getChests()
             }
-            this.getChests()
           } else {
             clearInterval(this.timer)
           }
@@ -283,22 +281,21 @@
         // 自动获取百宝箱
         getChests() {
           this.timer = setInterval(() => {
-            this.loadChestView()
             if (!this.chestList) {
               this.chestList = Array.from(document.querySelectorAll('#box-item-list>.box-item'))
             } else {
               // 如果已经领取完了，清除定时器
               const lastChestText = this.chestList[this.chestList.length - 1].querySelector('p').innerText
               if (lastChestText === '已领取') {
-                // this.$message.warning('宝箱已经领取完了~')
+                this.$message.warning('宝箱已经领取完了~')
                 this.chestList = null
                 clearInterval(this.timer)
               }
             }
             // 如果当前是可领取状态，领取
-            const btn = this.chest.querySelector('.btn')
+            const btn = document.querySelector('#box-list-top .item:nth-child(1) .btn')
             if (btn.style.display === 'block') {
-              // this.$message.warning('开始领取宝箱了~')
+              this.$message.warning('开始领取宝箱了~')
               btn.click()
               // 隐藏领取成功弹框
               document.querySelector('#player-box-panel .box-mask').style.display = 'none'
@@ -307,7 +304,7 @@
         },
         loadChestView() {
           if (!this.loaded) {
-            // 是否是第一次加载，第一次加载需要点击一下才会出现页面
+            // 第一次加载需要点击一下才会出现页面
             const chestView = document.querySelector('#box-list-top')
             if (!chestView) {
               const chestBtn = document.querySelector('#player-gift-wrap .player-chest-btn')
