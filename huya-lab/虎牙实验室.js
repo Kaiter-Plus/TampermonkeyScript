@@ -287,7 +287,7 @@
               // 如果已经领取完了，清除定时器
               const lastChestText = this.chestList[this.chestList.length - 1].querySelector('p').innerText
               if (lastChestText === '已领取') {
-                this.$message.warning('宝箱已经领取完了~')
+                // this.$message.warning('宝箱已经领取完了~')
                 this.chestList = null
                 clearInterval(this.timer)
               }
@@ -295,7 +295,7 @@
             // 如果当前是可领取状态，领取
             const btn = document.querySelector('#box-list-top .item:nth-child(1) .btn')
             if (btn.style.display === 'block') {
-              this.$message.warning('开始领取宝箱了~')
+              // this.$message.warning('开始领取宝箱了~')
               btn.click()
               // 隐藏领取成功弹框
               document.querySelector('#player-box-panel .box-mask').style.display = 'none'
