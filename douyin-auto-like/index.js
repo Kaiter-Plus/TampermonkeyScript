@@ -3,7 +3,7 @@
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/douyin=auto-like
 // @author      Kaiter-Plus
 // @description 网页版抖音直播添加自动点赞功能
-// @version     0.11
+// @version     0.12
 // @license     BSD-3-Clause
 // @match       *://live.douyin.com/*
 // @icon        https://lf1-cdn-tos.bytegoofy.com/goofy/ies/douyin_web/public/favicon.ico
@@ -21,17 +21,16 @@
   // 多久点击一次
   const CLICK_DURATION = 150
   // 点击层的类名
-  const CLICK_MODAL_CLASS = '.Zs4Pv2bD'
+  const CLICK_MODAL_CLASS = '.LO5TGkc0'
   // 点击事件层
   let clickModal = document.querySelector(CLICK_MODAL_CLASS)
   // 定时器
   let timer = null
   // 清除【手速太快】提示的定时器
   let removeTipTimer = null
-  // 记录上一次执行的时间
-  let prevTImestamp = 0
 
   // 循环点击
+  let prevTImestamp = 0 // 记录上一次执行的时间
   function autoClick(timestamp) {
     const duration = timestamp - prevTImestamp
     if (duration >= CLICK_DURATION) {
@@ -67,8 +66,9 @@
   }
 
   // 移除【您手速太快了，请休息一下】提示
-  function removeTip() {
-    const duration = timestamp - prevTImestamp
+  let prevRemoveTipTImestamp = 0
+  function removeTip(timestamp) {
+    const duration = timestamp - prevRemoveTipTImestamp
     if (duration >= CLICK_DURATION) {
       const reg = /.*手速太快.*/
       const toastContainer = document.getElementById('toastContainer')
@@ -84,6 +84,7 @@
         toast.style.display = 'none'
       }
     }
+    prevRemoveTipTImestamp = timestamp
     removeTipTimer = requestAnimationFrame(removeTip)
   }
 
