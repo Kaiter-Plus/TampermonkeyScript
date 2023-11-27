@@ -3,7 +3,7 @@
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/douyin=auto-like
 // @author      Kaiter-Plus
 // @description 网页版抖音直播添加自动点赞功能
-// @version     0.12
+// @version     0.13
 // @license     BSD-3-Clause
 // @match       *://live.douyin.com/*
 // @icon        https://lf1-cdn-tos.bytegoofy.com/goofy/ies/douyin_web/public/favicon.ico
@@ -83,8 +83,8 @@
       if (toast && reg.test(toast.textContent)) {
         toast.style.display = 'none'
       }
+      prevRemoveTipTImestamp = timestamp
     }
-    prevRemoveTipTImestamp = timestamp
     removeTipTimer = requestAnimationFrame(removeTip)
   }
 
@@ -154,7 +154,7 @@
   function init() {
     clickModal = document.querySelector(CLICK_MODAL_CLASS)
     registerMenuCommand()
-    removeTip()
+    removeTip(0)
     if (GM_getValue('switch')) autoClick(0)
   }
 
