@@ -19,7 +19,7 @@
 
 ;(() => {
   // 多久点击一次
-  const CLICK_DURATION = 150
+  const CLICK_DURATION = 300
   // 点击层的类名
   const CLICK_MODAL_CLASS = '.LO5TGkc0'
   // 点击事件层
