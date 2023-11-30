@@ -28,6 +28,10 @@
   let timer = null
   // 清除【手速太快】提示的定时器
   let removeTipTimer = null
+  // 重新恢复点赞的定时器
+  let restartTimer = null
+  // 重新开始点赞的时间
+  let restartTimestamp = GM_getValue('restartTimestamp') ? +GM_getValue('restartTimestamp') : 0
 
   // 循环点击
   let prevTImestamp = 0 // 记录上一次执行的时间
@@ -66,9 +70,9 @@
   }
 
   // 移除【您手速太快了，请休息一下】提示
-  let prevRemoveTipTImestamp = 0
+  let prevRemoveTipTimestamp = 0
   function removeTip(timestamp) {
-    const duration = timestamp - prevRemoveTipTImestamp
+    const duration = timestamp - prevRemoveTipTimestamp
     if (duration >= CLICK_DURATION) {
       const reg = /.*手速太快.*/
       const toastContainer = document.getElementById('toastContainer')
@@ -76,16 +80,42 @@
         Array.from(toastContainer.children).forEach(element => {
           if (reg.test(element.textContent)) {
             element.style.display = 'none'
+            const nextTimestamp = +new Date() + 600000
+            restartTimestamp = nextTimestamp - restartTimestamp > 600000 ? nextTimestamp : restartTimestamp
+            GM_setValue('restartTimestamp', restartTimestamp)
+            cancelAnimationFrame(restartTimer)
+            restart(timestamp)
           }
         })
       }
       const toast = document.querySelector('[data-e2e="toast"]')
       if (toast && reg.test(toast.textContent)) {
         toast.style.display = 'none'
+        const nextTimestamp = +new Date() + 600000
+        restartTimestamp = nextTimestamp - restartTimestamp > 600000 ? nextTimestamp : restartTimestamp
+        GM_setValue('restartTimestamp', restartTimestamp)
+        cancelAnimationFrame(restartTimer)
+        restart(timestamp)
       }
-      prevRemoveTipTImestamp = timestamp
+      prevRemoveTipTimestamp = timestamp
     }
     removeTipTimer = requestAnimationFrame(removeTip)
+  }
+
+  // 如果已经提示【手速太快】，暂停10分钟再重新开始
+  let prevRestartTimestamp = 0
+  function restart(timestamp) {
+    cancelAnimationFrame(timer)
+    const duration = timestamp - prevRestartTimestamp
+    if (duration >= CLICK_DURATION) {
+      const currentTimestamp = +new Date()
+      if (currentTimestamp >= restartTimestamp) {
+        cancelAnimationFrame(restartTimer)
+        if (GM_getValue('switch')) autoClick(timestamp)
+      }
+      prevRestartTimestamp = timestamp
+    }
+    restartTimer = requestAnimationFrame(removeTip)
   }
 
   // 菜单
@@ -158,5 +188,8 @@
     if (GM_getValue('switch')) autoClick(0)
   }
 
-  init()
+  // 延迟 3 秒开始，抖音需要获取登录数据
+  setTimeout(() => {
+    init()
+  }, 3000)
 })()
