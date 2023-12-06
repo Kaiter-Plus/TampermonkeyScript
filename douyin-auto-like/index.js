@@ -26,8 +26,6 @@
   let clickModal = document.querySelector(CLICK_MODAL_CLASS)
   // 定时器
   let timer = null
-  // 清除【手速太快】提示的定时器
-  let removeTipTimer = null
   // 重新恢复点赞的定时器
   let restartTimer = null
   // 重新开始点赞的时间
@@ -37,7 +35,7 @@
   let prevTImestamp = 0 // 记录上一次执行的时间
   function autoClick(timestamp) {
     const duration = timestamp - prevTImestamp
-    if (duration >= CLICK_DURATION) {
+    if (duration >= CLICK_DURATION + Math.random() * 100 - 50) {
       if (clickModal) {
         clearLikeIcon()
         // 获取元素的坐标
@@ -69,6 +67,25 @@
     }
   }
 
+  // 如果已经提示【手速太快】，暂停 1 分钟再重新开始
+  let prevRestartTimestamp = 0
+  function restart(timestamp) {
+    cancelAnimationFrame(timer)
+    const duration = timestamp - prevRestartTimestamp
+    if (duration >= CLICK_DURATION) {
+      const currentTimestamp = +new Date()
+      if (currentTimestamp >= restartTimestamp) {
+        if (GM_getValue('switch')) {
+          timer = requestAnimationFrame(autoClick)
+          restartTimer = null
+          return
+        }
+      }
+      prevRestartTimestamp = timestamp
+    }
+    restartTimer = requestAnimationFrame(restart)
+  }
+
   // 移除【您手速太快了，请休息一下】提示
   let prevRemoveTipTimestamp = 0
   function removeTip(timestamp) {
@@ -77,45 +94,29 @@
       const reg = /.*手速太快.*/
       const toastContainer = document.getElementById('toastContainer')
       if (toastContainer) {
-        Array.from(toastContainer.children).forEach(element => {
-          if (reg.test(element.textContent)) {
-            element.style.display = 'none'
-            const nextTimestamp = +new Date() + 600000
-            restartTimestamp = nextTimestamp - restartTimestamp > 600000 ? nextTimestamp : restartTimestamp
+        if (toastContainer.children[0]) {
+          toastContainer.textContent = ``
+          if (!restartTimer) {
+            const nextTimestamp = +new Date() + 60000
+            restartTimestamp = nextTimestamp - restartTimestamp > 60000 ? nextTimestamp : restartTimestamp
             GM_setValue('restartTimestamp', restartTimestamp)
-            cancelAnimationFrame(restartTimer)
             restart(timestamp)
           }
-        })
+        }
       }
       const toast = document.querySelector('[data-e2e="toast"]')
       if (toast && reg.test(toast.textContent)) {
-        toast.style.display = 'none'
-        const nextTimestamp = +new Date() + 600000
-        restartTimestamp = nextTimestamp - restartTimestamp > 600000 ? nextTimestamp : restartTimestamp
-        GM_setValue('restartTimestamp', restartTimestamp)
-        cancelAnimationFrame(restartTimer)
-        restart(timestamp)
+        toast.parentNode.removeChild(toast)
+        if (!restartTimer) {
+          const nextTimestamp = +new Date() + 60000
+          restartTimestamp = nextTimestamp - restartTimestamp > 60000 ? nextTimestamp : restartTimestamp
+          GM_setValue('restartTimestamp', restartTimestamp)
+          restart(timestamp)
+        }
       }
       prevRemoveTipTimestamp = timestamp
     }
-    removeTipTimer = requestAnimationFrame(removeTip)
-  }
-
-  // 如果已经提示【手速太快】，暂停10分钟再重新开始
-  let prevRestartTimestamp = 0
-  function restart(timestamp) {
-    cancelAnimationFrame(timer)
-    const duration = timestamp - prevRestartTimestamp
-    if (duration >= CLICK_DURATION) {
-      const currentTimestamp = +new Date()
-      if (currentTimestamp >= restartTimestamp) {
-        cancelAnimationFrame(restartTimer)
-        if (GM_getValue('switch')) autoClick(timestamp)
-      }
-      prevRestartTimestamp = timestamp
-    }
-    restartTimer = requestAnimationFrame(removeTip)
+    requestAnimationFrame(removeTip)
   }
 
   // 菜单
@@ -177,15 +178,15 @@
 
   // 切换开关
   function switchFn() {
-    if (GM_getValue('switch')) autoClick(0)
+    if (GM_getValue('switch')) requestAnimationFrame(autoClick)
     else cancelAnimationFrame(timer)
   }
 
   function init() {
     clickModal = document.querySelector(CLICK_MODAL_CLASS)
     registerMenuCommand()
-    removeTip(0)
-    if (GM_getValue('switch')) autoClick(0)
+    requestAnimationFrame(removeTip)
+    if (GM_getValue('switch')) requestAnimationFrame(autoClick)
   }
 
   // 延迟 3 秒开始，抖音需要获取登录数据
