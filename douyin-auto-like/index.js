@@ -178,7 +178,7 @@
 
   // 切换开关
   function switchFn() {
-    if (GM_getValue('switch')) requestAnimationFrame(autoClick)
+    if (GM_getValue('switch')) timer = requestAnimationFrame(autoClick)
     else cancelAnimationFrame(timer)
   }
 
@@ -186,7 +186,7 @@
     clickModal = document.querySelector(CLICK_MODAL_CLASS)
     registerMenuCommand()
     requestAnimationFrame(removeTip)
-    if (GM_getValue('switch')) requestAnimationFrame(autoClick)
+    if (GM_getValue('switch')) timer = requestAnimationFrame(autoClick)
   }
 
   // 延迟 3 秒开始，抖音需要获取登录数据
