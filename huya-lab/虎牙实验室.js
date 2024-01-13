@@ -3,13 +3,13 @@
 // @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/huya-lab
 // @author      Kaiter-Plus
 // @description 给虎牙直播添加额外功能（同步时间、画面镜像、自动选择最高画、自动选领取百宝箱奖励、自动网页全屏）
-// @version     2.0.1
+// @version     2.0.2
 // @license     BSD-3-Clause
 // @match       *://*.huya.com/*
 // @icon        https://www.huya.com/favicon.ico
 // @require     https://cdnjs.cloudflare.com/ajax/libs/vue/2.7.13/vue.min.js
-// @require     https://unpkg.com/element-ui/lib/index.js
-// @resource    elementStyle https://unpkg.com/element-ui/lib/theme-chalk/index.css
+// @require     https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.15.14/index.js
+// @resource    elementStyle https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.15.14/theme-chalk/index.css
 // @noframes
 // @grant       GM_getResourceText
 // @grant       GM_setValue
