@@ -5,9 +5,9 @@
 // @match       *://*.cocomanga.com/dynamic/user/subscription
 // @match       *://*.colamanhua.com/dynamic/user/subscription
 // @match       *://*.colamanga.com/dynamic/user/subscription
-// @version     0.7
+// @version     0.80
 // @author      Kaiter-Plus
-// @icon        https://www.cocomanhua.com/favicon.ico
+// @icon        https://www.colamanga.com/favicon.ico
 // @description COCO 漫画“我的收藏”界面根据“更新日”进行排序
 // @grant       GM_addStyle
 // ==/UserScript==
