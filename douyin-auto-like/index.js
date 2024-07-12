@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        抖音直播自动点赞
-// @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/douyin=auto-like
+// @namespace   https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/douyin-auto-like
 // @author      Kaiter-Plus
 // @description 网页版抖音直播添加自动点赞功能
 // @version     0.13
