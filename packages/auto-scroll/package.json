@@ -1,0 +1,21 @@
+{
+  "name": "auto-scroll",
+  "version": "1.0.1",
+  "type": "module",
+  "author": "Kaiter-Plus",
+  "description": "给网页添加自动向上、向下滚动的按钮，对于看文章，看小说，看漫画等场景下使用极为舒适",
+  "repository": {
+    "url": "https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/packages/auto-scroll"
+  },
+  "license": "BSD-3-Clause",
+  "buildOptions": {
+    "include": "*://*",
+    "grant": [
+      "GM_addStyle",
+      "GM_getValue",
+      "GM_setValue",
+      "GM_addElement"
+    ],
+    "exclude": ["noframes"]
+  }
+}

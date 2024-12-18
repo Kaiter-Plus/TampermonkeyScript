@@ -4,10 +4,15 @@
     "": {
       "devDependencies": {
         "@types/bun": "latest",
+        "@types/tampermonkey": "^5.0.4",
       },
       "peerDependencies": {
         "typescript": "^5.0.0",
       },
+    },
+    "packages/auto-scroll": {
+      "name": "auto-scroll",
+      "version": "1.0.1",
     },
   },
   "packages": {
@@ -15,7 +20,11 @@
 
     "@types/node": ["@types/node@20.12.14", "https://registry.npmmirror.com/@types/node/-/node-20.12.14.tgz", { "dependencies": { "undici-types": "~5.26.4" } }, "sha512-scnD59RpYD91xngrQQLGkE+6UrHUPzeKZWhhjBSa3HSkwjbQc38+q3RoIVEwxQGRw3M+j5hpNAM+lgV3cVormg=="],
 
+    "@types/tampermonkey": ["@types/tampermonkey@5.0.4", "https://registry.npmmirror.com/@types/tampermonkey/-/tampermonkey-5.0.4.tgz", {}, "sha512-HEJ0O5CkDZSwIgd9Zip4xM8o7gZC8zBmJuH1YEXNINIC+aCWEXD10pnpo3NQG5IWHx+Xr4fMSGq1jqeKXH2lpA=="],
+
     "@types/ws": ["@types/ws@8.5.13", "https://registry.npmmirror.com/@types/ws/-/ws-8.5.13.tgz", { "dependencies": { "@types/node": "*" } }, "sha512-osM/gWBTPKgHV8XkTunnegTRIsvF6owmf5w+JtAfOw472dptdm0dlGv4xCt6GwQRcC2XVOvvRE/0bAoQcL2QkA=="],
+
+    "auto-scroll": ["auto-scroll@workspace:packages/auto-scroll", {}],
 
     "bun-types": ["bun-types@1.1.37", "https://registry.npmmirror.com/bun-types/-/bun-types-1.1.37.tgz", { "dependencies": { "@types/node": "~20.12.8", "@types/ws": "~8.5.10" } }, "sha512-C65lv6eBr3LPJWFZ2gswyrGZ82ljnH8flVE03xeXxKhi2ZGtFiO4isRKTKnitbSqtRAcaqYSR6djt1whI66AbA=="],
 

@@ -6,9 +6,10 @@
   "repository": {
     "url": "https://github.com/Kaiter-Plus/TampermonkeyScript"
   },
-  "workspaces":["packages/*"],
+  "workspaces": ["packages/*"],
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/tampermonkey": "^5.0.4"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
