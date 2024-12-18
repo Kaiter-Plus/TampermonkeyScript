@@ -1,0 +1,16 @@
+{
+  "name": "tampermonkeyscript",
+  "version": "1.0.0",
+  "type": "module",
+  "author": "Kaiter-Plus",
+  "repository": {
+    "url": "https://github.com/Kaiter-Plus/TampermonkeyScript"
+  },
+  "workspaces":["packages/*"],
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
