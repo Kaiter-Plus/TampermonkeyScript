@@ -6,10 +6,14 @@
   "repository": {
     "url": "https://github.com/Kaiter-Plus/TampermonkeyScript"
   },
+  "scripts": {
+    "build": "bun build/prod.js auto-scroll"
+  },
   "workspaces": ["packages/*"],
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/tampermonkey": "^5.0.4"
+    "@types/tampermonkey": "^5.0.4",
+    "minimist": "^1.2.8"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"

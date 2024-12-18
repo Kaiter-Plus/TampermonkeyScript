@@ -9,13 +9,19 @@
   },
   "license": "BSD-3-Clause",
   "buildOptions": {
-    "include": "*://*",
-    "grant": [
-      "GM_addStyle",
-      "GM_getValue",
-      "GM_setValue",
-      "GM_addElement"
-    ],
-    "exclude": ["noframes"]
+    "name": {
+      "default": "自动滚动"
+    },
+    "spaces": 12,
+    "payload": {
+      "include": ["*://*"],
+      "grant": [
+        "GM_addStyle",
+        "GM_getValue",
+        "GM_setValue",
+        "GM_addElement"
+      ],
+      "noframes": [""]
+    }
   }
 }

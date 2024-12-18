@@ -5,6 +5,7 @@
       "devDependencies": {
         "@types/bun": "latest",
         "@types/tampermonkey": "^5.0.4",
+        "minimist": "^1.2.8",
       },
       "peerDependencies": {
         "typescript": "^5.0.0",
@@ -27,6 +28,8 @@
     "auto-scroll": ["auto-scroll@workspace:packages/auto-scroll", {}],
 
     "bun-types": ["bun-types@1.1.37", "https://registry.npmmirror.com/bun-types/-/bun-types-1.1.37.tgz", { "dependencies": { "@types/node": "~20.12.8", "@types/ws": "~8.5.10" } }, "sha512-C65lv6eBr3LPJWFZ2gswyrGZ82ljnH8flVE03xeXxKhi2ZGtFiO4isRKTKnitbSqtRAcaqYSR6djt1whI66AbA=="],
+
+    "minimist": ["minimist@1.2.8", "https://registry.npmmirror.com/minimist/-/minimist-1.2.8.tgz", {}, "sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA=="],
 
     "typescript": ["typescript@5.7.2", "https://registry.npmmirror.com/typescript/-/typescript-5.7.2.tgz", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg=="],
 
