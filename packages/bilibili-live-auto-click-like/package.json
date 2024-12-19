@@ -14,10 +14,15 @@
     },
     "spaces": 12,
     "payload": {
-      "icon": ["https://www.google.com/s2/favicons?sz=64&domain=bilibili.com"],
-      "include": ["*://*"],
-      "match": ["*://live.bilibili.com/*"],
-      "run-at": ["document-end"],
+      "icon": [
+        "https://www.google.com/s2/favicons?sz=64&domain=bilibili.com"
+      ],
+      "match": [
+        "*://live.bilibili.com/*"
+      ],
+      "run-at": [
+        "document-end"
+      ],
       "grant": [
         "unsafeWindow",
         "GM_addStyle",
@@ -28,7 +33,9 @@
         "GM_registerMenuCommand",
         "GM_unregisterMenuCommand"
       ],
-      "noframes": [""]
+      "noframes": [
+        ""
+      ]
     }
   }
 }
