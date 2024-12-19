@@ -1,0 +1,34 @@
+{
+  "name": "bilibili-live-auto-click-like",
+  "version": "1.0.0",
+  "type": "module",
+  "author": "Kaiter-Plus",
+  "description": "网页版哔哩哔哩直播添加自动点赞功能",
+  "repository": {
+    "url": "https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/packages/bilibili-live-auto-click-like"
+  },
+  "license": "BSD-3-Clause",
+  "buildOptions": {
+    "name": {
+      "default": "哔哩哔哩直播自动点赞"
+    },
+    "spaces": 12,
+    "payload": {
+      "icon": ["https://www.google.com/s2/favicons?sz=64&domain=bilibili.com"],
+      "include": ["*://*"],
+      "match": ["*://live.bilibili.com/*"],
+      "run-at": ["document-end"],
+      "grant": [
+        "unsafeWindow",
+        "GM_addStyle",
+        "GM_getValue",
+        "GM_setValue",
+        "GM_addElement",
+        "GM_notification",
+        "GM_registerMenuCommand",
+        "GM_unregisterMenuCommand"
+      ],
+      "noframes": [""]
+    }
+  }
+}
