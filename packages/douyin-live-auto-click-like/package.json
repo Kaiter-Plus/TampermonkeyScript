@@ -1,0 +1,39 @@
+{
+  "name": "douyin-live-auto-click-like",
+  "version": "1.0.0",
+  "type": "module",
+  "author": "Kaiter-Plus",
+  "description": "网页版抖音直播添加自动点赞功能",
+  "repository": {
+    "url": "https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/packages/douyin-live-auto-click-like"
+  },
+  "license": "BSD-3-Clause",
+  "buildOptions": {
+    "name": {
+      "default": "抖音直播自动点赞"
+    },
+    "spaces": 12,
+    "payload": {
+      "icon": [
+        "https://lf1-cdn-tos.bytegoofy.com/goofy/ies/douyin_web/public/favicon.ico"
+      ],
+      "match": [
+        "*://live.douyin.com/*"
+      ],
+      "run-at": [
+        "document-end"
+      ],
+      "grant": [
+        "unsafeWindow",
+        "GM_getValue",
+        "GM_setValue",
+        "GM_notification",
+        "GM_registerMenuCommand",
+        "GM_unregisterMenuCommand"
+      ],
+      "noframes": [
+        ""
+      ]
+    }
+  }
+}
