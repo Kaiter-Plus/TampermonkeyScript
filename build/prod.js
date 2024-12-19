@@ -18,7 +18,6 @@ const commonBanner = `
 // @description ${pkg.description}
 // @namespace   ${pkg.repository.url}
 // @license     ${pkg.license}
-// @include     ${pkg.buildOptions.include}
 // @version     ${pkg.version}`
 
 // 每个脚本自定义头部
@@ -26,7 +25,7 @@ let payloadBanner = ``
 const spaceLength = pkg.buildOptions.spaces
 const payload = pkg.buildOptions.payload
 if (payload) {
-  for (const key of Object.keys(payload)) {
+  for (const key in payload) {
     for (const item of payload[key]) {
       payloadBanner += `\n// @${key.padEnd(spaceLength, ' ')}${item}`
     }
