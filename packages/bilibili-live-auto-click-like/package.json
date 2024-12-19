@@ -25,10 +25,8 @@
       ],
       "grant": [
         "unsafeWindow",
-        "GM_addStyle",
         "GM_getValue",
         "GM_setValue",
-        "GM_addElement",
         "GM_notification",
         "GM_registerMenuCommand",
         "GM_unregisterMenuCommand"
