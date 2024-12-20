@@ -1,0 +1,25 @@
+{
+  "name": "mooc-skip-questions",
+  "version": "0.1.0",
+  "type": "module",
+  "author": "Kaiter-Plus",
+  "description": "中国大学MOOC,icourse163视频中题目自动跳过，移除弹题元素，防止暂停（本脚本仅供学习使用，请在24小时内删除！）",
+  "repository": {
+    "url": "https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/packages/mooc-skip-questions"
+  },
+  "license": "BSD-3-Clause",
+  "buildOptions": {
+    "name": {
+      "default": "中国大学MOOC视频中题目自动跳过"
+    },
+    "spaces": 12,
+    "payload": {
+      "match": [
+        "*://www.icourse163.org/learn/*"
+      ],
+      "grant": [
+        "none"
+      ]
+    }
+  }
+}
