@@ -1,0 +1,29 @@
+{
+  "name": "tencent-kt-box",
+  "version": "1.4.5",
+  "type": "module",
+  "author": "Kaiter-Plus",
+  "description": "主要功能是腾讯课堂自动签到以及去除“xxx正在观看xx”水印！",
+  "repository": {
+    "url": "https://gitee.com/Kaiter-Plus/TampermonkeyScript/tree/master/packages/tencent-kt-box"
+  },
+  "license": "BSD-3-Clause",
+  "buildOptions": {
+    "name": {
+      "default": "腾讯课堂自动签到 + 去除“xxx正在观看xx”水印"
+    },
+    "spaces": 12,
+    "icon": [
+      "https://8.url.cn/edu/edu_modules/edu-ui/img/nohash/favicon.ico"
+    ],
+    "payload": {
+      "match": [
+        "https://ke.qq.com/webcourse/*"
+      ],
+      "grant": [
+        "GM_addStyle",
+        "GM_addElement"
+      ]
+    }
+  }
+}
