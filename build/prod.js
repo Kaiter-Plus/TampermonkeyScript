@@ -57,12 +57,12 @@ async function build(projectName) {
   // 打包
   await Bun.build({
     entrypoints: [entry],
-    outdir: resolve(__dirname, "../dist"),
-    target: "browser",
-    format: "iife",
+    outdir: resolve(__dirname, '../dist'),
+    target: 'browser',
+    format: 'iife',
     banner,
     naming: `[dir]/${projectName}.user.[ext]`
-  }).catch((err) => {
+  }).catch(err => {
     console.log('打包失败，原因: ', err)
   })
 }
